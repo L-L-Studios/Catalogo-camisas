@@ -1,0 +1,164 @@
+/*============ HEADER - NAVBAR ============*/
+header {
+  position: fixed;  
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999; 
+}
+
+/* Contenedor del menú */
+.menu-container {
+    width: 100%;
+    max-width: 1300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Logo SIEMPRE A LA IZQUIERDA */
+.logo {
+    position: absolute;
+    left: 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 20px;
+    text-decoration: none;
+}
+
+/* Container real */
+.container {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Navbar */
+.navbar {
+    background: transparent;
+    transition: 0.3s ease;
+    padding: 15px 0;
+}
+
+.navbar.scrolled {
+    background-color: #252525;
+}
+
+/* Enlaces centrados */
+.navbar-links {
+    display: flex;
+    gap: 35px;
+}
+
+.navbar-links a {
+    position: relative;
+    text-decoration: none;
+    color: #f6fffe;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    font-size: 15px;
+    transition: 0.3s ease;
+    margin-top: 20px;
+}
+
+/* Línea decorativa */
+.navbar-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 2px;
+    background-color: #f6fffe;
+    transition: width .3s ease;
+}
+
+.navbar-links a:hover {
+    color: #f6fffe;
+}
+
+.navbar-links a:hover::after,
+.navbar-links a.active::after {
+    width: 100%;
+}
+
+/*======== BOTON MENU ANIMATION ========*/
+.menu {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: none;
+  position: absolute;
+  right: 0;
+  z-index: 10000;
+  margin-top: 20px;
+}
+
+.line {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 6;
+  transition: stroke-dasharray .6s, stroke-dashoffset .6s;
+}
+
+.line1 { stroke-dasharray: 60 207; }
+.line2 { stroke-dasharray: 60 60; }
+.line3 { stroke-dasharray: 60 207; }
+
+.menu.opened .line1 {
+  stroke-dasharray: 90 207;
+  stroke-dashoffset: -134;
+}
+.menu.opened .line2 {
+  stroke-dasharray: 1 60;
+  stroke-dashoffset: -30;
+}
+.menu.opened .line3 {
+  stroke-dasharray: 90 207;
+  stroke-dashoffset: -134;
+}
+
+
+/*============ RESPONSIVE ============*/
+@media (max-width: 768px) {
+
+    .menu {
+        display: flex; 
+    }
+
+    .navbar-links {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        justify-content: center; /* Centra verticalmente */
+        align-items: center;     /* Centra horizontalmente */
+        display: none;
+        background: rgba(20, 20, 20, 0.596); /* Más oscuro y limpio */
+        gap: 35px;
+        padding: 0;
+        backdrop-filter: blur(3px);
+        z-index: 9000;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+    }
+
+    .navbar-links a {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    .navbar-links.active {
+        display: flex;
+    }
+
+    /* El menú hamburguesa siempre arriba */
+    .menu {
+        z-index: 10001;
+    }
+}

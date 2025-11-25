@@ -1,0 +1,35 @@
+* {
+  outline: 1px solid green;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+    font-family: "Avenir", sans-serif;
+
+}
+
+/*CONTENIDO - SECTIONS */
+.wrapper,
+.content-camisas {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+}
+
+.content-camisas .section {
+  width: 100%;
+  height: auto; /*Alto automatico dependiendo del contenido de cada section*/
+}
+
+.section {
+  scroll-margin-top: 80px; /* Espacio de margen del scroll con respecto al header */
+}
+
+.contenedor-catalogo{
+  position: relative;
+  width: 100%; 
+  height: auto;
+  overflow: hidden;
+}
