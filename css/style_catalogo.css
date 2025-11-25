@@ -367,10 +367,14 @@
 /* Botón */
 .card-camisa .price-camisa {
   border: 1px solid #0000;
-  border-radius: 1.25rem 1.25rem 1.5rem 1.25rem;
-  font-size: 1rem;
-  padding: 1rem 1.5rem 1rem 2.75rem;
-  background: var(--button-color);
+  border-radius: 1.25rem;
+  font-size: 20px;
+  font-weight: 700;
+  color: white !important;
+  padding: 5px 10px;
+  margin-left: 20px;
+  margin-top: 10px;
+  background: #CB2D2D;
   color: var(--title-color-hover);
   translate: 1rem;
   width: 8.2rem;
@@ -420,13 +424,15 @@
 .colores {
   display: flex;
   gap: 0.5rem;
+  justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 /* Cada circulito individual */
 .colores div {
-  width: 18px;
-  height: 18px;
+  width: 16px !important;
+  height: 16px !important;
   border-radius: 50%;
   border: 2px solid #fff; /* borde suave para que se vea sobre cualquier fondo */
   box-shadow: 0px 0px 3px rgba(0,0,0,0.15);
