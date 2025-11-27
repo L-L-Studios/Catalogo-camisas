@@ -1,0 +1,228 @@
+/* -----------------------------------------------
+   DISEÑO DE TARJETA CAMISA DEL CATALOGO
+------------------------------------------------- */
+/* Diseño tarjeta camisa*/
+.card-camisa {
+  --bg: #fff;
+  --bg-radial: radial-gradient(
+        circle at bottom right,
+        #ffeb99 0%,
+        #fff4c9 8%,   /* pequeño toque amarillo */
+        #ffffff 40%,
+        #ffffff 100%
+    );
+  --title-color: #fff;
+  --title-color-hover: #000;
+  --text-color: #666;
+  --button-color: #eee;
+  --button-color-hover: #ddd;
+
+  background: var(--bg-radial);
+  border-radius: 2rem;
+  padding: 0.5rem;
+  width: 21rem;
+  height: 31rem;
+  overflow: clip;
+  position: relative;
+  font-family: 'Avenir', sans-serif;
+}
+
+.card-camisa::before {
+  content: "";
+  position: absolute;
+  width: calc(100% - 0.90rem);
+  height: 42%;
+  bottom: 0.4rem;
+  left: 0.5rem;
+  mask: linear-gradient(#0000, #000f 80%);
+  backdrop-filter: blur(1rem);
+  border-radius: 0 0 1.5rem 1.5rem;
+  translate: 0 0;
+  transition: translate 0.25s;
+  z-index: 1;
+}
+
+.card-camisa:hover,
+.card-camisa:focus-within,
+.card-camisa.controls-active {
+  height: 34.5rem !important; /* tamaño ampliado */
+  margin-bottom: 10px !important;
+}
+
+.card-camisa:hover,.carousel-indicators{
+    height: 32.2rem; /* Ajustar alto */
+    margin-bottom: 10px !important;
+}
+.carousel-indicators{
+  margin-bottom: 50px;
+}
+
+/* Imagen */
+.img-card {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  object-position: 50% 5%;
+  border-radius: 1.5rem;
+  display: block;
+  transition: aspect-ratio 0.25s, object-position 0.5s;
+}
+
+/* Título */
+.card-camisa .lbl-nombre-camisa {
+  margin: 0 0 0.5rem 0; /*top-*/
+  font-size: 1.3rem;
+  color: var(--title-color);
+  translate: 0 -200%;
+  opacity: 1;
+  transition: color 0.5s,
+              margin-block-end 0.25s,
+              opacity 1s,
+              translate 0.25s;
+}
+
+/* Price */
+.card-camisa .price-camisa {
+    position: absolute;
+    right: 0 !important;
+    margin: 0 0 1rem 0;
+    padding: 5px 10px;
+    translate: 0 -180% !important;
+    transition: color 0.5s,
+              margin-block-end 0.25s,
+              opacity 1s,
+              translate 0.25s;
+    border-radius: 1.25rem;
+    font-size: 20px;
+    font-weight: 600;
+    color: white !important;
+    background: linear-gradient(135deg, #f83b16, #CB2D2D);
+    color: var(--title-color-hover); 
+    text-align: center;
+    outline-offset: 2px;  
+}
+
+/* Descripcion */
+.card-camisa .lbl-descripcion {
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: var(--text-color);
+  opacity: 0;
+  margin: 0;
+  translate: 0 100%;
+  z-index: 10 !important;
+  transition: margin-block-end 0.25s,
+              opacity 1s 0.2s,
+              translate 0.25s 0.2s;
+}
+
+.categoria-camisa{
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: #ffffff4f;
+    background-image: radial-gradient(at 85% 51%, hsla(60,60%,61%,1) 0px, transparent 50%),
+        radial-gradient(at 74% 68%, #cb2d2dea 0px, transparent 50%),
+        radial-gradient(at 64% 79%, #cb2d2da0 0px, transparent 50%),
+        radial-gradient(at 75% 16%, #ffe10090 0px, transparent 50%),
+        radial-gradient(at 90% 65%, hsla(153,70%,64%,1) 0px, transparent 50%),
+        radial-gradient(at 91% 83%, #ffe100b9 0px, transparent 50%),
+        radial-gradient(at 72% 91%, #cb2d2d9a 0px, transparent 50%);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    color: var(--title-color-hover);
+    z-index: 2;
+}
+
+/* Sección inferior */
+.card-camisa section {
+  margin: 1rem;
+  height: calc(33.3333% - 1rem);
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
+  position: relative;
+}
+
+/* Contenedor tag + botón */
+.card-camisa section div {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex: 1;
+
+  translate: 0 100%;
+  opacity: 0;
+  transition: translate 0.25s 0.2s,
+              opacity 1s;
+}
+
+
+/* Hover tarjeta */
+.card-camisa:hover::before,
+.card-camisa:focus-within::before {
+  translate: 0 100%;
+}
+
+.card-camisa:hover .img-card,
+.card-camisa:focus-within .img-card {
+  aspect-ratio: 1 / 1;
+  object-position: 50% 10%;
+}
+
+/* Título + descripción aparecen en hover */
+.card-camisa:hover section h2,
+.card-camisa:hover section p,
+.card-camisa:focus-within section h2,
+.card-camisa:focus-within section p {
+  translate: 0 0;
+  opacity: 1;
+  margin-block-end: 0.5rem;
+}
+
+/* color título */
+.card-camisa:hover section h2,
+.card-camisa:focus-within section h2 {
+    color: var(--title-color-hover);
+}
+
+/* contenedor inferior aparece */
+.card-camisa:hover section div,
+.card-camisa:focus-within section div {
+    translate: 0 0;
+    opacity: 1;
+    transition: translate 0.25s 0.25s,
+                opacity 0.5s 0.25s;
+}
+
+
+/* TAG */
+.card-camisa .tag {
+    align-self: center;
+    color: var(--title-color-hover);
+}
+
+.tallas-camisa {
+    display: flex;
+    gap: 0.4rem;
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+.lbl-color-elg{
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #414141;
+    transition: margin-block-end 0.25s,
+            opacity 1s 0.2s,
+            translate 0.25s 0.2s;
+}
+
+.img-color-camisa{
+    width: 40px;
+    height: 40px;
+    
+}
