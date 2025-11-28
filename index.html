@@ -26,7 +26,7 @@
         <nav class="navbar">
             <div class="container">
                 <div class="menu-container">
-                    <a href="#inicio" class="logo">VRX</a>
+                    <a href="#catalogo" class="logo">VRX</a>
 
                     <!-- Botón menu -->
                     <button class="menu" id="navbarToggler" aria-label="Main Menu">
@@ -105,9 +105,152 @@
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/nabvar.js"></script>
-    <script src="js/carousel.js"></script>
+    <!--catalogo-->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar carruseles de Bootstrap
+            const carousels = document.querySelectorAll('.carousel');
+            
+            carousels.forEach(carousel => {
+                const bsCarousel = new bootstrap.Carousel(carousel, {
+                    interval: false // Desactivar rotación automática
+                });
+                
+                // Variables para el control táctil
+                let startX = 0;
+                let startY = 0;
+                let currentX = 0;
+                let isSwiping = false;
+                let swipeThreshold = 30; // Umbral más bajo para mayor sensibilidad
+                
+                // PREVENIR COMPORTAMIENTO POR DEFECTO DEL SCROLL EN EL CAROUSEL
+                carousel.addEventListener('touchmove', function(e) {
+                    if (isSwiping) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+                
+                // Touch Start - Inicio del deslizamiento
+                carousel.addEventListener('touchstart', function(e) {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    currentX = startX;
+                    isSwiping = true;
+                }, { passive: true });
+                
+                // Touch Move - Durante el deslizamiento
+                carousel.addEventListener('touchmove', function(e) {
+                    if (!isSwiping) return;
+                    
+                    currentX = e.touches[0].clientX;
+                    const currentY = e.touches[0].clientY;
+                    const diffX = startX - currentX;
+                    const diffY = startY - currentY;
+                    
+                    // Solo procesar si el movimiento es más horizontal que vertical
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+                
+                // Touch End - Fin del deslizamiento
+                carousel.addEventListener('touchend', function(e) {
+                    if (!isSwiping) return;
+                    
+                    const diffX = startX - currentX;
+                    
+                    // Cambiar de slide si se supera el umbral
+                    if (Math.abs(diffX) > swipeThreshold) {
+                        if (diffX > 0) {
+                            // Deslizamiento hacia la izquierda - siguiente slide
+                            bsCarousel.next();
+                        } else {
+                            // Deslizamiento hacia la derecha - slide anterior
+                            bsCarousel.prev();
+                        }
+                    }
+                    
+                    isSwiping = false;
+                }, { passive: true });
+                
+                // Touch Cancel - Cancelación del gesto táctil
+                carousel.addEventListener('touchcancel', function() {
+                    isSwiping = false;
+                }, { passive: true });
+                
+                // Permitir scroll vertical normal en la tarjeta
+                const card = carousel.closest('.card-camisa');
+                if (card) {
+                    card.addEventListener('touchmove', function(e) {
+                        // Solo prevenir el comportamiento por defecto si estamos en el carousel
+                        if (!carousel.contains(e.target)) {
+                            return;
+                        }
+                        
+                        const touch = e.touches[0];
+                        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                        
+                        if (element && carousel.contains(element)) {
+                            const diffX = Math.abs(startX - touch.clientX);
+                            const diffY = Math.abs(startY - touch.clientY);
+                            
+                            // Solo prevenir si el movimiento es más horizontal
+                            if (diffX > diffY) {
+                                e.preventDefault();
+                            }
+                        }
+                    }, { passive: false });
+                }
+            });
+            
+            // Mejorar la interacción hover
+            const cards = document.querySelectorAll('.card-camisa');
+            
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.classList.add('controls-active');
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.classList.remove('controls-active');
+                });
+                
+                // Para dispositivos táctiles, simular hover al tocar
+                let touchTimer;
+                card.addEventListener('touchstart', function() {
+                    this.classList.add('controls-active');
+                    clearTimeout(touchTimer);
+                }, { passive: true });
+                
+                card.addEventListener('touchend', function() {
+                    // Mantener expandido por 4 segundos después del último touch
+                    touchTimer = setTimeout(() => {
+                        this.classList.remove('controls-active');
+                    }, 4000);
+                }, { passive: true });
+            });
+            
+            // Mejorar accesibilidad para navegación por teclado
+            document.addEventListener('keydown', function(e) {
+                const activeElement = document.activeElement;
+                const carousel = activeElement.closest('.carousel');
+                
+                if (carousel && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                    e.preventDefault();
+                    const bsCarousel = bootstrap.Carousel.getInstance(carousel);
+                    
+                    if (e.key === 'ArrowLeft') {
+                        bsCarousel.prev();
+                    } else if (e.key === 'ArrowRight') {
+                        bsCarousel.next();
+                    }
+                }
+            });
+        });
+    </script>
 
+    <script src="js/nabvar.js"></script>
+    
     <script>
     // Cargar archivo externo
     fetch("index_catalogo.html")

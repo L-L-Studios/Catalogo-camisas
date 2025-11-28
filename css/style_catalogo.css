@@ -116,7 +116,7 @@
 
 /*Grid para section categoria */
 .contenedor-catalogo{
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 
 .section-cat{
@@ -129,7 +129,8 @@
 /**/
 .lbl-catalogo{
     color: #f6fffe;
-    font-size: 2rem;
+    font-size: 1.4rem;
+    font-weight: bold;
   
     text-transform: uppercase;
 }

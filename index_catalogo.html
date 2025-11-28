@@ -1,6 +1,74 @@
 
 <div class="contenedor-catalogo">
-    <h2 class="lbl-catalogo">Catálogo</h2>
+    <h2 class="lbl-catalogo">Catálogo de camisas</h2>
+
+    <!-- -----------------------------------------------
+        CATEGORIA MOTOR
+    ------------------------------------------------- -->
+    <section class="section-cat" id="cat-motor">
+        <!--Tarjeta-->
+        <div class="card-camisa">
+
+            <!--carousel camisa-->
+            <div id="carouselMotor" class="carousel slide">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselMotor" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselMotor" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselMotor" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <button type="button" data-bs-target="#carouselMotor" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                </div>
+                <div class="carousel-inner">
+                    <!--categoria camisa-->
+                    <div class="categoria-camisa">
+                        <span data-cat="cat-motor" class="tag categoria">Motor</span>
+                    </div>
+
+                    <div class="carousel-item active">
+                    <img src="images/motor/mt-h-1.jpg" class="img-card" alt="Camisa Motor 1">
+                    </div>
+                    <div class="carousel-item">
+                    <img src="images/motor/mt-h-2.jpg" class="img-card" alt="Camisa Motor 2">
+                    </div>
+                    <div class="carousel-item">
+                    <img src="images/motor/mt-h-3.jpg" class="img-card" alt="Camisa Motor 3">
+                    </div>
+                    <div class="carousel-item">
+                    <img src="images/motor/mt-h-4.jpg" class="img-card" alt="Camisa Motor 4">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselMotor" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselMotor" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+
+            <!--section-->
+            <section class="section-camisa">
+                
+                <h2 class="lbl-nombre-camisa">Polo estilo Honda</h2>
+                <h2 class="price-camisa">$18.00</h2>
+                
+
+                <p class="lbl-descripcion">Tipo de tela fresca y flexible con colores intensos y acabados premium.</p>
+                <p class="lbl-tallas">Tallas: </p>
+                <div class="tallas-camisa">
+                    <div class="tag talla">Todas las tallas</div>  
+                </div>
+
+                <div class="color">
+                    <p class="lbl-color-elg"> Puedes elegir el color de tu preferencia</p>
+                    <img src="images/color.png" class="img-color-camisa" alt="Color naranja">
+                </div>
+                
+
+            </section>
+        </div>
+
+    </section>
 
     <!-- -----------------------------------------------
         CATEGORIA ANIME
@@ -10,33 +78,33 @@
         <div class="card-camisa">
 
             <!--carousel camisa-->
-            <div id="carouselExampleIndicators" class="carousel slide">
+            <div id="carouselAnime" class="carousel slide">
                 <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <button type="button" data-bs-target="#carouselAnime" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselAnime" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselAnime" data-bs-slide-to="2" aria-label="Slide 3"></button>
                 </div>
                 <div class="carousel-inner">
                     <!--categoria camisa-->
                     <div class="categoria-camisa">
-                        <span class="tag categoria">Anime</span>
+                        <span data-cat="cat-anime" class="tag categoria">Anime</span>
                     </div>
 
                     <div class="carousel-item active">
-                    <img src="https://assets.codepen.io/1506195/paul-atreides.jpg" class="img-card" alt="...">
+                    <img src="images/color.png" class="img-card" alt="Camisa Anime 1">
                     </div>
                     <div class="carousel-item">
-                    <img src="..." class="img-card" alt="...">
+                    <img src="https://via.placeholder.com/400x600/2980B9/FFFFFF?text=Anime+2" class="img-card" alt="Camisa Anime 2">
                     </div>
                     <div class="carousel-item">
-                    <img src="..." class="img-card" alt="...">
+                    <img src="https://via.placeholder.com/400x600/1F618D/FFFFFF?text=Anime+3" class="img-card" alt="Camisa Anime 3">
                     </div>
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselAnime" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Previous</span>
                 </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselAnime" data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="visually-hidden">Next</span>
                 </button>
@@ -45,11 +113,11 @@
             <!--section-->
             <section class="section-camisa">
                 
-                <h2 class="lbl-nombre-camisa">Camisa del dune</h2>
-                <h2 class="price-camisa">$00.00</h2>
+                <h2 class="lbl-nombre-camisa">Camisa Anime Collection</h2>
+                <h2 class="price-camisa">$39.99</h2>
                 
 
-                <p class="lbl-descripcion">Duke of House Atreides. Kwisatz Haderach. Lisan al-Gaib. Padishah Emperor.</p>
+                <p class="lbl-descripcion">Diseños únicos inspirados en tus animes favoritos. Calidad premium y comodidad.</p>
                 <p class="lbl-tallas">Tallas: </p>
                 <div class="tallas-camisa">
                     <div class="tag talla">S</div>
@@ -60,29 +128,30 @@
 
                 <div class="color">
                     <p class="lbl-color-elg"> Puedes elegir el color de tu preferencia</p>
-                    <img src="images/color.png" class="img-color-camisa" alt="">
+                    <img src="images/color.png" class="img-color-camisa" alt="Color azul">
                 </div>
                 
 
             </section>
         </div>
-
-
     </section>
 
-    
-    <!-- -----------------------------------------------
-        CATEGORIA ----
-    ------------------------------------------------- -->
-    <section class="section-cat" id="cat-1">
-
-    </section>
 
     <!-- -----------------------------------------------
-        CATEGORIA ----
+        CATEGORIA xxxx
     ------------------------------------------------- -->
     <section class="section-cat" id="cat-2">
 
     </section>
+
+        
+    
+    <!-- -----------------------------------------------
+        CATEGORIA xxxx
+    ------------------------------------------------- -->
+    <section class="section-cat" id="cat-2">
+
+    </section>
+
 
 </div>
