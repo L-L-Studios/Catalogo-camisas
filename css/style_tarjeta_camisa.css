@@ -34,13 +34,22 @@
   height: 42%;
   bottom: 0.4rem;
   left: 0.5rem;
-  mask: linear-gradient(#0000, #000f 80%);
+
+  background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.35) 0%,   /* más oscuro abajo */
+      rgba(0, 0, 0, 0.10) 40%,  /* medio */
+      rgba(0, 0, 0, 0.0) 100%   /* se desvanece arriba */
+  );
+
   backdrop-filter: blur(1rem);
   border-radius: 0 0 1.5rem 1.5rem;
+  mask: linear-gradient(#0000, #000f 80%);
   translate: 0 0;
   transition: translate 0.25s;
   z-index: 1;
 }
+
 
 .card-camisa:hover,
 .card-camisa:focus-within,
@@ -74,8 +83,11 @@
 .card-camisa .lbl-nombre-camisa {
   margin: 0 0 0.5rem 0; /*top-*/
   font-size: 1.3rem;
-  color: var(--title-color);
   translate: 0 -200%;
+
+  color: var(--title-color);
+  font-weight: bold;
+
   opacity: 1;
   transition: color 0.5s,
               margin-block-end 0.25s,
@@ -147,7 +159,7 @@
   position: relative;
 }
 
-/* Contenedor tag + botón */
+/* Contenedor tag + precio */
 .card-camisa section div {
   display: flex;
   justify-content: space-between;
@@ -224,4 +236,141 @@
 .img-color-camisa{
     width: 40px;
     height: 40px;   
+}
+
+/* -----------------------------------------------
+   DISEÑO DE TARJETA NO ENCONTRADA
+------------------------------------------------- */
+.tarjeta-recip {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    background: linear-gradient(135deg, #154734, #007848);
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    font-family: 'Comfortaa', sans-serif;
+    margin: 40px auto;
+    color: white;
+    grid-column: 1 / -1;
+}
+
+.imagen-superior {
+    position: relative;
+    width: 100%;
+}
+
+.imagen-superior img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    display: block;
+}
+
+.icono-error {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: 6px;
+    border-radius: 50%;
+}
+
+.contenido-recip {
+    padding: 20px;
+    text-align: center;
+}
+
+.titulo-recip {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.desc-recip {
+    font-size: 15px;
+    color: #f3f3f3d5;
+    line-height: 1.4;
+}
+
+
+
+/* -----------------------------------------------
+  RESPONSIVIDAD 
+------------------------------------------------- */
+@media screen and (max-width: 430px) {
+  .card-camisa{  
+    width: 18rem;
+    height: 28rem;
+    margin: 0 !important;
+  }
+
+  .img-card{
+    width: 100%;
+    height: 100% !important;
+  }
+  
+}
+
+@media screen and (max-width: 380px) {
+  .card-camisa{  
+    width: 16.5rem;
+    height: 23.5rem;
+    margin: 0 !important;
+  }
+
+  .img-card{
+    width: 100%;
+    height: 100% !important;
+  }
+
+  
+}
+
+@media screen and (max-width: 360px) {
+  .card-camisa{  
+    width: 15rem;
+    height: 23.5rem;
+    margin: 0 !important;
+  }
+
+  .img-card{
+    width: 100%;
+    height: 100% !important;
+  }
+
+  
+}
+
+@media screen and (max-width: 340px) {
+  .card-camisa{  
+    width: 14rem;
+    height: 20.5rem;
+    margin: 0 !important;
+  }
+
+  .img-card{
+    width: 100%;
+    height: 100% !important;
+  }
+
+  
+}
+
+@media screen and (max-width: 320px) {
+  .card-camisa{  
+    width: 13rem;
+    height: 19.5rem;
+    margin: 0 !important;
+  }
+
+  .img-card{
+    width: 100%;
+    height: 100% !important;
+  }
+
+  
 }

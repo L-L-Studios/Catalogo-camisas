@@ -99,7 +99,8 @@ header {
     gap: 5px;
 
     display: flex;
-    justify-content: center;
+    position: relative;
+    justify-content: flex-start !important;
 }
 
 /*.nav-bottom .input__container {
@@ -186,7 +187,7 @@ header {
     padding: 8px 20px;
     color: white;
     gap: 8px;
-    border-radius: 8px;
+    border-radius: 20px;
     cursor: pointer;
     transition: all 0.3s;
 
@@ -198,7 +199,6 @@ header {
     background-blend-mode: overlay;
     outline: 0.1em solid #CB2D2Dba;
     border: 0;
-    box-shadow: 0 0 1em 1em rgba(147, 147, 147, 0.1);
     transition: all 0.3s ease-in-out;
     position: relative;
     font-family: 'Avenir', sans-serif;
@@ -208,14 +208,17 @@ header {
 
 .btn-cat:hover{
     transform: scale(1.1);
-    box-shadow: 0 0 1em 0.45em rgba(0, 0, 0, 0.1);
-    background: linear-gradient(45deg, #212121d7, #25252597);
+    outline: 0.1em solid #cb2d2d73;
+}
+
+.btn-active{
+    background: linear-gradient(45deg, #f4f4f4e7, #ffffff97);
     background: radial-gradient(
         circle at bottom,
-        #CB2D2D80 10%,
-        #212121a2 70%
+        #FFE100a2 10%,
+        #CB2D2D80 70%
     );
-    outline: 0;
+
 }
 
 /*======== BOTON MENU ANIMATION ========*/
@@ -311,7 +314,7 @@ header {
     }
 
     .contenedor-catalogo{
-        margin-top: 4.2rem !important;
+        margin-top: 5.5rem !important;
     }
 
     .contenedor-mini-cat {
