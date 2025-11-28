@@ -114,128 +114,25 @@
 
 
 
+/*Grid para section categoria */
+.contenedor-catalogo{
+    margin-top: 2rem;
+}
+
+.section-cat{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
 /**/
 .lbl-catalogo{
     color: #f6fffe;
     font-size: 2rem;
-    text-align: center;
-    margin-bottom: 40px;
+  
     text-transform: uppercase;
 }
 
 
-/* -----------------------------------------------
-   BUSQUEDA CATALOGO
-------------------------------------------------- */
-/*Busqueda*/
-.input__container {
-    position: relative;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.664);
-    padding: 10px 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    border-radius: 40px;
-    width: 500px;
-    transition: transform 400ms;
-    transform-style: preserve-3d;
-    perspective: 500px;
-    transform-origin: center;
-}
 
-.shadow__input {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-
-    z-index: -1;
-    filter: blur(30px);
-    border-radius: 20px;
-    background-color: #CB2D2D;
-    background-image: radial-gradient(at 85% 51%, hsla(60,60%,61%,1) 0px, transparent 50%),
-        radial-gradient(at 74% 68%, #CB2D2D 0px, transparent 50%),
-        radial-gradient(at 64% 79%, #CB2D2D 0px, transparent 50%),
-        radial-gradient(at 75% 16%, #FFE100 0px, transparent 50%),
-        radial-gradient(at 90% 65%, hsla(153,70%,64%,1) 0px, transparent 50%),
-        radial-gradient(at 91% 83%, #FFE100 0px, transparent 50%),
-        radial-gradient(at 72% 91%, #CB2D2D 0px, transparent 50%);
-}
-
-.input__button__shadow {
-    border: none;
-    background: none;
-    transition: transform 400ms, background 400ms;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 12px;
-    padding: 5px;
-}
-
-/* input para la busqueda*/
-.input__search {
-    width: 100%;
-    border-radius: 20px;
-    outline: none;
-    border: none;
-    padding: 8px;
-    position: relative;
-    font-family: 'Avenir', sans-serif;
-    font-size: 18px;
-    color: #414141;
-}
-
-
-.contenedor-mini-cat{
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
-}
-
-/* -----------------------------------------------
-   MINI-BOTON CATEGORIAS / FILTRADO SIMPLE
-------------------------------------------------- */
-/*botón general para las categorias*/
-.btn-cat{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 20px;
-    color: white;
-    gap: 8px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s;
-
-    width: 7em;
-    aspect-ratio: 1/0.25;
-    color: white;
-    background: #21212190;
-    background-size: cover;
-    background-blend-mode: overlay;
-    outline: 0.1em solid #CB2D2Dba;
-    border: 0;
-    box-shadow: 0 0 1em 1em rgba(147, 147, 147, 0.1);
-    transition: all 0.3s ease-in-out;
-    position: relative;
-    font-family: 'Avenir', sans-serif;
-    font-weight: 300;
-    font-size: 14px
-}
-
-.btn-cat:hover{
-    transform: scale(1.1);
-    box-shadow: 0 0 1em 0.45em rgba(0, 0, 0, 0.1);
-    background: linear-gradient(45deg, #212121d7, #25252597);
-    background: radial-gradient(
-        circle at bottom,
-        #CB2D2D80 10%,
-        #212121a2 70%
-    );
-    outline: 0;
-}

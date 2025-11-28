@@ -48,12 +48,31 @@
                     </button>
 
                     <div class="navbar-links" id="navbarLinks">
-                        <a href="#catalogo" class="active">Catálogo</a>
+                        <a href="#catalogo" class="active navbar-link">Catálogo</a>
                         <a href="#contacto">Contacto</a>
                     </div>
-                    
-                    
                 </div>
+
+                <div class="nav-bottom">
+                        <div class="input__container"> 
+                            <div class="shadow__input"></div>
+                            <div class="input__button__shadow">
+                                <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
+                                <path d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z" fill-rule="evenodd" fill="#f6fffe"></path>
+                                </svg>
+                            </div>
+                            <input type="text" name="text" class="input__search" placeholder="Buscar camisas...">
+                        </div>
+
+                        <div class="contenedor-mini-cat">
+                            <button class="btn-cat btn-anime">Anime</button>
+                            <button class="btn-cat btn-cat">cat1</button>
+                            <button class="btn-cat btn-cat">cat2</button>
+                            <button class="btn-cat btn-todos">Todas</button>
+                        </div>
+
+                    </div>
+
             </div>
         </nav>
     </header>
@@ -66,108 +85,10 @@
             <section class="section catalogo" id="catalogo">
                 <div class="contenedor-catalogo">
 
-                    <h2 class="lbl-catalogo">Catálogo</h2>
-
-                    <div class="input__container"> 
-                        <div class="shadow__input"></div>
-                        <button class="input__button__shadow">
-                            <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" height="20px" width="20px">
-                            <path d="M4 9a5 5 0 1110 0A5 5 0 014 9zm5-7a7 7 0 104.2 12.6.999.999 0 00.093.107l3 3a1 1 0 001.414-1.414l-3-3a.999.999 0 00-.107-.093A7 7 0 009 2z" fill-rule="evenodd" fill="#f6fffe"></path>
-                            </svg>
-                        </button>
-                        <input type="text" name="text" class="input__search" placeholder="Buscar camisas...">
-                    </div>
-
-                    <div class="contenedor-mini-cat">
-                        <button class="btn-cat btn-anime">Anime</button>
-                        <button class="btn-cat btn-cat">cat1</button>
-                        <button class="btn-cat btn-cat">cat2</button>
-                        <button class="btn-cat btn-todos">Todas</button>
-                    </div>
-
-                    <!--GRID ZONA CATALOGO-->
-                    <div class="grid-catalogo">
-
-                        <section class="section-cat cat-anime">
-                            <!--Tarjeta-->
-                            <div class="card-camisa">
-
-                                <!--carousel camisa-->
-                                <div id="carouselExampleIndicators" class="carousel slide">
-                                    <div class="carousel-indicators">
-                                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                    </div>
-                                    <div class="carousel-inner">
-                                        <!--categoria camisa-->
-                                        <div class="categoria-camisa">
-                                            <span class="tag categoria">Anime</span>
-                                        </div>
-
-                                        <div class="carousel-item active">
-                                        <img src="https://assets.codepen.io/1506195/paul-atreides.jpg" class="img-card" alt="...">
-                                        </div>
-                                        <div class="carousel-item">
-                                        <img src="..." class="img-card" alt="...">
-                                        </div>
-                                        <div class="carousel-item">
-                                        <img src="..." class="img-card" alt="...">
-                                        </div>
-                                    </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Previous</span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </button>
-                                </div>
-     
-                                <!--section-->
-                                <section class="section-camisa">
-                                    
-                                    <h2 class="lbl-nombre-camisa">Camisa del dune</h2>
-                                    <h2 class="price-camisa">$00.00</h2>
-                                    
-
-                                    <p class="lbl-descripcion">Duke of House Atreides. Kwisatz Haderach. Lisan al-Gaib. Padishah Emperor.</p>
-                                    <p class="lbl-tallas">Tallas: </p>
-                                    <div class="tallas-camisa">
-                                        <div class="tag talla">S</div>
-                                        <div class="tag talla">M</div>
-                                        <div class="tag talla">L</div>
-                                        <div class="tag talla">XL</div>
-                                    </div>
-
-                                    <div class="color">
-                                        <p class="lbl-color-elg"> Puedes elegir el color de tu preferencia</p>
-                                        <img src="images/color.png" class="img-color-camisa" alt="">
-                                    </div>
-                                    
-
-                                </section>
-                            </div>
-
-                        </section>
-
-
-                        <section class="section-cat cat-1">
-
-                        </section>
-
-                        <section class="section-cat cat-anime">
-
-                        </section>
-
-                    </div>
-
+                    <!--GRID ZONA CATALOGO - aqui se cargan las tarjetas de las camisas dinamicamente-->
+                    <div id="section-catalogo-completo"> </div>
 
                 </div>
-
-                
-
 
             </section>
 
@@ -186,6 +107,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/nabvar.js"></script>
     <script src="js/carousel.js"></script>
+
+    <script>
+    // Cargar archivo externo
+    fetch("index_catalogo.html")
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById("section-catalogo-completo").innerHTML = html;
+        })
+        .catch(error => {
+            console.error("Error cargando el archivo:", error);
+        });
+    </script>
     
 </body>
 
