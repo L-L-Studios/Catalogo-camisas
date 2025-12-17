@@ -7,7 +7,6 @@
 
 body {
     font-family: "Avenir", sans-serif;
-
 }
 
 /*CONTENIDO - SECTIONS */
@@ -32,4 +31,44 @@ body {
   width: 100%; 
   height: auto;
   overflow: hidden;
+}
+
+/*Grid para section categoria */
+.contenedor-catalogo{
+  margin-top: 3rem;
+}
+
+.section-cat{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr));
+  gap: 1rem;
+  padding-bottom: 1rem;
+    /*padding: 1rem;*/
+}
+
+/**/
+.lbl-catalogo{
+  color: #f6fffe;
+  font-size: 1.4rem;
+  font-weight: bold;
+
+  text-transform: uppercase;
+}
+
+/* =========================
+   Telefono
+========================= */
+@media (min-width: 230px) and (max-width: 768px) {
+  .contenedor {
+    margin-top: 4rem
+  }
+}
+/* =========================
+   TABLET (769px - 991px)
+========================= */
+@media (min-width: 769px) and (max-width: 991px) {
+  .contenedor {
+    margin-top: 0.50rem
+
+  }
 }

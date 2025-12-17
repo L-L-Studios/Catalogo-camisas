@@ -1,0 +1,57 @@
+/* -----------------------------------------------
+   DISEÑO DE TARJETA NO ENCONTRADA
+------------------------------------------------- */
+.tarjeta-recip {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  background: linear-gradient(135deg, #252525, #414141);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  font-family: 'Comfortaa', sans-serif;
+  margin: 40px auto;
+  color: white;
+  grid-column: 1 / -1;
+}
+
+.imagen-superior {
+  position: relative;
+  width: 100%;
+}
+
+.imagen-superior img {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+  padding: 10px;
+}
+
+.icono-error {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 6px;
+  border-radius: 50%;
+}
+
+.contenido-recip {
+  padding: 20px;
+  text-align: center;
+}
+
+.titulo-recip {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.desc-recip {
+    font-size: 15px;
+    color: #f3f3f3d5;
+    line-height: 1.4;
+}

@@ -1,0 +1,307 @@
+/* =========================
+   BASE (MÓVIL – ORIGINAL)
+========================= */
+.card-producto {
+  height: auto !important;
+  margin: 1.5rem auto !important;
+  overflow: hidden !important;
+  pointer-events: auto;
+}
+
+/* mostrar todo el contenido */
+.card-producto section {
+  height: auto !important;
+}
+
+/* título */
+.card-producto .lbl-nombre-camisa {
+  color: #000 !important;
+}
+
+/* precio */
+.card-producto .price-camisa {
+  position: relative !important;
+  margin: 0.75rem 0 1rem;
+}
+
+/* estabilidad bootstrap PARA MÓVIL */
+.card-producto .carousel,
+.card-producto .carousel-inner,
+.card-producto .carousel-item {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.card-producto .carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* CORRECCIÓN: Indicadores centrados en móvil */
+.card-producto .carousel-indicators {
+  margin-bottom: 15px !important;
+  justify-content: center !important;
+}
+
+.carousel-indicators [data-bs-target] {
+  width: 40px;
+  height: 4px;
+  margin: 0 4px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  border-radius: 2px;
+}
+
+.carousel-indicators .active {
+  background-color: white;
+}
+
+.lbl-tallas{
+  margin-top: 1rem;
+}
+
+/* =========================
+   TABLET (769px - 991px)
+========================= */
+@media (min-width: 769px) and (max-width: 991px) {
+  .card-producto {
+    width: 90%;
+    max-width: 600px;
+
+  }
+}
+
+/* =========================
+   DESKTOP REAL (≥992px)
+========================= */
+@media (min-width: 992px) {
+  .card-producto {
+    max-width: 1200px;
+    width: 90%;
+    margin-top: 4rem !important;
+    padding: 1rem 3.5rem;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 2rem;
+    border-radius: 2.5rem;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  }
+
+  /* OCULTAR CARRUSEL BOOTSTRAP EN DESKTOP */
+  .card-producto .carousel,
+  .card-producto .carousel-inner,
+  .card-producto .carousel-indicators,
+  .card-producto .carousel-control-prev,
+  .card-producto .carousel-control-next {
+    display: none !important;
+  }
+
+  /* CARRUSEL SIMPLE SIN ZOOM - SOLO PARA DESKTOP */
+  .card-producto .carousel-simple {
+    width: 100%;
+    height: 100%;
+    border-radius: 2rem;
+    overflow: hidden;
+    position: relative;
+    display: block !important;
+  }
+
+  .card-producto .carousel-simple-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .card-producto .carousel-simple-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .card-producto .carousel-simple-item.active {
+    opacity: 1;
+    position: relative;
+  }
+
+  .card-producto .img-card {
+    aspect-ratio: 4 / 5 !important;
+    max-height: 600px;
+    border-radius: 2rem;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Botones con iconos Phosphor */
+  .carousel-simple-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+  
+  .carousel-simple-btn:hover {
+    color: white;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  
+  .carousel-simple-btn .ph {
+    font-size: 32px;
+    font-weight: bold;
+  }
+  
+  .carousel-simple-btn.prev {
+    left: 15px;
+  }
+  
+  .carousel-simple-btn.next {
+    right: 15px;
+  }
+  
+  /* Indicadores estilo Bootstrap (barras) */
+  .carousel-simple-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 10;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .carousel-simple-indicator {
+    width: 40px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+  }
+  
+  .carousel-simple-indicator:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .carousel-simple-indicator.active {
+    background-color: white;
+    transform: scaleX(1.2);
+  }
+
+  /* info derecha */
+  .card-producto .section-camisa {
+    margin: 0;
+    /*padding: 0.50rem 0;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* tipografía grande */
+  .card-producto .lbl-nombre-camisa {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+
+  .card-producto .lbl-descripcion {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+    color: #555;
+  }
+
+  .card-producto .price-camisa {
+    font-size: 2rem;
+    padding: 0.4rem 1rem;
+    margin: 0.50rem 0;
+  }
+
+  /* tallas */
+  .card-producto .tallas-camisa {
+    gap: 0.75rem;
+    /*margin: 1rem 0;*/
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .card-producto .tag.talla {
+    padding: 0.20rem 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* color */
+  .card-producto .color {
+    margin-top: 1.2rem;
+  }
+
+  /* ignorar sistema hover del catálogo */
+  .card-producto section div,
+  .card-producto section h2,
+  .card-producto section p {
+    translate: 0 !important;
+    opacity: 1 !important;
+  }
+}
+
+/* =========================
+   ESCRITORIO GRANDE (≥1200px)
+========================= */
+@media (min-width: 1200px) {
+  .card-producto {
+    padding: 3rem 5rem;
+    gap: 4rem;
+    margin: 100px auto 60px auto;
+  }
+  
+  .card-producto .lbl-nombre-camisa {
+    font-size: 2.5rem;
+  }
+  
+  .card-producto .lbl-descripcion {
+    font-size: 1.1rem;
+  }
+}
+
+/* =========================
+   OCULTAR CARRUSEL SIMPLE EN MÓVIL
+========================= */
+@media (max-width: 991px) {
+  .card-producto .carousel-simple,
+  .carousel-simple-btn,
+  .carousel-simple-controls {
+    display: none !important;
+  }
+  
+  .card-producto .carousel,
+  .card-producto .carousel-inner,
+  .card-producto .carousel-indicators,
+  .card-producto .carousel-control-prev,
+  .card-producto .carousel-control-next {
+    display: block !important;
+  }
+}

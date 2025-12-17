@@ -1,243 +1,56 @@
-/*============ HEADER - NAVBAR ============*/
-header {
-  position: fixed;  
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 9999; 
+
+/* NAVBAR PRINCIPAL CON FONDO BLANCO */
+#navbar {
+    position: fixed;
+    left: 50% !important;
+    top: 20px !important;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1200px;
+    padding: 6px 20px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    z-index: 1000;
+    transition: all .35s ease;
 }
 
-/* Contenedor del menú */
-.menu-container {
-    width: 100%;
-    max-width: 1300px;
+#navbar.scrolled {
+    background: #f6fffe9e !important;
+    box-shadow: 0 10px 30px rgba(13, 6, 28, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(18px);
+}
+
+/* PARTE SUPERIOR: Logo + Hamburger */
+.nav-top {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    position: relative;
-    justify-content: flex-start !important;
+    width: 100%;
 }
 
-/* Logo SIEMPRE A LA IZQUIERDA */
 .logo {
-    position: absolute;
-    left: 0;
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 700;
     color: #fff;
-    margin-top: 20px;
-    text-decoration: none;
 }
 
-/* Container real */
-.container {
-    width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Navbar */
-.navbar {
-    background: transparent;
-    transition: 0.3s ease;
-    padding: 15px 0;
-}
-
-.navbar.scrolled {
-    background-color: #252525ea;
-    backdrop-filter: blur(5px);
-}
-
-/* Enlaces centrados */
-.navbar-links {
-    display: flex;
-    gap: 35px;
-}
-
-.navbar-link{
-    margin-left: 90px;
-}
-
-.navbar-links a {
-    position: relative;
-    text-decoration: none;
-    color: #f6fffe;
-    text-transform: uppercase;
-    letter-spacing: .8px;
-    font-size: 15px;
-    transition: 0.3s ease;
-    margin-top: 20px;
-}
-
-/* Línea decorativa */
-.navbar-links a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -4px;
-    width: 0;
-    height: 2px;
-    background-color: #f6fffe;
-    transition: width .3s ease;
-}
-
-.navbar-links a:hover {
-    color: #f6fffe;
-}
-
-.navbar-links a:hover::after,
-.navbar-links a.active::after {
-    width: 100%;
-}
-
-/* -----------------------------------------------
-   BUSQUEDA CATALOGO
-------------------------------------------------- */
-.nav-bottom {
-    width: 100%;
-    margin-top: 20px;
-    gap: 5px;
-
-    display: flex;
-    position: relative;
-    justify-content: flex-start !important;
-}
-
-/*.nav-bottom .input__container {
-    width: 350px; 
-}*/
-
-/*Busqueda*/
-.input__container {
-    position: relative;
-    margin: 0 auto;
-    background: rgba(255, 255, 255, 0.664);
-    padding: 6px 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    border-radius: 40px;
-    width: 500px;
-    transition: transform 400ms;
-    transform-style: preserve-3d;
-    perspective: 500px;
-    transform-origin: center;  
-}
-
-.shadow__input {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 90%;
-
-    z-index: -1;
-    filter: blur(30px);
-    border-radius: 20px;
-    background-color: #CB2D2D;
-    background-image: radial-gradient(at 85% 51%, hsla(60,60%,61%,1) 0px, transparent 50%),
-        radial-gradient(at 74% 68%, #CB2D2D 0px, transparent 50%),
-        radial-gradient(at 64% 79%, #CB2D2D 0px, transparent 50%),
-        radial-gradient(at 75% 16%, #FFE100 0px, transparent 50%),
-        radial-gradient(at 90% 65%, hsla(153,70%,64%,1) 0px, transparent 50%),
-        radial-gradient(at 91% 83%, #FFE100 0px, transparent 50%),
-        radial-gradient(at 72% 91%, #CB2D2D 0px, transparent 50%);
-}
-
-.input__button__shadow {
-    border: none;
-    background: none;
-    transition: transform 400ms, background 400ms;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 12px;
-    padding: 5px;
-    cursor: default;
-}
-
-/* input para la busqueda*/
-.input__search {
-    width: 100%;
-    border-radius: 20px;
-    outline: none;
-    border: none;
-    padding: 6px;
-    position: relative;
-    font-family: 'Avenir', sans-serif;
-    font-size: 16.5px;
-    color: #414141;
-}
-
-
-.contenedor-mini-cat{
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-}
-
-/* -----------------------------------------------
-   MINI-BOTON CATEGORIAS / FILTRADO SIMPLE
-------------------------------------------------- */
-/*botón general para las categorias*/
-.btn-cat{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 20px;
-    color: white;
-    gap: 8px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s;
-
-    width: 7em;
-    aspect-ratio: 1/0.25;
-    color: white;
-    background: #21212190;
-    background-size: cover;
-    background-blend-mode: overlay;
-    outline: 0.1em solid #CB2D2Dba;
-    border: 0;
-    transition: all 0.3s ease-in-out;
-    position: relative;
-    font-family: 'Avenir', sans-serif;
-    font-weight: 300;
-    font-size: 14px
-}
-
-.btn-cat:hover{
-    transform: scale(1.1);
-    outline: 0.1em solid #cb2d2d73;
-}
-
-.btn-active{
-    background: linear-gradient(45deg, #f4f4f4e7, #ffffff97);
-    background: radial-gradient(
-        circle at bottom,
-        #FFE100a2 10%,
-        #CB2D2D80 70%
-    );
-
-}
-
-/*======== BOTON MENU ANIMATION ========*/
+/* Botón hamburguesa */
 .menu {
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: none;
-  position: absolute;
-  right: 0;
-  z-index: 10000;
-  margin-top: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: none; /* Oculto en desktop por defecto */
+    padding: 5px;
 }
 
 .line {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 6;
-  transition: stroke-dasharray .6s, stroke-dashoffset .6s;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 6;
+    transition: stroke-dasharray .6s, stroke-dashoffset .6s;
 }
 
 .line1 { stroke-dasharray: 60 207; }
@@ -245,82 +58,317 @@ header {
 .line3 { stroke-dasharray: 60 207; }
 
 .menu.opened .line1 {
-  stroke-dasharray: 90 207;
-  stroke-dashoffset: -134;
+    stroke-dasharray: 90 207;
+    stroke-dashoffset: -134;
 }
 .menu.opened .line2 {
-  stroke-dasharray: 1 60;
-  stroke-dashoffset: -30;
+    stroke-dasharray: 1 60;
+    stroke-dashoffset: -30;
 }
 .menu.opened .line3 {
-  stroke-dasharray: 90 207;
-  stroke-dashoffset: -134;
+    stroke-dasharray: 90 207;
+    stroke-dashoffset: -134;
 }
 
+/* BUSCADOR */
+.nav-buscar {
+    width: 100%;
+    margin-top: 10px;
+}
 
-/*============ RESPONSIVE ============*/
+.input__container {
+  position: relative;
+  background: rgba(255, 255, 255, 0.664);
+  padding: 6px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  border-radius: 40px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.shadow__input {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 90%;
+  z-index: -1;
+  filter: blur(30px);
+  border-radius: 20px;
+  background-color: #CB2D2D;
+  background-image: radial-gradient(at 85% 51%, hsla(60,60%,61%,1) 0px, transparent 50%),
+      radial-gradient(at 74% 68%, #CB2D2D 0px, transparent 50%),
+      radial-gradient(at 64% 79%, #CB2D2D 0px, transparent 50%),
+      radial-gradient(at 75% 16%, #FFE100 0px, transparent 50%),
+      radial-gradient(at 90% 65%, hsla(153,70%,64%,1) 0px, transparent 50%),
+      radial-gradient(at 91% 83%, #FFE100 0px, transparent 50%),
+      radial-gradient(at 72% 91%, #CB2D2D 0px, transparent 50%);
+}
+
+.input__button__shadow {
+  border: none;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  padding: 5px;
+}
+
+.input__search {
+  width: 100%;
+  border-radius: 20px;
+  outline: none;
+  border: none;
+  padding: 6px;
+  font-family: 'Avenir', sans-serif;
+  font-size: 16.5px;
+  color: #414141;
+  background: transparent;
+}
+
+/* MENÚ POPUP (para móvil) */
+.nav-popup {
+  position: absolute;
+  top: 100%; /* Debajo del navbar */
+  right: 0;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 15px;
+  display: none;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 180px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1001;
+  margin-top: 10px;
+}
+
+.nav-popup.active {
+  display: flex;
+}
+
+.popup-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.popup-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.popup-contacto {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: none;
+  background: linear-gradient(135deg, #f83b16, #CB2D2D);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.popup-contacto:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(203, 45, 45, 0.4);
+}
+
+/* CATEGORÍAS SIN FONDO (separadas) */
+.nav-categorias-wrapper {
+  position: absolute;
+  top: calc(100% + 10px); /* Debajo del navbar con espacio */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1200px;
+  z-index: 999; /* Debajo del navbar pero sobre el contenido */
+}
+
+.nav-categorias {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: -6px;
+  /*padding: 10px 0;*/
+  width: 100%;
+}
+
+.btn-cat {
+  padding: 4px 18px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-cat:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-cat.active {
+  background: linear-gradient(135deg, #f83b16, #CB2D2D);
+  border-color: #CB2D2D;
+}
+
+/* ENLACES DESKTOP (ocultos en móvil) */
+.nav-links-desktop {
+  display: none; /* Oculto por defecto, visible solo en desktop */
+  align-items: center;
+  gap: 20px;
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.nav-links-desktop a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-links-desktop a:hover {
+  color: #CB2D2D;
+}
+
+.cta-contacto {
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #f83b16, #CB2D2D);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cta-contacto:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(203, 45, 45, 0.4);
+}
+
+/* =========================================
+   RESPONSIVIDAD - MÓVIL (< 768px)
+========================================= */
 @media (max-width: 768px) {
-
-    .menu {
-        display: flex; 
-    }
-
-    .navbar-links {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        flex-direction: column;
-        justify-content: center; /* Centra verticalmente */
-        align-items: center;     /* Centra horizontalmente */
-        display: none;
-        background: rgba(20, 20, 20, 0.596); /* Más oscuro y limpio */
-        gap: 35px;
-        padding: 0;
-        backdrop-filter: blur(3px);
-        z-index: 9000;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-    }
-
-    .navbar-links a {
-        font-size: 16px;
-        font-weight: 600;
-        letter-spacing: 1px;
-    }
-
-    .navbar-links.active {
-        display: flex;
-    }
-
-    .navbar-link{
-        margin-left: 0 !important;
-    }
-
-    /* El menú hamburguesa siempre arriba */
-    .menu {
-        z-index: 10001;
-    }
-
-    .nav-bottom {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .nav-bottom .input__container {
-        width: 90%;
-        margin-top: 2rem;
-    }
-
-    .contenedor-catalogo{
-        margin-top: 5.5rem !important;
-    }
-
-    .contenedor-mini-cat {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 10px;
-    }
+  /* Mostrar hamburguesa en móvil */
+  .menu {
+      display: block;
+  }
+  
+  /* Ajustar navbar para móvil */
+  #navbar {
+      padding: 10px 15px;
+      border-radius: 20px;
+      top: 10px !important;
+  }
+  
+  .logo {
+      font-size: 22px;
+  }
+  
+  /* Ocultar enlaces desktop en móvil */
+  .nav-links-desktop {
+      display: none !important;
+  }
+  
+  /* Mostrar buscador debajo en móvil */
+  .nav-buscar {
+      margin-top: 10px;
+  }
+  
+  /* Categorías más ajustadas en móvil */
+  .nav-categorias {
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 5px;
+      justify-content: flex-start;
+  }
+  
+  .nav-categorias::-webkit-scrollbar {
+      display: none;
+  }
+    
+  .btn-cat {
+      padding: 6px 15px;
+      font-size: 14px;
+      white-space: nowrap;
+      flex-shrink: 0;
+  }
 }
+
+/* =========================================
+   RESPONSIVIDAD - DESKTOP (≥ 769px)
+========================================= */
+@media (min-width: 769px) {
+  /* Layout desktop: Vrx | Buscador | Catálogo + Contacto */
+  #navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 30px;
+  }
+  
+  /* Logo a la izquierda */
+  .nav-top {
+      width: auto;
+      order: 1;
+  }
+  
+  .logo {
+      margin-right: 20px;
+  }
+  
+  /* Ocultar hamburguesa en desktop */
+  .menu {
+      display: none;
+  }
+  
+  /* Buscador en el centro */
+  .nav-buscar {
+      flex: 1;
+      max-width: 500px;
+      margin: 0 20px;
+      order: 2;
+  }
+    
+  /* Enlaces a la derecha */
+  .nav-links-desktop {
+      display: flex;
+      order: 3;
+      position: static;
+      transform: none;
+  }
+  
+  /* Ocultar popup en desktop */
+  .nav-popup {
+      display: none !important;
+  }
+  
+  /* Categorías debajo, centradas y sin fondo */
+  .nav-categorias-wrapper {
+      top: calc(100% + 15px);
+  }
+  
+  .nav-categorias {
+      justify-content: center;
+      gap: 15px;
+  }
+}
+

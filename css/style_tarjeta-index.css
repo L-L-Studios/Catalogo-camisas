@@ -1,0 +1,85 @@
+
+/* EL LINK NO CREA ÁREA EXTRA */
+.link-card {
+  display: block;
+  width: fit-content;
+  height: fit-content;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+/* TARJETA */
+.card-index {
+  height: 31rem !important;
+  width: 21rem;
+  overflow: hidden !important;
+  cursor: pointer;
+}
+
+/* SIN EL HOVER DEL BASE */
+.card-index:hover,
+.card-index:focus-within {
+  height: 31rem !important;
+  margin-bottom: 0 !important;
+}
+
+/* ANULAR CUALQUIER CAMBIO DE TAMAÑO */
+.card-index:hover *,
+.card-index:focus-within * {
+  translate: 0 0 !important;
+  opacity: 1 !important;
+}
+
+/* overlay fijo */
+.card-index::before {
+  translate: 0 0 !important;
+}
+
+/* imagen fija */
+.card-index .img-card {
+  aspect-ratio: 2 / 3 !important;
+  object-position: 50% 5% !important;
+}
+
+/* ocultar cosas que no van */
+.card-index .lbl-descripcion,
+.card-index .tallas-camisa,
+.card-index .color,
+.card-index .lbl-color-elg,
+.card-index .lbl-tallas {
+  display: none !important;
+}
+
+/* texto sobre la imagen */
+.card-index .section-camisa {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 1.2rem;
+  right: 1.2rem;
+  z-index: 5;
+  pointer-events: none; 
+}
+
+/* titulo */
+.card-index .lbl-nombre-camisa {
+  translate: 0 0 !important;
+  opacity: 1 !important;
+  color: #fff !important;
+}
+
+/* precio */
+.card-index .price-camisa {
+  translate: 0 0 !important;
+  opacity: 1 !important;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  color: #fff !important;
+}
+
+/* SOLO LA TARJETA CAPTURA EL CLICK */
+.card-index {
+  pointer-events: auto;
+}
+

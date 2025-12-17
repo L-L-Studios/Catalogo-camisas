@@ -1,28 +1,41 @@
-// js/catalogo.js - VERSIÓN MEJORADA CON BÚSQUEDA FLEXIBLE
+// js/catalogo.js - VERSIÓN CORREGIDA PARA FILTRADO Y BÚSQUEDA
 document.addEventListener('DOMContentLoaded', function() {
-    // Esperar un poco para asegurar que el DOM esté listo
+    // Esperar a que se cargue el contenido dinámico
     setTimeout(() => {
-        const search = document.querySelector('.input__search');
-        const buttons = document.querySelectorAll('.btn-cat');
-        const sections = document.querySelectorAll('.section-cat');
-
-        // Función mejorada de búsqueda flexible
+        // Elementos del DOM
+        const searchInput = document.querySelector('.input__search');
+        const categoryButtons = document.querySelectorAll('.btn-cat');
+        const categorySections = document.querySelectorAll('.section-cat');
+        const contenedorCatalogo = document.querySelector('.contenedor-catalogo');
+        
+        // Función para activar la categoría "Todas" por defecto
+        function activateDefaultCategory() {
+            const todasBtn = document.querySelector('.btn-cat[data-cat="todas"]');
+            if (todasBtn && !todasBtn.classList.contains('active')) {
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                todasBtn.classList.add('active');
+            }
+        }
+        
+        // Llamar a la función al inicio
+        activateDefaultCategory();
+        
+        // Función de búsqueda flexible
         function busquedaFlexible(textoBusqueda, textoProducto) {
             if (!textoBusqueda) return true;
             
             const busqueda = textoBusqueda.toLowerCase().trim();
             const producto = textoProducto.toLowerCase().trim();
             
-            // Si la búsqueda exacta coincide
+            // Búsqueda exacta
             if (producto.includes(busqueda)) {
                 return true;
             }
             
-            // Dividir la búsqueda en palabras individuales
-            const palabrasBusqueda = busqueda.split(/\s+/).filter(palabra => palabra.length > 0);
-            const palabrasProducto = producto.split(/\s+/).filter(palabra => palabra.length > 0);
+            // Búsqueda por palabras
+            const palabrasBusqueda = busqueda.split(/\s+/).filter(p => p.length > 0);
+            const palabrasProducto = producto.split(/\s+/).filter(p => p.length > 0);
             
-            // Si hay una sola palabra, buscar coincidencias parciales
             if (palabrasBusqueda.length === 1) {
                 const palabra = palabrasBusqueda[0];
                 return palabrasProducto.some(palabraProd => 
@@ -30,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 );
             }
             
-            // Para múltiples palabras, verificar que al menos una coincida
             if (palabrasBusqueda.length > 1) {
                 return palabrasBusqueda.some(palabra => 
                     palabrasProducto.some(palabraProd => 
@@ -41,50 +53,53 @@ document.addEventListener('DOMContentLoaded', function() {
             
             return false;
         }
-
-        function filter() {
-            const searchText = search.value.trim();
-            const activeCategory = document.querySelector('.btn-cat.btn-active').dataset.cat;
+        
+        // Función principal de filtrado
+        function filtrarCatalogo() {
+            const searchText = searchInput ? searchInput.value.trim() : '';
+            const activeCategory = document.querySelector('.btn-cat.active').dataset.cat;
             
-            // Remover mensaje anterior
+            // Remover mensaje anterior si existe
             const oldMsg = document.querySelector('.tarjeta-recip');
             if (oldMsg) oldMsg.remove();
             
             let foundAny = false;
             
-            sections.forEach(section => {
+            // Iterar sobre todas las secciones de categorías
+            categorySections.forEach(section => {
                 const sectionId = section.id;
-                const showSection = activeCategory === 'todas' || sectionId === activeCategory;
                 
-                if (showSection) {
+                // Determinar si esta sección debe mostrarse según la categoría activa
+                const showByCategory = activeCategory === 'todas' || sectionId === activeCategory;
+                
+                if (showByCategory) {
                     let foundInSection = false;
                     const products = section.querySelectorAll('.card-camisa');
                     
+                    // Filtrar productos dentro de la sección
                     products.forEach(product => {
-                        const title = product.querySelector('.lbl-nombre-camisa').textContent;
-                        const description = product.querySelector('.lbl-descripcion').textContent;
+                        const title = product.querySelector('.lbl-nombre-camisa')?.textContent || '';
+                        const description = product.querySelector('.lbl-descripcion')?.textContent || '';
+                        const categoria = product.querySelector('.categoria-camisa')?.textContent || '';
                         
-                        // Buscar en título y descripción
-                        const matchesTitle = busquedaFlexible(searchText, title);
-                        const matchesDescription = busquedaFlexible(searchText, description);
-                        const showProduct = searchText === '' || matchesTitle || matchesDescription;
+                        // Determinar si el producto coincide con la búsqueda
+                        const matchesSearch = !searchText || 
+                            busquedaFlexible(searchText, title) || 
+                            busquedaFlexible(searchText, description) ||
+                            busquedaFlexible(searchText, categoria);
                         
-                        product.style.display = showProduct ? 'block' : 'none';
-                        if (showProduct) {
+                        // Mostrar/ocultar producto
+                        if (matchesSearch) {
+                            product.style.display = 'block';
                             foundInSection = true;
                             foundAny = true;
-                            
-                            // Resaltar texto coincidente (opcional)
-                            if (searchText && matchesTitle) {
-                                resaltarTexto(product.querySelector('.lbl-nombre-camisa'), searchText);
-                            }
                         } else {
-                            // Remover resaltado si no coincide
-                                removerResaltado(product.querySelector('.lbl-nombre-camisa'));
+                            product.style.display = 'none';
                         }
                     });
                     
-                    section.style.display = foundInSection || searchText === '' ? 'grid' : 'none';
+                    // Mostrar/ocultar sección completa
+                    section.style.display = foundInSection ? 'grid' : 'none';
                 } else {
                     section.style.display = 'none';
                 }
@@ -92,86 +107,121 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Mostrar mensaje si no hay resultados
             if (!foundAny && searchText !== '') {
-                const msg = document.createElement('div');
-                msg.className = 'tarjeta-recip';
-                msg.innerHTML = `
-                    <div class="imagen-superior">
-                        <img src="images/card_not_found0.jpg" alt="Camisa no encontrada">
-                        <div class="icono-error">
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/>
-                                <line x1="12" y1="7" x2="12" y2="13" stroke="#fff" stroke-width="2"/>
-                                <circle cx="12" cy="17" r="1.5" fill="#fff"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="contenido-recip">
-                        <h2 class="titulo-recip">Camisa no encontrada</h2>
-                        <p class="desc-recip">
-                            No pudimos encontrar "<strong>${searchText}</strong>"<br><br>
-                            Intenta con otras palabras o revisa la ortografía.
-                        </p>
-                    </div>
-                `;
-                // Insertar después del título
-                const titulo = document.querySelector('.lbl-catalogo');
-                if (titulo && titulo.nextSibling) {
-                    document.querySelector('.contenedor-catalogo').insertBefore(msg, titulo.nextSibling);
-                } else {
-                    document.querySelector('.contenedor-catalogo').appendChild(msg);
-                }
-            } else {
-                // Remover resaltado de todos los productos cuando no hay búsqueda
-                if (searchText === '') {
-                    document.querySelectorAll('.lbl-nombre-camisa').forEach(element => {
-                        removerResaltado(element);
-                    });
-                }
+                mostrarMensajeNoEncontrado(searchText);
             }
         }
-
-        // Función para resaltar texto (opcional)
-        function resaltarTexto(elemento, texto) {
-            const textoOriginal = elemento.textContent;
-            const regex = new RegExp(`(${texto})`, 'gi');
-            const textoResaltado = textoOriginal.replace(regex, '<mark class="resaltado-busqueda">$1</mark>');
-            elemento.innerHTML = textoResaltado;
-        }
-
-        // Función para remover resaltado
-        function removerResaltado(elemento) {
-            if (elemento.innerHTML !== elemento.textContent) {
-                elemento.innerHTML = elemento.textContent;
-            }
-        }
-
-        // Eventos
-        search.addEventListener('input', function() {
-            // Pequeño delay para mejorar rendimiento en búsquedas rápidas
-            clearTimeout(this.timer);
-            this.timer = setTimeout(() => {
-                filter();
-            }, 300);
-        });
-
-        // También filtrar al presionar Enter
-        search.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                clearTimeout(this.timer);
-                filter();
-            }
-        });
         
-        buttons.forEach(button => {
+        // Función para mostrar mensaje de no encontrado
+        function mostrarMensajeNoEncontrado(searchTerm) {
+            const msg = document.createElement('div');
+            msg.className = 'tarjeta-recip';
+            msg.innerHTML = `
+                <div class="imagen-superior">
+                    <img src="images/camisa-not-found.jpg" alt="Camisa no encontrada">
+                    <div class="icono-error">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/>
+                            <line x1="12" y1="7" x2="12" y2="13" stroke="#fff" stroke-width="2"/>
+                            <circle cx="12" cy="17" r="1.5" fill="#fff"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="contenido-recip">
+                    <h2 class="titulo-recip">Camisa no encontrada</h2>
+                    <p class="desc-recip">
+                        No pudimos encontrar "<strong>${searchTerm}</strong>"<br><br>
+                        Intenta con otras palabras o revisa la ortografía.
+                    </p>
+                </div>
+            `;
+            
+            // Insertar el mensaje en el contenedor
+            if (contenedorCatalogo) {
+                contenedorCatalogo.appendChild(msg);
+            }
+        }
+        
+        // =========================================
+        // EVENT LISTENERS
+        // =========================================
+        
+        // Evento para botones de categoría
+        categoryButtons.forEach(button => {
             button.addEventListener('click', function() {
-                buttons.forEach(btn => btn.classList.remove('btn-active'));
-                this.classList.add('btn-active');
-                search.value = '';
-                filter();
+                // Remover active de todos
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                // Agregar active al clickeado
+                this.classList.add('active');
+                
+                // Limpiar búsqueda al cambiar categoría
+                if (searchInput) {
+                    searchInput.value = '';
+                }
+                
+                // Aplicar filtro
+                filtrarCatalogo();
             });
         });
-
-        // Iniciar
-        filter();
-    }, 200);
+        
+        // Evento para búsqueda (con debounce para mejor rendimiento)
+        if (searchInput) {
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    filtrarCatalogo();
+                }, 300);
+            });
+            
+            // También filtrar al presionar Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    clearTimeout(searchTimeout);
+                    filtrarCatalogo();
+                }
+            });
+        }
+        
+        // =========================================
+        // INICIALIZACIÓN
+        // =========================================
+        
+        // Asegurar que todas las secciones se muestren al inicio
+        if (categorySections.length > 0) {
+            categorySections.forEach(section => {
+                section.style.display = 'grid';
+            });
+            
+            // Mostrar todos los productos al inicio
+            document.querySelectorAll('.card-camisa').forEach(product => {
+                product.style.display = 'block';
+            });
+        }
+        
+        // Aplicar filtro inicial
+        filtrarCatalogo();
+        
+        // También filtrar cuando se haga clic en "Catálogo" desde el menú
+        document.querySelectorAll('[href="#catalogo"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Si es un enlace interno, prevenir comportamiento por defecto
+                if (this.getAttribute('href') === '#catalogo') {
+                    e.preventDefault();
+                    // Activar categoría "Todas"
+                    const todasBtn = document.querySelector('.btn-cat[data-cat="todas"]');
+                    if (todasBtn) {
+                        categoryButtons.forEach(btn => btn.classList.remove('active'));
+                        todasBtn.classList.add('active');
+                        if (searchInput) searchInput.value = '';
+                        filtrarCatalogo();
+                    }
+                    // Scroll suave hacia el catálogo
+                    document.getElementById('catalogo')?.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+    }, 500); // Delay mayor para asegurar carga de contenido dinámico
 });

@@ -1,44 +1,113 @@
-/* -----------------------------------------------
-   ANIMACIÓN FONDO
-------------------------------------------------- */
-.catalogo{
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 100px 40px;
-   
-    position: relative;
-    overflow: hidden;
+/* Reset de márgenes y paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    /* VALORES INICIALES DEL GRADIENT */
+body {
+  min-height: 100vh;
+  font-family: 'Avenir', sans-serif;
+}
+
+/* Navbar fijo */
+.navbar-producto {
+  position: fixed;
+  left: 50% !important;
+  top: 10px !important;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
+  padding: 0px 20px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  z-index: 1000;
+  transition: all 0.35s ease;
+}
+
+.btn-volver {
+  border: none;
+  background: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: white;
+  padding: 8px;
+}
+
+.logo {
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 2px;
+  font-size: 26px;
+  color: white;
+}
+
+/* Contenedor principal con fondo animado */
+.producto-fondo {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 80px 20px 40px; /* Espacio para el navbar */
+  overflow: hidden;
+  background-color: #000;
+  
+  /* Variables del gradiente animado */
   --c-0: hsla(266.9,0%,7%,1);
   --y-0: 80%;
   --x-0: 85%;
-
+  --s-start-0: 9%;
+  --s-end-0: 55%;
+  
   --c-1: rgb(249, 189, 189);
   --x-1: 60%;
   --y-1: 24%;
-
+  --s-start-1: 5%;
+  --s-end-1: 72%;
+  
   --c-2: hsla(54,0%,0%,0.49);
   --x-2: 13%;
   --y-2: 82%;
-
+  --s-start-2: 5%;
+  --s-end-2: 52%;
+  
   --c-3: hsla(352.7,98%,41%,1);
   --x-3: 24%;
   --y-3: 7%;
-
-  background-color: #000;
-
+  --s-start-3: 13%;
+  --s-end-3: 68%;
+  
+  /* Gradiente animado como fondo */
   background-image:
       radial-gradient(circle at var(--x-0) var(--y-0), var(--c-0) var(--s-start-0), transparent var(--s-end-0)),
       radial-gradient(circle at var(--x-1) var(--y-1), var(--c-1) var(--s-start-1), transparent var(--s-end-1)),
       radial-gradient(circle at var(--x-2) var(--y-2), var(--c-2) var(--s-start-2), transparent var(--s-end-2)),
       radial-gradient(circle at var(--x-3) var(--y-3), var(--c-3) var(--s-start-3), transparent var(--s-end-3));
-
+  
   background-blend-mode: normal;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   animation: hero-gradient-animation 10s linear infinite alternate;
 }
+
+/* Contenedor de la tarjeta del producto */
+/*#producto-container {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}*/
 
 @keyframes hero-gradient-animation {
   0% {
@@ -88,7 +157,6 @@
   }
 }
 
-
 /* ----- PROPERTIES NECESARIOS ----- */
 @property --c-0 { syntax: '<color>'; inherits: false; initial-value: hsla(266.9,0%,7%,1) }
 @property --y-0 { syntax: '<percentage>'; inherits: false; initial-value: 80% }
@@ -111,3 +179,30 @@
 @property --c-3 { syntax: '<color>'; inherits: false; initial-value: hsla(352.7,98%,41%,1) }
 @property --x-3 { syntax: '<percentage>'; inherits: false; initial-value: 24% }
 
+/* =========================
+   RESPONSIVE PARA NAVBAR
+========================= */
+@media (max-width: 768px) {
+  .navbar-producto {
+    width: 95%;
+    padding: 5px 15px;
+  }
+  
+  .logo {
+    font-size: 22px;
+  }
+  
+  .btn-volver {
+    font-size: 1.2rem;
+  }
+  
+  .producto-fondo {
+    padding: 0 15px 30px;
+  }
+}
+
+@media (min-width: 992px) {
+  .producto-fondo {
+    padding: 0 20px 60px;
+  }
+}
