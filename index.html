@@ -104,21 +104,24 @@
     </main>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="js-catalogo/rellenar-motor.js"></script>
+    <script src="js-catalogo/motor.js"></script>
 
+    
     <script src="js/catalogo.js"></script>
     <script>
-        // Cargar archivo externo
-        fetch("index_catalogo.html")
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById("section-catalogo-completo").innerHTML = html;
-            })
-            .catch(error => {
-                console.error("Error cargando el archivo:", error);
-            });
+    fetch("index_catalogo.html")
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById("section-catalogo-completo").innerHTML = html;
+
+            cargarCatalogoMotor(); /*llamamos la funcion para qye se llenen los datos de motor*/
+        })
+        .catch(error => {
+            console.error("Error cargando el archivo:", error);
+        });
     </script>
-
-
 
     <script src="js/nabvar.js"></script>
 
