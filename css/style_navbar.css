@@ -1,49 +1,49 @@
 
 /* NAVBAR PRINCIPAL CON FONDO BLANCO */
 #navbar {
-    position: fixed;
-    left: 50% !important;
-    top: 20px !important;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 1200px;
-    padding: 6px 20px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.06) !important;
-    backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.04) !important;
-    z-index: 1000;
-    transition: all .35s ease;
+  position: fixed;
+  left: 50% !important;
+  top: 20px !important;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
+  padding: 6px 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  z-index: 1000;
+  transition: all .35s ease;
 }
 
 #navbar.scrolled {
-    background: #f6fffe9e !important;
-    box-shadow: 0 10px 30px rgba(13, 6, 28, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(18px);
+  background: #f6fffe9e !important;
+  box-shadow: 0 10px 30px rgba(13, 6, 28, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px);
 }
 
 /* PARTE SUPERIOR: Logo + Hamburger */
 .nav-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .logo {
-    font-size: 26px;
-    font-weight: 700;
-    color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
 }
 
 /* Botón hamburguesa */
 .menu {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: none; /* Oculto en desktop por defecto */
-    padding: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: none; /* Oculto en desktop por defecto */
+  padding: 5px;
 }
 
 .line {
@@ -212,7 +212,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(50px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -276,7 +276,7 @@
   #navbar {
       padding: 10px 15px;
       border-radius: 20px;
-      top: 10px !important;
+      top: 0 !important;
   }
   
   .logo {
