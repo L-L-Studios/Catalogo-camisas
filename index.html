@@ -79,7 +79,7 @@
         <!-- Enlaces para desktop (ocultos en móvil) -->
         <div class="nav-links-desktop">
             <a href="#catalogo">Catálogo</a>
-            <button class="cta-contacto">Contacto</button>
+            <button class="cta-contacto" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contacto</button>
         </div>
     </nav>
 
@@ -95,9 +95,41 @@
                 </div>
             </section>
 
-            <section id="contacto">
-                
+            <!--ZONA CONTACTO-->
+            <section id="contact" class="white reveal">
+            <div class="blob-section alt" aria-hidden></div>
+
+            <h2 class="section-title">Contacto</h2>
+            <p class="section-sub">¿Te gustaría encargar camisas con nosotros? Escoge de 1-4 camisas o escribénos por WhatsApp.</p>
+
+            <div class="contact-grid">
+
+                <!-- IZQUIERDA (SIN CAMBIOS) -->
+                <div>
+                <div class="contact-box">
+                    <h3>Envíanos un mensaje</h3>
+                    <form id="contactForm">
+                    <input type="text" name="name" placeholder="Tu nombre" required />
+                    <input type="email" name="email" placeholder="Tu correo" required />
+                    <textarea name="message" placeholder="Tu mensaje" rows="6" required></textarea>
+                    <button type="submit" id="btn-enviar">Enviar</button>
+                    </form>
+                </div>
+                </div>
+
+                <!-- DERECHA (IMAGEN + CUADRO BLANCO) -->
+                <div class="contact-image-wrap">
+                <img src="images/camisa-not-found.jpg" alt="Contacto" class="contact-image">
+
+                <div class="contact-image-card">
+                    <!-- icono irá aquí -->
+                     <p>Camisas VRX</p>
+                </div>
+                </div>
+
+            </div>
             </section>
+
 
         </div>
         
@@ -108,6 +140,8 @@
     <script src="js-catalogo/rellenar-motor.js"></script>
     <script src="js-catalogo/motor.js"></script>
 
+    <script src="js/bookmarks.js"></script>
+
     
     <script src="js/catalogo.js"></script>
     <script>
@@ -117,6 +151,11 @@
             document.getElementById("section-catalogo-completo").innerHTML = html;
 
             cargarCatalogoMotor(); /*llamamos la funcion para qye se llenen los datos de motor*/
+            
+            requestAnimationFrame(() => {
+                BookmarkInit();
+            });
+
         })
         .catch(error => {
             console.error("Error cargando el archivo:", error);
