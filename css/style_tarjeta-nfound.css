@@ -2,17 +2,26 @@
    DISEÑO DE TARJETA NO ENCONTRADA
 ------------------------------------------------- */
 .tarjeta-recip {
-  width: 100%;
-  max-width: 360px;
-  height: auto;
-  background: linear-gradient(135deg, #252525, #414141);
+  position: relative;
+  z-index: 1;
+
+  background: rgba(35, 35, 35, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
   border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.45);
+
   overflow: hidden;
-  font-family: 'Comfortaa', sans-serif;
-  margin: 40px auto;
   color: white;
-  grid-column: 1 / -1;
+  font-family: 'Avenir', sans-serif;
+
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
 }
 
 .imagen-superior {
@@ -28,6 +37,51 @@
   border-radius: 20px;
   display: block;
   padding: 10px;
+}
+
+.tarjeta-wrapper-3d {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 40px auto;
+  perspective: 1200px;
+  grid-column: 1 / -1;
+}
+
+.tarjeta-back {
+  position: absolute;
+  inset: 0;
+
+ /* background: linear-gradient(
+    135deg,
+    #CB2D2D,
+    #1f1f1f
+  );*/
+
+  background: radial-gradient(
+    65.28% 65.28% at 50% 100%,
+    #ffe100a0 0%,
+    #df71ff00 100%
+  ),
+  linear-gradient(0deg, #CB2D2D, #7c0202df);
+
+  border-radius: 18px;
+
+  /* BORDE ELEGANTE */
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  /* SOMBRA LIMPIA */
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35);
+
+  /* POSICIÓN DIAGONAL */
+  transform:
+    translate(-14px, 16px)
+    rotate(-6deg)
+    scale(0.98);
+
+  opacity: 0.95;
+  z-index: 0;
 }
 
 .icono-error {
@@ -48,10 +102,12 @@
   font-size: 22px;
   font-weight: bold;
   margin-bottom: 12px;
+  font-family: 'Avenir';
 }
 
 .desc-recip {
-    font-size: 15px;
-    color: #f3f3f3d5;
-    line-height: 1.4;
+  font-size: 15px;
+  color: #f3f3f3d5;
+  line-height: 1.4;
+  font-family: 'Avenir';
 }

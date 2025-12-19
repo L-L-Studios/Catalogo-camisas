@@ -114,32 +114,39 @@ document.addEventListener('DOMContentLoaded', function() {
         // Función para mostrar mensaje de no encontrado
         function mostrarMensajeNoEncontrado(searchTerm) {
             const msg = document.createElement('div');
-            msg.className = 'tarjeta-recip';
+            msg.className = 'tarjeta-wrapper-3d';
             msg.innerHTML = `
-                <div class="imagen-superior">
-                    <img src="images/camisa-not-found.jpg" alt="Camisa no encontrada">
-                    <div class="icono-error">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/>
-                            <line x1="12" y1="7" x2="12" y2="13" stroke="#fff" stroke-width="2"/>
-                            <circle cx="12" cy="17" r="1.5" fill="#fff"/>
-                        </svg>
+                <!-- Tarjeta decorativa trasera -->
+                <div class="tarjeta-back"></div>
+
+                <!-- Tarjeta principal -->
+                <div class="tarjeta-recip">
+                    <div class="imagen-superior">
+                        <img src="images/camisa-not-found.jpg" alt="Camisa no encontrada">
+                        <div class="icono-error">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/>
+                                <line x1="12" y1="7" x2="12" y2="13" stroke="#fff" stroke-width="2"/>
+                                <circle cx="12" cy="17" r="1.5" fill="#fff"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="contenido-recip">
+                        <h2 class="titulo-recip">Camisa no encontrada</h2>
+                        <p class="desc-recip">
+                            No pudimos encontrar "<strong>${searchTerm}</strong>"<br><br>
+                            Intenta con otras palabras o revisa la ortografía.
+                        </p>
                     </div>
                 </div>
-                <div class="contenido-recip">
-                    <h2 class="titulo-recip">Camisa no encontrada</h2>
-                    <p class="desc-recip">
-                        No pudimos encontrar "<strong>${searchTerm}</strong>"<br><br>
-                        Intenta con otras palabras o revisa la ortografía.
-                    </p>
-                </div>
             `;
-            
-            // Insertar el mensaje en el contenedor
+
             if (contenedorCatalogo) {
                 contenedorCatalogo.appendChild(msg);
             }
         }
+
         
         // =========================================
         // EVENT LISTENERS
@@ -224,4 +231,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
     }, 500); // Delay mayor para asegurar carga de contenido dinámico
+});
+
+/** movimiento ligero para tarjeta not found */
+document.addEventListener("mousemove", e => {
+    const card = document.querySelector(".tarjeta-recip");
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+
+    const rotateX = (-y / rect.height) * 6;
+    const rotateY = (x / rect.width) * 6;
+
+    card.style.transform = `
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+    `;
+});
+
+document.addEventListener("mouseleave", () => {
+    const card = document.querySelector(".tarjeta-recip");
+    if (card) card.style.transform = "rotateX(0) rotateY(0)";
 });
