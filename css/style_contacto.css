@@ -92,6 +92,7 @@
   min-height: 120px; /* MENOS ALTO */
 }
 
+
 /*BOTON ENVIAR AL CONTACTO*/
 #btn-enviar{
     all: unset;
@@ -166,6 +167,42 @@ transition: 0s;
 transform: translate(0, 5%);
 }
 
+/* MENSAJES DE ERROR (OCULTOS POR DEFECTO) */
+.error-msg {
+  display: none;
+  font-size: 12px;
+  margin: 4px 0 10px;
+  color: #ff4d4d;
+}
+
+/* Mostrar SOLO cuando hay error */
+.error-msg.active {
+  display: block;
+}
+
+/* Inputs */
+input.error,
+textarea.error {
+  border-color: #ff4d4d;
+}
+
+input.valid,
+textarea.valid {
+  border-color: #4caf50;
+}
+
+#formStatus {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #ff4d4d;
+}
+
+#formStatus.ok {
+  color: #4caf50;
+}
+
+
+
 
 /* =========================================
    DERECHA – IMAGEN (más horizontal)
@@ -234,6 +271,41 @@ transform: translate(0, 5%);
   font-size: 1.8rem;
   color: #ff9f43;
 }
+
+/*   ETIQUETA DE CAMISAS SELECCIONADAS */
+.camisas-seleccionadas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.camisa-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #111111d4;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+.camisa-chip button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.camisa-chip button:hover {
+  color: #ff4d4d;
+}
+
+
 
 /* =========================================
    RESPONSIVE

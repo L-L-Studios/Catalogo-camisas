@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="css/style_tarjeta-index.css">
     <link rel="stylesheet" href="css/style_tarjeta-nfound.css">
 
+    <link rel="stylesheet" href="css/style-notif.css">
+
     <link rel="website icon" href="images/">
     <title>Camisas</title>
 
@@ -100,20 +102,40 @@
             <div class="blob-section alt" aria-hidden></div>
 
             <h2 class="section-title">Contacto</h2>
-            <p class="section-sub">¿Te gustaría encargar camisas con nosotros? Escoge de 1-4 camisas o escribénos por WhatsApp.</p>
+            <p class="section-sub">¿Te gustaría encargar camisas con nosotros? Escoge de 1-10 camisas o escribénos por WhatsApp.</p>
 
             <div class="contact-grid">
 
-                <!-- IZQUIERDA (SIN CAMBIOS) -->
+                <!-- IZQUIERDA/ FORM PARA ENVIAR CAMISAS ENCARGADAS -->
                 <div>
                 <div class="contact-box">
-                    <h3>Envíanos un mensaje</h3>
-                    <form id="contactForm">
-                    <input type="text" name="name" placeholder="Tu nombre" required />
-                    <input type="email" name="email" placeholder="Tu correo" required />
-                    <textarea name="message" placeholder="Tu mensaje" rows="6" required></textarea>
+                <h3>Envíanos un mensaje</h3>
+                <form action="https://formspree.io/f/xykgoppn" method="POST" id="contactForm">
+
+                    <input type="text" name="name" placeholder="Tu nombre" />
+                    <small class="error-msg"></small>
+
+                    <input type="email" name="email" placeholder="Tu correo" />
+                    <small class="error-msg"></small>
+
+                    <textarea name="message" placeholder="Tu mensaje" rows="6"></textarea>
+                    <small class="error-msg"></small>
+
+                    <div class="camisas-seleccionadas" id="camisasSeleccionadas"></div>
+                    <input type="hidden" name="camisas_encargadas" id="camisasInput">
+                    
+                    <input type="hidden" name="_confirmation" value="true">
+
+                    <!-- Honeypot anti-spam -->
+                    <input type="text" name="_gotcha" style="display:none">
+
+                    <!-- Mensaje de bloqueo -->
+                    <p id="formStatus" style="display:none;"></p>
+
                     <button type="submit" id="btn-enviar">Enviar</button>
-                    </form>
+                </form>
+
+
                 </div>
                 </div>
 
@@ -136,6 +158,7 @@
     </main>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script src="js-catalogo/rellenar-motor.js"></script>
     <script src="js-catalogo/motor.js"></script>
@@ -163,6 +186,11 @@
     </script>
 
     <script src="js/nabvar.js"></script>
+    <script src="js/form-camisas.js"></script>
+    <script src="js/form-val.js"></script>
+    <script src="js/form-limit.js"></script>
+    <script src="js/form-notif.js"></script> <!-- notificacion al final-->
+
 
 
 </body>

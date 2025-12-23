@@ -1,12 +1,19 @@
+/* =====================================================
+   producto.js — COMPATIBLE CON motor + anime
+===================================================== */
+
+// 🔹 Unimos todas las categorías
 const data = {
   ...window.motor,
   ...window.anime
 };
 
+// 🔹 ID desde URL
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-if (!data[id]) {
+// 🔹 Validación fuerte
+if (!id || !data[id]) {
   document.getElementById("producto-container").innerHTML =
     "<p style='text-align:center'>Producto no encontrado</p>";
   throw new Error("Producto no encontrado");
@@ -14,16 +21,24 @@ if (!data[id]) {
 
 const p = data[id];
 
+const precio = typeof p.precio === "string"
+  ? parseFloat(p.precio.replace("$", ""))
+  : Number(p.precio);
+
+function formatPrice(value) {
+  const num = Number(value);
+  return isNaN(num) ? "$0.00" : `$${num.toFixed(2)}`;
+}
+
 document.getElementById("producto-container").innerHTML = `
 <div class="card-camisa card-producto">
-<span class="categoria-camisa" id="categoriaProducto">${p.categoria}</span>
-  
-  <!-- Carrusel Bootstrap normal (para móvil) -->
-  <div id="carouselBootstrap" class="carousel slide">
+  <span class="categoria-camisa" id="categoriaProducto">${p.categoria}</span>
+
+  <!-- ================= CARRUSEL MÓVIL (BOOTSTRAP) ================= -->
+  <div id="carouselBootstrap" class="carousel slide d-lg-none">
     <div class="carousel-indicators">
       ${p.imagenes.map((_, i) => `
-        <button 
-          type="button"
+        <button type="button"
           data-bs-target="#carouselBootstrap"
           data-bs-slide-to="${i}"
           class="${i === 0 ? 'active' : ''}"
@@ -34,9 +49,9 @@ document.getElementById("producto-container").innerHTML = `
     </div>
 
     <div class="carousel-inner">
-      ${p.imagenes.map((img,i)=>`
-        <div class="carousel-item ${i===0?'active':''}">
-          <img src="${img}" class="img-card">
+      ${p.imagenes.map((img, i) => `
+        <div class="carousel-item ${i === 0 ? 'active' : ''}">
+          <img src="${img}" class="img-card" alt="${p.nombre}">
         </div>
       `).join("")}
     </div>
@@ -51,9 +66,9 @@ document.getElementById("producto-container").innerHTML = `
       <span class="carousel-control-next-icon"></span>
     </button>
   </div>
-  
-  <!-- Carrusel simple sin zoom (para desktop) -->
-  <div class="carousel-simple">
+
+  <!-- ================= CARRUSEL DESKTOP ================= -->
+  <div class="carousel-simple d-none d-lg-block">
     <div class="carousel-simple-inner">
       ${p.imagenes.map((img, i) => `
         <div class="carousel-simple-item ${i === 0 ? 'active' : ''}">
@@ -61,87 +76,136 @@ document.getElementById("producto-container").innerHTML = `
         </div>
       `).join("")}
     </div>
-    
-    <!-- Botones de navegación con iconos Phosphor -->
+
     <button class="carousel-simple-btn prev">
       <i class="ph ph-caret-left"></i>
     </button>
     <button class="carousel-simple-btn next">
       <i class="ph ph-caret-right"></i>
     </button>
-    
-    <!-- Indicadores -->
+
     <div class="carousel-simple-controls">
       ${p.imagenes.map((_, i) => `
-        <div class="carousel-simple-indicator ${i === 0 ? 'active' : ''}" 
+        <div class="carousel-simple-indicator ${i === 0 ? 'active' : ''}"
              data-index="${i}"></div>
       `).join("")}
     </div>
   </div>
 
+  <!-- ================= INFO ================= -->
   <section class="section-camisa">
     <h2 class="lbl-nombre-camisa">${p.nombre}</h2>
     <p class="lbl-descripcion">${p.descripcion}</p>
-    <h2 class="price-camisa">${p.precio}</h2>
+    <h2 class="price-camisa">${formatPrice(p.precio)}</h2>
+
 
     <p class="lbl-tallas">Tallas:</p>
     <div class="tallas-camisa">
       ${p.tallas.map(t => `<div class="tag talla">${t}</div>`).join("")}
     </div>
 
-    <div class="color">
-      <p class="lbl-color-elg">Puedes elegir el color</p>
-      <img src="${p.colorImg}" class="img-color-camisa" alt="Color ${p.nombre}">
+    <p class="lbl-color-elg">Color: <span class="color-nombre"><strong>Selecciona</strong></span></p>
+    <div class="colores-camisa">
+      ${(p.colores || []).slice(0, 4).map(c => `
+        <div class="color-dot" 
+             style="background:${c.hex}" 
+             data-color="${c.name}"></div>
+      `).join("")}
     </div>
+
+    <div class="cantidad-box">
+      <button class="btn-menos">−</button>
+      <span class="cantidad">1</span>
+      <button class="btn-mas">+</button>
+    </div>
+
+    <p class="subtotal">Subtotal: $<span id="subtotal">${precio.toFixed(2)}</span></p>
+
+    <button class="btn-seleccionar">Seleccionar</button>
+
   </section>
 </div>
 `;
 
-// Script para el carrusel simple (solo se activa en desktop)
-document.addEventListener('DOMContentLoaded', function() {
-  const carouselSimple = document.querySelector('.carousel-simple');
-  
-  // Solo inicializar si estamos en desktop (el carrusel simple es visible)
-  if (carouselSimple && window.innerWidth >= 992) {
-    const items = carouselSimple.querySelectorAll('.carousel-simple-item');
-    const indicators = carouselSimple.querySelectorAll('.carousel-simple-indicator');
-    const prevBtn = carouselSimple.querySelector('.carousel-simple-btn.prev');
-    const nextBtn = carouselSimple.querySelector('.carousel-simple-btn.next');
-    
-    let currentIndex = 0;
-    const totalItems = items.length;
-    
-    function showSlide(index) {
-      // Ocultar todos
-      items.forEach(item => item.classList.remove('active'));
-      indicators.forEach(indicator => indicator.classList.remove('active'));
-      
-      // Mostrar el actual
-      items[index].classList.add('active');
-      indicators[index].classList.add('active');
-      
-      currentIndex = index;
-    }
-    
-    function nextSlide() {
-      let nextIndex = currentIndex + 1;
-      if (nextIndex >= totalItems) nextIndex = 0;
-      showSlide(nextIndex);
-    }
-    
-    function prevSlide() {
-      let prevIndex = currentIndex - 1;
-      if (prevIndex < 0) prevIndex = totalItems - 1;
-      showSlide(prevIndex);
-    }
-    
-    // Event listeners
-    prevBtn.addEventListener('click', prevSlide);
-    nextBtn.addEventListener('click', nextSlide);
-    
-    // Indicadores
-    indicators.forEach((indicator, index) => {
-      indicator.addEventListener('click', () => showSlide(index));
-    });
+/* =====================================================
+   CARRUSEL SIMPLE DESKTOP (INIT DESPUÉS DE RENDER)
+===================================================== */
+
+initCarouselSimple();
+
+function initCarouselSimple() {
+  const carousel = document.querySelector(".carousel-simple");
+  if (!carousel || window.innerWidth < 992) return;
+
+  const items = carousel.querySelectorAll(".carousel-simple-item");
+  const indicators = carousel.querySelectorAll(".carousel-simple-indicator");
+  const btnPrev = carousel.querySelector(".carousel-simple-btn.prev");
+  const btnNext = carousel.querySelector(".carousel-simple-btn.next");
+
+  let index = 0;
+  const total = items.length;
+
+  function showSlide(i) {
+    items.forEach(el => el.classList.remove("active"));
+    indicators.forEach(el => el.classList.remove("active"));
+
+    items[i].classList.add("active");
+    indicators[i].classList.add("active");
+    index = i;
   }
+
+  btnNext.addEventListener("click", () => {
+    showSlide((index + 1) % total);
+  });
+
+  btnPrev.addEventListener("click", () => {
+    showSlide((index - 1 + total) % total);
+  });
+
+  indicators.forEach((ind, i) => {
+    ind.addEventListener("click", () => showSlide(i));
+  });
+}
+
+let cantidad = 1;
+const maxCantidad = 10;
+const subtotalEl = document.getElementById("subtotal");
+
+// 👉 TALLAS (multi)
+document.querySelectorAll(".tag.talla").forEach(btn => {
+  btn.addEventListener("click", () => {
+    btn.classList.toggle("active");
+  });
 });
+
+// 👉 COLORES (single)
+const colorNombre = document.querySelector(".color-nombre strong");
+
+document.querySelectorAll(".color-dot").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".color-dot")
+      .forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    colorNombre.textContent = btn.dataset.color;
+  });
+});
+
+// 👉 CONTADOR
+document.querySelector(".btn-mas").onclick = () => {
+  if (cantidad < maxCantidad) {
+    cantidad++;
+    actualizarCantidad();
+  }
+};
+
+document.querySelector(".btn-menos").onclick = () => {
+  if (cantidad > 1) {
+    cantidad--;
+    actualizarCantidad();
+  }
+};
+
+function actualizarCantidad() {
+  document.querySelector(".cantidad").textContent = cantidad;
+  subtotalEl.textContent = (cantidad * Number(p.precio)).toFixed(2);
+}

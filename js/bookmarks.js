@@ -8,6 +8,8 @@
     function createBookmark(id, card) {
         const label = document.createElement("label");
         label.className = "ui-bookmark";
+        label.setAttribute("data-tooltip", "Elegir");
+
         label.innerHTML = `
             <input type="checkbox">
             <div class="bookmark">
@@ -24,6 +26,7 @@
             </div>
         `;
 
+
         const input = label.querySelector("input");
         let data = get();
 
@@ -33,24 +36,40 @@
             card.classList.add("card-selected");
         }
 
-        label.addEventListener("click", e => {
-            e.preventDefault();
-            e.stopPropagation();
+    const MAX_CAMISAS = 10;
 
-            data = get();
+    label.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
 
-            if (!input.checked) {
-                input.checked = true;
-                if (!data.includes(id)) data.push(id);
-                card.classList.add("card-selected");
-            } else {
-                input.checked = false;
-                data = data.filter(x => x !== id);
-                card.classList.remove("card-selected");
+        data = get();
+
+        // 👉 INTENTA AGREGAR
+        if (!input.checked) {
+
+            if (data.length >= MAX_CAMISAS) {
+                alert(`Solo puedes seleccionar hasta ${MAX_CAMISAS} camisas`);
+                return;
             }
 
-            set(data);
-        });
+            input.checked = true;
+            if (!data.includes(id)) data.push(id);
+            card.classList.add("card-selected");
+
+        } 
+        // 👉 QUITAR
+        else {
+            input.checked = false;
+            data = data.filter(x => x !== id);
+            card.classList.remove("card-selected");
+        }
+
+        set(data);
+
+        // 🔔 notificar al resto del sistema
+        window.dispatchEvent(new CustomEvent("camisas:update"));
+    });
+
 
         return label;
     }

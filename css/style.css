@@ -57,6 +57,19 @@ body {
   margin-bottom: 20px;
 }
 
+.lbl-desc-cat{
+  color: #f6fffe;
+  font-size: 1.1rem;
+
+  margin-left: 30px;
+  margin-bottom: 20px;
+}
+
+.icono-desc-cat{
+  width: 24px;
+  fill: white;
+}
+
 /* =========================
    Telefono
 ========================= */
