@@ -99,7 +99,7 @@ document.getElementById("producto-container").innerHTML = `
     <h2 class="price-camisa">${formatPrice(p.precio)}</h2>
 
 
-    <p class="lbl-tallas">Tallas:</p>
+    <p class="lbl-tallas">Tallas: <span class="tallas"><strong>Selecciona</strong></span> </p>
     <div class="tallas-camisa">
       ${p.tallas.map(t => `<div class="tag talla">${t}</div>`).join("")}
     </div>
@@ -171,10 +171,20 @@ let cantidad = 1;
 const maxCantidad = 10;
 const subtotalEl = document.getElementById("subtotal");
 
-// 👉 TALLAS (multi)
+// 👉 TALLAS (unica)
+const tallaTexto = document.querySelector(".tallas strong");
+
 document.querySelectorAll(".tag.talla").forEach(btn => {
   btn.addEventListener("click", () => {
-    btn.classList.toggle("active");
+    // quitar active a todas
+    document.querySelectorAll(".tag.talla")
+      .forEach(b => b.classList.remove("active"));
+
+    // activar solo la seleccionada
+    btn.classList.add("active");
+
+    // mostrar talla elegida
+    tallaTexto.textContent = btn.textContent;
   });
 });
 

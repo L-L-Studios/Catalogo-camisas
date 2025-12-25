@@ -33,8 +33,8 @@
   position: absolute;
   width: calc(100% - 1rem); /* Ajustado para coincidir con la imagen */
   height: 42%;
-  bottom: 0.5rem; /* Ajustado para coincidir con la imagen */
-  left: 0.5rem; /* Ajustado para coincidir con la imagen */
+  bottom: 0.6rem; /* Ajustado para coincidir con la imagen */
+  left: 0.6rem; /* Ajustado para coincidir con la imagen */
 
   background: linear-gradient(
       to top,
@@ -44,7 +44,7 @@
   );
 
   backdrop-filter: blur(1rem);
-  border-radius: 0 0 1.5rem 1.5rem; /* Mismo radio que la imagen */
+  border-radius: 0 0 2rem 2rem; /* Mismo radio que la imagen */
   mask: linear-gradient(#0000, #000f 80%);
   z-index: 1;
 }

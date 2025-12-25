@@ -1,6 +1,8 @@
 /* =========================
    BASE (MÓVIL – ORIGINAL)
 ========================= */
+/**{outline: 1px solid green;}*/
+
 .card-producto {
   height: auto !important;
   /*margin: 1.5rem auto !important;*/
@@ -70,12 +72,26 @@
   border-radius: 8px;
   background: transparent;
   cursor: pointer;
+  padding: 0.20rem 0.5rem;
 }
 
 .tag.talla.active {
-  background: #252525;
-  color: white;
-  border-color: #252525;
+  background: linear-gradient(
+    135deg,
+    rgba(203, 45, 45, 0.35),
+    rgba(255, 255, 255, 0.15)
+  );
+  color: #111;
+  border: 2.5px solid rgba(69, 69, 69, 0.45);
+
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
+
+  box-shadow:
+    0 8px 22px rgba(203, 45, 45, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+
+  transform: translateY(-1px) scale(1.05);
 }
 
 /* ===== COLORES ===== */
@@ -94,11 +110,20 @@
 }
 
 .color-dot.active {
-  border-color: #000;
-  box-shadow: 0 0 0 2px rgba(0,0,0,.15);
+  /*border-color: #000;*/
+  border: 2.5px solid rgba(69, 69, 69, 0.45);
+  box-shadow:
+    0 8px 22px rgba(203, 45, 45, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  /*box-shadow: 0 0 0 2px rgba(0,0,0,.15);*/
 }
 
 .color-nombre {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.tallas{
   font-size: 0.9rem;
   color: #555;
 }
@@ -158,10 +183,42 @@
 ========================= */
 @media (min-width: 769px) and (max-width: 991px) {
   .card-producto {
+    max-width: 900px;
     width: 90%;
-    max-width: 600px;
     margin-top: 0.50rem !important;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    margin: auto;
   }
+
+  .card-producto .lbl-nombre-camisa {
+    font-size: 2rem;
+    margin-top: 40px !important;
+  }
+
+  .card-producto .tag.talla {
+    padding: 0.20rem 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .lbl-color-elg {
+    margin-top: 20px;
+  }
+
+  .card-camisa::before {
+    bottom: 0.5rem;
+  }
+
+  .card-producto .price-camisa {
+    position: relative;
+    display: flex;
+    justify-self: start !important;
+    font-size: 1.5rem;
+    width: 9rem;
+    border-radius: 14px;
+    padding: 0.4rem 2rem;
+  }
+
 }
 
 /* =========================
@@ -172,7 +229,7 @@
     max-width: 1200px;
     width: 90%;
     margin-top: 4rem !important;
-    padding: 1rem 1rem;
+    padding: 0.75rem 0.75rem;
     display: grid;
     grid-template-columns: 1.4fr 1fr;
     gap: 2rem;
@@ -185,6 +242,10 @@
   .card-producto .lbl-nombre-camisa {
     font-size: 2.5rem;
     margin-top: 40px !important;
+  }
+
+  .lbl-color-elg {
+    margin-top: 20px;
   }
 
   /* OCULTAR CARRUSEL BOOTSTRAP EN DESKTOP */
@@ -315,6 +376,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-right: 20px;
   }
 
   /* tipografía grande */
@@ -332,9 +394,12 @@
   }
 
   .card-producto .price-camisa {
+    position: relative;
+    display: flex;
+    justify-self: start !important;
     font-size: 2rem;
-    padding: 0.4rem 1rem;
-    margin: 0.50rem 0;
+    width: 11rem;
+    padding: 0.4rem 2rem;
   }
 
   /* tallas */

@@ -8,7 +8,9 @@ window.motor = {
     descripcion: "Tela fresca y flexible",
     imagenes: [
       "images/motor/img-honda/mt-h-1.jpg",
-      "images/motor/img-honda/mt-h-2.jpg"
+      "images/motor/img-honda/mt-h-2.jpg",
+      "images/motor/img-honda/mt-h-3.jpg",
+      "images/motor/img-honda/mt-h-4.jpg"
     ],
     tallas: ["S", "M", "L", "XL"],
     colores: [

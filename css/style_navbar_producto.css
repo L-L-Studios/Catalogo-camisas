@@ -203,6 +203,6 @@ body {
 
 @media (min-width: 992px) {
   .producto-fondo {
-    padding: 0 20px 60px;
+    padding: 0 0 40px;
   }
 }

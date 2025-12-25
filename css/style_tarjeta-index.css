@@ -392,8 +392,8 @@
 /* 430px y menos */
 @media screen and (max-width: 430px) {
   .card-index {
-    width: 18rem !important;
-    height: 28rem !important;
+    width: 22rem !important;
+    height: 31rem !important;
   }
 
   
@@ -418,7 +418,7 @@
 /* 380px y menos */
 @media screen and (max-width: 380px) {
   .card-index {
-    width: 18rem !important;
+    width: 20rem !important;
     height: 28rem !important;
   }
   
@@ -459,7 +459,7 @@
 /* 360px y menos */
 @media screen and (max-width: 360px) {
   .card-index {
-    width: 17rem !important;
+    width: 19.5rem !important;
     height: 27rem !important;
   }
   
@@ -478,8 +478,8 @@
 /* 340px y menos */
 @media screen and (max-width: 340px) {
   .card-index {
-    width: 15.5rem !important;
-    height: 25rem !important;
+    width: 18rem !important;
+    height: 26rem !important;
   }
   
   .card-index .lbl-nombre-camisa {
@@ -503,8 +503,8 @@
 /* 320px y menos */
 @media screen and (max-width: 320px) {
   .card-index {
-    width: 15rem !important;
-    height: 22rem !important;
+    width: 17.50rem !important;
+    height: 25.5rem !important;
   }
   
   .card-index .lbl-nombre-camisa {
@@ -524,6 +524,13 @@
   }
 }
 
+@media screen and (max-width: 300px) {
+  .card-index {
+    width: 16rem !important;
+    height: 25rem !important;
+  }
+}
+
 @media (min-width: 481px) and (max-width: 768px) {
   .card-index .lbl-nombre-camisa {
     right: 5.50rem;
@@ -534,10 +541,10 @@
    RESPONSIVIDAD - TABLET (769px - 991px)
 ========================================= */
 @media (min-width: 769px) and (max-width: 991px) {
-  .card-index {
+  /*.card-index {
     width: 20rem !important;
     height: 30rem !important;
-  }
+  }*/
   
   .link-card {
     width: 100%;
