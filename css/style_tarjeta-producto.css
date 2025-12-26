@@ -115,6 +115,7 @@
   box-shadow:
     0 8px 22px rgba(203, 45, 45, 0.35),
     inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px) scale(1.05)
   /*box-shadow: 0 0 0 2px rgba(0,0,0,.15);*/
 }
 
@@ -131,32 +132,18 @@
 /* ===== CANTIDAD ===== */
 .cantidad-box {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 1rem 0;
+  margin: 1.25rem 0 !important;
 }
 
-.contador {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.contador button {
+.cantidad-box button {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: 5px;
   border: none;
-  background: #252525;
+  background: #414141;
   color: white;
   font-size: 18px;
   cursor: pointer;
-}
-
-.cantidad {
-  min-width: 24px;
-  text-align: center;
-  font-weight: 600;
 }
 
 /* ===== SUBTOTAL ===== */
@@ -217,6 +204,7 @@
     width: 9rem;
     border-radius: 14px;
     padding: 0.4rem 2rem;
+    margin-left: 10px !important;
   }
 
 }
@@ -400,6 +388,7 @@
     font-size: 2rem;
     width: 11rem;
     padding: 0.4rem 2rem;
+    margin-left: 10px !important;
   }
 
   /* tallas */
@@ -464,5 +453,16 @@
   .card-producto .carousel-control-prev,
   .card-producto .carousel-control-next {
     display: block !important;
+  }
+
+  .card-producto .price-camisa {
+    position: relative;
+    display: flex;
+    justify-self: start !important;
+    font-size: 1.5rem;
+    width: 9rem;
+    border-radius: 14px;
+    padding: 0.4rem 2rem;
+    margin-left: 5px !important;
   }
 }

@@ -30,6 +30,17 @@ function formatPrice(value) {
   return isNaN(num) ? "$0.00" : `$${num.toFixed(2)}`;
 }
 
+const toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 1800,
+  timerProgressBar: true,
+  customClass: {
+    popup: "swal-toast-avenir"
+  }
+});
+
 document.getElementById("producto-container").innerHTML = `
 <div class="card-camisa card-producto">
   <span class="categoria-camisa" id="categoriaProducto">${p.categoria}</span>
@@ -114,14 +125,14 @@ document.getElementById("producto-container").innerHTML = `
     </div>
 
     <div class="cantidad-box">
-      <button class="btn-menos">−</button>
+      <button class="btn-menos"><i class="ph ph-minus"></i></button>
       <span class="cantidad">1</span>
-      <button class="btn-mas">+</button>
+      <button class="btn-mas"><i class="ph ph-plus"></i></button>
     </div>
 
     <p class="subtotal">Subtotal: $<span id="subtotal">${precio.toFixed(2)}</span></p>
 
-    <button class="btn-seleccionar">Seleccionar</button>
+    <button class="btn-seleccionar">Elegir</button>
 
   </section>
 </div>
@@ -168,24 +179,28 @@ function initCarouselSimple() {
 }
 
 let cantidad = 1;
+
+let tallaSeleccionada = null;
+let colorSeleccionado = null;
+
 const maxCantidad = 10;
 const subtotalEl = document.getElementById("subtotal");
+
 
 // 👉 TALLAS (unica)
 const tallaTexto = document.querySelector(".tallas strong");
 
 document.querySelectorAll(".tag.talla").forEach(btn => {
   btn.addEventListener("click", () => {
-    // quitar active a todas
     document.querySelectorAll(".tag.talla")
       .forEach(b => b.classList.remove("active"));
 
-    // activar solo la seleccionada
     btn.classList.add("active");
-
-    // mostrar talla elegida
     tallaTexto.textContent = btn.textContent;
+
+    tallaSeleccionada = btn.textContent;
   });
+
 });
 
 // 👉 COLORES (single)
@@ -195,8 +210,11 @@ document.querySelectorAll(".color-dot").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".color-dot")
       .forEach(b => b.classList.remove("active"));
+
     btn.classList.add("active");
     colorNombre.textContent = btn.dataset.color;
+
+    colorSeleccionado = btn.dataset.color;
   });
 });
 
@@ -219,3 +237,57 @@ function actualizarCantidad() {
   document.querySelector(".cantidad").textContent = cantidad;
   subtotalEl.textContent = (cantidad * Number(p.precio)).toFixed(2);
 }
+
+document.querySelector(".btn-seleccionar").onclick = () => {
+
+  if (!tallaSeleccionada) {
+    toast.fire({
+      icon: "info",
+      title: "Selecciona una talla"
+    });
+    return;
+  }
+
+  if (!colorSeleccionado) {
+    toast.fire({
+      icon: "info",
+      title: "Selecciona un color"
+    });
+    return;
+  }
+
+  const KEY = "camisas_seleccionadas";
+  const actuales = JSON.parse(localStorage.getItem(KEY)) || [];
+
+  // evitar duplicados exactos
+  const existe = actuales.some(c =>
+    c.id === p.id &&
+    c.talla === tallaSeleccionada &&
+    c.color === colorSeleccionado
+  );
+
+  if (existe) {
+    toast.fire({
+      icon: "warning",
+      title: "Esta camisa ya fue seleccionada"
+    });
+    return;
+  }
+
+  actuales.push({
+    id: p.id,
+    talla: tallaSeleccionada,
+    color: colorSeleccionado,
+    cantidad
+  });
+
+  localStorage.setItem(KEY, JSON.stringify(actuales));
+
+  window.dispatchEvent(new CustomEvent("camisas:update"));
+
+  toast.fire({
+    icon: "success",
+    title: "Camisa agregada"
+  });
+
+};

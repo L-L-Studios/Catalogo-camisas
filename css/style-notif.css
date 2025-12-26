@@ -1,12 +1,27 @@
 /* SweetAlert base */
 .swal2-popup {
-  font-family: Avenir, sans-serif;
+  font-family: Avenir, sans-serif !important;
   border-radius: 16px;
   background: #f6fffedf;
   backdrop-filter: blur(20px);
   color: #252525;
   box-shadow: 0 20px 40px rgba(0,0,0,.15);
 }
+
+.swal2-popup,
+.swal2-title,
+.swal2-html-container,
+.swal2-confirm,
+.swal2-cancel {
+  font-family: Avenir, sans-serif !important;
+}
+
+.swal-toast-avenir {
+  font-family: Avenir, sans-serif;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
 
 /* Título */
 .swal2-title {

@@ -3,6 +3,8 @@
   const LIMIT = 1; // 🔒 máximo de envíos por día
   const FORM_KEY = "form_envios";
   const EMAIL_KEY = "emails_usados";
+  const LOCK_KEY = "form_bloqueado";
+
 
   const form = document.getElementById("contactForm");
   const btn = document.getElementById("btn-enviar");
@@ -12,7 +14,20 @@
   if (!form || !btn || !status || !emailInput) return;
 
   // 📅 fecha actual YYYY-MM-DD
-  const hoy = () => new Date().toISOString().split("T")[0];
+  const hoy = () => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
+  const estaBloqueado = () =>
+  localStorage.getItem(LOCK_KEY) === hoy();
+
+  const bloquearTotal = () =>
+    localStorage.setItem(LOCK_KEY, hoy());
+
 
   const getData = () =>
     JSON.parse(localStorage.getItem(FORM_KEY)) || { date: hoy(), count: 0 };
@@ -60,6 +75,7 @@
   if (data.date !== hoy()) {
     localStorage.removeItem(FORM_KEY);
     localStorage.removeItem(EMAIL_KEY);
+    localStorage.removeItem(LOCK_KEY);
     desbloquear();
   } else if (data.count >= LIMIT) {
     bloquear(`Límite diario alcanzado. Intenta en ${tiempoRestante()}`);
@@ -68,9 +84,17 @@
   // 🌐 API GLOBAL para form-notif.js
   window.FormLimit = {
     puedeEnviar() {
+      if (estaBloqueado()) {
+        return {
+          ok: false,
+          msg: `Ya se envió un pedido hoy. Intenta en ${tiempoRestante()}`
+        };
+      }
+
       const data = getData();
       const email = emailInput.value.trim().toLowerCase();
       const emails = getEmails();
+
 
       // honeypot
       if (form._gotcha?.value) {
@@ -93,11 +117,17 @@
 
     registrarEnvio() {
       const email = emailInput.value.trim().toLowerCase();
+
+      bloquearTotal(); // 🔒 bloqueo absoluto inmediato
       guardarEnvio(email);
+
+      btn.disabled = true;
+
       status.textContent = "Mensaje enviado correctamente ✔";
       status.classList.add("ok");
       status.style.display = "block";
     }
+
   };
 
 })();

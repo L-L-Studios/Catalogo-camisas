@@ -28,28 +28,34 @@
 
       const nombres = [];
 
-      ids.forEach(id => {
-        const data = window.motor[id];
+      ids.forEach(item => {
+        const data = window.motor[item.id];
         if (!data) return;
 
-        nombres.push(data.nombre);
+        const texto = `${data.nombre} | ${item.talla} | ${item.color} | x${item.cantidad}`;
+        nombres.push(texto);
 
         const chip = document.createElement("div");
         chip.className = "camisa-chip";
         chip.innerHTML = `
-          <span>${data.nombre}</span>
+          <span>${texto}</span>
           <button type="button">✕</button>
         `;
 
         chip.querySelector("button").addEventListener("click", () => {
-          const nuevas = get().filter(x => x !== id);
+          const nuevas = get().filter(x =>
+            !(x.id === item.id &&
+              x.talla === item.talla &&
+              x.color === item.color)
+          );
+
           localStorage.setItem(KEY, JSON.stringify(nuevas));
-          syncCard(id, false);
           window.dispatchEvent(new CustomEvent("camisas:update"));
         });
 
         contenedor.appendChild(chip);
       });
+
 
       inputHidden.value = nombres.join(", ");
     }
