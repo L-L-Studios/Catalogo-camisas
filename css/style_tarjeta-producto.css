@@ -164,14 +164,96 @@
   cursor: pointer;
 }
 
+@media (min-width: 280px) and (max-width: 300px) {
+  .card-producto {
+    width: 16.5rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 301px) and (max-width: 320px) {
+  .card-producto {
+    width: 17.5rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 321px) and (max-width: 360px) {
+  .card-producto {
+    width: 19.5rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 361px) and (max-width: 400px) {
+  .card-producto {
+    width: 22rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 401px) and (max-width: 440px) {
+  .card-producto {
+    width: 24rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 441px) and (max-width: 480px) {
+  .card-producto {
+    width: 26rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 500px) {
+  .card-producto {
+    width: 26rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 501px) and (max-width: 540px) {
+  .card-producto {
+    width: 28rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 541px) and (max-width: 580px) {
+  .card-producto {
+    width: 30rem !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (min-width: 581px) and (max-width: 599px) {
+  .card-producto {
+    width: 32rem !important;
+    overflow: hidden !important;
+  }
+}
+
+
 
 /* =========================
    TABLET (769px - 991px)
 ========================= */
-@media (min-width: 769px) and (max-width: 991px) {
+
+@media (min-width: 600px) and (max-width: 768px) {
   .card-producto {
     max-width: 900px;
     width: 90%;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    margin: auto;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 991px) {
+  .card-producto {
+    max-width: 900px;
+    width: 95%;
     margin-top: 0.50rem !important;
     display: grid;
     grid-template-columns: 1.4fr 1fr;
@@ -215,7 +297,7 @@
 @media (min-width: 992px) {
   .card-producto {
     max-width: 1200px;
-    width: 90%;
+    width: 100%;
     margin-top: 4rem !important;
     padding: 0.75rem 0.75rem;
     display: grid;
@@ -425,6 +507,8 @@
   .card-producto {
     padding: 1rem 1rem;
     gap: 4rem;
+    max-width: 1200px;
+    width: 100%;
   }
   
   .card-producto .lbl-nombre-camisa {
