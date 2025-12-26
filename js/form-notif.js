@@ -40,6 +40,26 @@
     );
   }
 
+  function calcularTotal() {
+    const items = JSON.parse(
+      localStorage.getItem("camisas_seleccionadas")
+    ) || [];
+
+    let total = 0;
+
+    items.forEach(item => {
+      const producto =
+        window.motor[item.id] || window.anime?.[item.id];
+
+      if (!producto) return;
+
+      total += Number(producto.precio) * Number(item.cantidad);
+    });
+
+    return Number(total.toFixed(2));
+  }
+
+
   /* =========================
      VALIDAR DOMINIO REAL (MX)
      Cloudflare DNS – GRATIS
@@ -66,6 +86,7 @@
   ========================== */
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const total = calcularTotal();
 
     /* 1️⃣ CAMPOS VACÍOS */
     if (camposVacios()) {
@@ -77,15 +98,6 @@
     if (document.querySelector(".error-msg.active")) {
       toast("error", "Corrige los errores del formulario");
       return;
-    }
-
-    /* 3️⃣ LÍMITE POR CORREO + DÍA */
-    if (window.FormLimit) {
-      const r = window.FormLimit.puedeEnviar();
-      if (!r.ok) {
-        toast("error", r.msg);
-        return;
-      }
     }
 
     /* 4️⃣ VALIDAR DOMINIO REAL */
@@ -109,10 +121,22 @@
       title: "Confirmar pedido",
       html: `
         <p><strong>Camisas:</strong></p>
-        <ul>
+        <ul style="text-align:left; margin-left:1rem;">
           ${camisas.map(c => `<li>${c}</li>`).join("")}
         </ul>
-        <p>📧 Se enviará un correo de confirmación</p>
+
+        <hr style="margin:12px 0">
+
+        <p style="font-size:1.1rem">
+          <strong>Total:</strong>
+          <span style="color:#CB2D2D; font-weight:600">
+            $${total.toFixed(2)}
+          </span>
+        </p>
+
+        <p style="font-size:.9rem; opacity:.8">
+          📦 Tu pedido será revisado y te contactaremos por correo
+        </p>
       `,
       showCancelButton: true,
       confirmButtonText: "Enviar",
@@ -120,33 +144,43 @@
       confirmButtonColor: "#CB2D2D"
     });
 
+
     if (!confirm.isConfirmed) return;
 
-    /* 7️⃣ ENVÍO */
+    /* 7️⃣ ENVÍO A SUPABASE */
     try {
-      const res = await fetch(form.action, {
-        method: "POST",
-        body: new FormData(form),
-        headers: { Accept: "application/json" }
-      });
+      const total = calcularTotal();
 
-      if (!res.ok) throw new Error();
+      const { error } = await window.supabase
+        .from("pedidos")
+        .insert({
+          email: emailInput.value.trim().toLowerCase(),
+          nombre: nameInput.value.trim(),
+          camisas: obtenerCamisas().join(", "),
+          mensaje: messageInput.value.trim(),
+          total: total
+        });
 
-      /* REGISTRAR ENVÍO */
-      if (window.FormLimit) {
-        window.FormLimit.registrarEnvio();
+      if (error) {
+        if (error.code === "23505") {
+          toast("error", "Ya enviaste un pedido hoy");
+        } else {
+          toast("error", "Error al registrar el pedido");
+        }
+        return;
       }
 
       toast(
         "success",
-        "Te enviamos un correo de confirmación. Debes confirmarlo para completar el pedido."
+        "Pedido enviado correctamente"
       );
 
       form.reset();
+      localStorage.removeItem("camisas_seleccionadas");
       window.dispatchEvent(new CustomEvent("camisas:update"));
 
     } catch {
-      toast("error", "Error al enviar. Intenta nuevamente.");
+      toast("error", "Error de conexión");
     }
   });
 
