@@ -130,6 +130,23 @@
   background: transparent;
 }
 
+/*boton carrito*/
+.btn-carrito{
+  background: transparent;
+  width: 30px;
+  height: 30px;
+  border: none;
+}
+
+.ph.ph-shopping-cart:before{
+  font-size: 25px;
+  color: white;
+}
+
+#navbar.scrolled .ph.ph-shopping-cart:before{
+  color: #ac1717 !important;
+}
+
 /* MENÚ POPUP (para móvil) */
 .nav-popup {
   position: absolute;
