@@ -1,293 +1,260 @@
-/* =====================================================
-   producto.js — COMPATIBLE CON motor + anime
-===================================================== */
-
-// 🔹 Unimos todas las categorías
-const data = {
-  ...window.motor,
-  ...window.anime
-};
-
-// 🔹 ID desde URL
+// producto.js — ACTUALIZADO CON LÍMITE DE 6
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-// 🔹 Validación fuerte
-if (!id || !data[id]) {
-  document.getElementById("producto-container").innerHTML =
+if (!id) {
+  document.getElementById("producto-container").innerHTML = 
     "<p style='text-align:center'>Producto no encontrado</p>";
   throw new Error("Producto no encontrado");
 }
 
-const p = data[id];
-
-const precio = typeof p.precio === "string"
-  ? parseFloat(p.precio.replace("$", ""))
-  : Number(p.precio);
-
-function formatPrice(value) {
-  const num = Number(value);
-  return isNaN(num) ? "$0.00" : `$${num.toFixed(2)}`;
-}
-
-const toast = Swal.mixin({
-  toast: true,
-  position: "top-end",
-  showConfirmButton: false,
-  timer: 1800,
-  timerProgressBar: true,
-  customClass: {
-    popup: "swal-toast-avenir"
-  }
-});
-
-document.getElementById("producto-container").innerHTML = `
-<div class="card-camisa card-producto">
-  <span class="categoria-camisa" id="categoriaProducto">${p.categoria}</span>
-
-  <!-- ================= CARRUSEL MÓVIL (BOOTSTRAP) ================= -->
-  <div id="carouselBootstrap" class="carousel slide d-lg-none">
-    <div class="carousel-indicators">
-      ${p.imagenes.map((_, i) => `
-        <button type="button"
-          data-bs-target="#carouselBootstrap"
-          data-bs-slide-to="${i}"
-          class="${i === 0 ? 'active' : ''}"
-          ${i === 0 ? 'aria-current="true"' : ''}
-          aria-label="Slide ${i + 1}">
-        </button>
-      `).join("")}
-    </div>
-
-    <div class="carousel-inner">
-      ${p.imagenes.map((img, i) => `
-        <div class="carousel-item ${i === 0 ? 'active' : ''}">
-          <img src="${img}" class="img-card" alt="${p.nombre}">
-        </div>
-      `).join("")}
-    </div>
-
-    <button class="carousel-control-prev" type="button"
-      data-bs-target="#carouselBootstrap" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-
-    <button class="carousel-control-next" type="button"
-      data-bs-target="#carouselBootstrap" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
-  </div>
-
-  <!-- ================= CARRUSEL DESKTOP ================= -->
-  <div class="carousel-simple d-none d-lg-block">
-    <div class="carousel-simple-inner">
-      ${p.imagenes.map((img, i) => `
-        <div class="carousel-simple-item ${i === 0 ? 'active' : ''}">
-          <img src="${img}" class="img-card" alt="${p.nombre} ${i + 1}">
-        </div>
-      `).join("")}
-    </div>
-
-    <button class="carousel-simple-btn prev">
-      <i class="ph ph-caret-left"></i>
-    </button>
-    <button class="carousel-simple-btn next">
-      <i class="ph ph-caret-right"></i>
-    </button>
-
-    <div class="carousel-simple-controls">
-      ${p.imagenes.map((_, i) => `
-        <div class="carousel-simple-indicator ${i === 0 ? 'active' : ''}"
-             data-index="${i}"></div>
-      `).join("")}
-    </div>
-  </div>
-
-  <!-- ================= INFO ================= -->
-  <section class="section-camisa">
-    <h2 class="lbl-nombre-camisa">${p.nombre}</h2>
-    <p class="lbl-descripcion">${p.descripcion}</p>
-    <h2 class="price-camisa">${formatPrice(p.precio)}</h2>
-
-
-    <p class="lbl-tallas">Tallas: <span class="tallas"><strong>Selecciona</strong></span> </p>
-    <div class="tallas-camisa">
-      ${p.tallas.map(t => `<div class="tag talla">${t}</div>`).join("")}
-    </div>
-
-    <p class="lbl-color-elg">Color: <span class="color-nombre"><strong>Selecciona</strong></span></p>
-    <div class="colores-camisa">
-      ${(p.colores || []).slice(0, 4).map(c => `
-        <div class="color-dot" 
-             style="background:${c.hex}" 
-             data-color="${c.name}"></div>
-      `).join("")}
-    </div>
-
-    <div class="cantidad-box">
-      <button class="btn-menos"><i class="ph ph-minus"></i></button>
-      <span class="cantidad">1</span>
-      <button class="btn-mas"><i class="ph ph-plus"></i></button>
-    </div>
-
-    <p class="subtotal">Subtotal: $<span id="subtotal">${precio.toFixed(2)}</span></p>
-
-    <button class="btn-seleccionar">Elegir</button>
-
-  </section>
-</div>
-`;
-
-/* =====================================================
-   CARRUSEL SIMPLE DESKTOP (INIT DESPUÉS DE RENDER)
-===================================================== */
-
-initCarouselSimple();
-
-function initCarouselSimple() {
-  const carousel = document.querySelector(".carousel-simple");
-  if (!carousel || window.innerWidth < 992) return;
-
-  const items = carousel.querySelectorAll(".carousel-simple-item");
-  const indicators = carousel.querySelectorAll(".carousel-simple-indicator");
-  const btnPrev = carousel.querySelector(".carousel-simple-btn.prev");
-  const btnNext = carousel.querySelector(".carousel-simple-btn.next");
-
-  let index = 0;
-  const total = items.length;
-
-  function showSlide(i) {
-    items.forEach(el => el.classList.remove("active"));
-    indicators.forEach(el => el.classList.remove("active"));
-
-    items[i].classList.add("active");
-    indicators[i].classList.add("active");
-    index = i;
+// Esperar a que Supabase esté disponible
+async function cargarProducto() {
+  const container = document.getElementById("producto-container");
+  
+  if (!window.supabase) {
+    container.innerHTML = "<p>Cargando...</p>";
+    setTimeout(cargarProducto, 100);
+    return;
   }
 
-  btnNext.addEventListener("click", () => {
-    showSlide((index + 1) % total);
-  });
+  try {
+    const { data, error } = await window.supabase
+      .from('catalogo_camisas')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-  btnPrev.addEventListener("click", () => {
-    showSlide((index - 1 + total) % total);
-  });
+    if (error || !data) throw error || new Error("Producto no encontrado");
 
-  indicators.forEach((ind, i) => {
-    ind.addEventListener("click", () => showSlide(i));
-  });
+    renderizarProducto(data);
+    inicializarEventos(data);
+
+  } catch (error) {
+    container.innerHTML = "<p style='text-align:center'>Producto no encontrado</p>";
+    console.error("Error cargando producto:", error);
+  }
 }
 
-let cantidad = 1;
+function renderizarProducto(p) {
+  const precio = parseFloat(p.precio);
+  
+  document.getElementById("producto-container").innerHTML = `
+  <div class="card-camisa card-producto">
+    <span class="categoria-camisa">${p.categoria}</span>
 
-let tallaSeleccionada = null;
-let colorSeleccionado = null;
+    <!-- Carrusel Móvil -->
+    <div id="carouselBootstrap" class="carousel slide d-lg-none">
+      <div class="carousel-indicators">
+        ${p.imagenes.map((_, i) => `
+          <button type="button"
+            data-bs-target="#carouselBootstrap"
+            data-bs-slide-to="${i}"
+            class="${i === 0 ? 'active' : ''}"
+            ${i === 0 ? 'aria-current="true"' : ''}
+            aria-label="Slide ${i + 1}">
+          </button>
+        `).join("")}
+      </div>
 
-const maxCantidad = 10;
-const subtotalEl = document.getElementById("subtotal");
+      <div class="carousel-inner">
+        ${p.imagenes.map((img, i) => `
+          <div class="carousel-item ${i === 0 ? 'active' : ''}">
+            <img src="${img}" class="img-card" alt="${p.titulo}">
+          </div>
+        `).join("")}
+      </div>
 
+      <button class="carousel-control-prev" type="button"
+        data-bs-target="#carouselBootstrap" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
 
-// 👉 TALLAS (unica)
-const tallaTexto = document.querySelector(".tallas strong");
+      <button class="carousel-control-next" type="button"
+        data-bs-target="#carouselBootstrap" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
 
-document.querySelectorAll(".tag.talla").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tag.talla")
-      .forEach(b => b.classList.remove("active"));
+    <!-- Carrusel Desktop -->
+    <div class="carousel-simple d-none d-lg-block">
+      <div class="carousel-simple-inner">
+        ${p.imagenes.map((img, i) => `
+          <div class="carousel-simple-item ${i === 0 ? 'active' : ''}">
+            <img src="${img}" class="img-card" alt="${p.titulo} ${i + 1}">
+          </div>
+        `).join("")}
+      </div>
 
-    btn.classList.add("active");
-    tallaTexto.textContent = btn.textContent;
+      <button class="carousel-simple-btn prev">
+        <i class="ph ph-caret-left"></i>
+      </button>
+      <button class="carousel-simple-btn next">
+        <i class="ph ph-caret-right"></i>
+      </button>
 
-    tallaSeleccionada = btn.textContent;
+      <div class="carousel-simple-controls">
+        ${p.imagenes.map((_, i) => `
+          <div class="carousel-simple-indicator ${i === 0 ? 'active' : ''}"
+               data-index="${i}"></div>
+        `).join("")}
+      </div>
+    </div>
+
+    <!-- Info del producto -->
+    <section class="section-camisa">
+      <h2>${p.titulo}</h2>
+      <p>${p.descripcion}</p>
+      <h2 class="price-camisa">$${precio.toFixed(2)}</h2>
+
+      <p>Tallas: <strong class="talla-txt">Selecciona</strong></p>
+      <div class="tallas-camisa">
+        ${p.tallas.map(t => `<div class="tag talla">${t}</div>`).join("")}
+      </div>
+
+      <p>Color: <strong class="color-txt">Selecciona</strong></p>
+      <div class="colores-camisa">
+        ${(p.colores || []).map(c => `
+          <div class="color-dot" style="background:${c.hex}" data-color="${c.name}" title="${c.name}"></div>
+        `).join("")}
+      </div>
+
+      <div class="cantidad-box">
+        <button class="menos">-</button>
+        <span class="cantidad">1</span>
+        <button class="mas">+</button>
+      </div>
+
+      <p>Subtotal: $<span id="subtotal">${precio.toFixed(2)}</span></p>
+
+      <button class="btn-seleccionar">Agregar al carrito</button>
+    </section>
+  </div>
+  `;
+}
+
+function inicializarEventos(p) {
+  let cantidad = 1;
+  let talla = null;
+  let color = null;
+  const precio = parseFloat(p.precio);
+  const subtotal = document.getElementById("subtotal");
+
+  // Toast
+  const toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 1800,
+    timerProgressBar: true,
+    customClass: { popup: "swal-toast-avenir" }
   });
 
-});
-
-// 👉 COLORES (single)
-const colorNombre = document.querySelector(".color-nombre strong");
-
-document.querySelectorAll(".color-dot").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".color-dot")
-      .forEach(b => b.classList.remove("active"));
-
-    btn.classList.add("active");
-    colorNombre.textContent = btn.dataset.color;
-
-    colorSeleccionado = btn.dataset.color;
+  // Tallas
+  document.querySelectorAll(".tag.talla").forEach(t => {
+    t.onclick = () => {
+      document.querySelectorAll(".tag.talla").forEach(x => x.classList.remove("active"));
+      t.classList.add("active");
+      talla = t.textContent;
+      document.querySelector(".talla-txt").textContent = talla;
+    };
   });
-});
 
-// 👉 CONTADOR
-document.querySelector(".btn-mas").onclick = () => {
-  if (cantidad < maxCantidad) {
+  // Colores
+  document.querySelectorAll(".color-dot").forEach(c => {
+    c.onclick = () => {
+      document.querySelectorAll(".color-dot").forEach(x => x.classList.remove("active"));
+      c.classList.add("active");
+      color = c.dataset.color;
+      document.querySelector(".color-txt").textContent = color;
+    };
+  });
+
+  // Cantidad
+  document.querySelector(".mas").onclick = () => {
     cantidad++;
-    actualizarCantidad();
-  }
-};
+    actualizar();
+  };
+  
+  document.querySelector(".menos").onclick = () => {
+    if (cantidad > 1) cantidad--;
+    actualizar();
+  };
 
-document.querySelector(".btn-menos").onclick = () => {
-  if (cantidad > 1) {
-    cantidad--;
-    actualizarCantidad();
+  function actualizar() {
+    document.querySelector(".cantidad").textContent = cantidad;
+    subtotal.textContent = (cantidad * precio).toFixed(2);
   }
-};
 
-function actualizarCantidad() {
-  document.querySelector(".cantidad").textContent = cantidad;
-  subtotalEl.textContent = (cantidad * Number(p.precio)).toFixed(2);
+  // Agregar al carrito
+  document.querySelector(".btn-seleccionar").onclick = () => {
+    if (!talla || !color) {
+      toast.fire({ icon: "info", title: "Selecciona talla y color" });
+      return;
+    }
+
+    const producto = {
+      id: p.id,
+      nombre: p.titulo,
+      precio: precio,
+      talla,
+      color,
+      cantidad,
+      imagen: p.imagenes[0]
+    };
+
+    // Usar la nueva función que verifica límite y duplicados
+    if (window.agregarAlCarrito && typeof window.agregarAlCarrito === 'function') {
+      const agregado = window.agregarAlCarrito(producto);
+      
+      if (agregado) {
+        toast.fire({ 
+          icon: "success", 
+          title: "Camisa agregada al carrito"
+        });
+      }
+    } else {
+      // Fallback si la función no existe
+      const KEY = "camisas_seleccionadas";
+      const lista = JSON.parse(localStorage.getItem(KEY)) || [];
+      
+      // Verificar límite de 6 camisas
+      if (lista.length >= 6) {
+        toast.fire({ 
+          icon: "warning", 
+          title: "Límite alcanzado",
+          text: "Máximo 6 camisas por pedido. Elimina algunas para agregar más."
+        });
+        return;
+      }
+
+      // Verificar duplicados
+      const existe = lista.some(item => 
+        item.id === p.id && 
+        item.talla === talla && 
+        item.color === color
+      );
+      
+      if (existe) {
+        toast.fire({ 
+          icon: "info", 
+          title: "Ya está en el carrito"
+        });
+        return;
+      }
+
+      lista.push(producto);
+      localStorage.setItem(KEY, JSON.stringify(lista));
+      window.dispatchEvent(new CustomEvent("camisas:update"));
+
+      toast.fire({ 
+        icon: "success", 
+        title: "Camisa agregada al carrito",
+        text: `(${lista.length}/6 camisas)`
+      });
+    }
+  };
 }
 
-document.querySelector(".btn-seleccionar").onclick = () => {
-
-  if (!tallaSeleccionada) {
-    toast.fire({
-      icon: "info",
-      title: "Selecciona una talla"
-    });
-    return;
-  }
-
-  if (!colorSeleccionado) {
-    toast.fire({
-      icon: "info",
-      title: "Selecciona un color"
-    });
-    return;
-  }
-
-  const KEY = "camisas_seleccionadas";
-  const actuales = JSON.parse(localStorage.getItem(KEY)) || [];
-
-  // evitar duplicados exactos
-  const existe = actuales.some(c =>
-    c.id === p.id &&
-    c.talla === tallaSeleccionada &&
-    c.color === colorSeleccionado
-  );
-
-  if (existe) {
-    toast.fire({
-      icon: "warning",
-      title: "Esta camisa ya fue seleccionada"
-    });
-    return;
-  }
-
-  actuales.push({
-    id: p.id,
-    talla: tallaSeleccionada,
-    color: colorSeleccionado,
-    cantidad
-  });
-
-  localStorage.setItem(KEY, JSON.stringify(actuales));
-
-  window.dispatchEvent(new CustomEvent("camisas:update"));
-
-  toast.fire({
-    icon: "success",
-    title: "Camisa agregada"
-  });
-
-};
+// Iniciar carga
+cargarProducto();
