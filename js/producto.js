@@ -150,6 +150,54 @@ function inicializarEventos(p) {
     customClass: { popup: "swal-toast-avenir" }
   });
 
+  // ---------- CARRUSEL DE ESCRITORIO (NUEVO CÓDIGO) ----------
+  // Espera a que se renderice el DOM antes de inicializar
+  setTimeout(() => {
+    const carruselItems = document.querySelectorAll('.carousel-simple-item');
+    const prevBtn = document.querySelector('.carousel-simple-btn.prev');
+    const nextBtn = document.querySelector('.carousel-simple-btn.next');
+    const indicators = document.querySelectorAll('.carousel-simple-indicator');
+    
+    if (carruselItems.length > 0) {
+      let currentIndex = 0;
+
+      function updateCarousel() {
+        // Remover clase 'active' de todos los items e indicadores
+        carruselItems.forEach(item => item.classList.remove('active'));
+        indicators.forEach(ind => ind.classList.remove('active'));
+
+        // Agregar 'active' al item e indicador actual
+        carruselItems[currentIndex].classList.add('active');
+        indicators[currentIndex].classList.add('active');
+      }
+
+      // Botón siguiente
+      if (nextBtn) {
+        nextBtn.onclick = () => {
+          currentIndex = (currentIndex + 1) % carruselItems.length;
+          updateCarousel();
+        };
+      }
+
+      // Botón anterior
+      if (prevBtn) {
+        prevBtn.onclick = () => {
+          currentIndex = (currentIndex - 1 + carruselItems.length) % carruselItems.length;
+          updateCarousel();
+        };
+      }
+
+      // Eventos para los indicadores (hacer clic en los puntos)
+      indicators.forEach((indicator, index) => {
+        indicator.onclick = () => {
+          currentIndex = index;
+          updateCarousel();
+        };
+      });
+    }
+  }, 50); // Pequeño retraso para asegurar que el DOM está listo
+  // ---------- FIN CARRUSEL DE ESCRITORIO ----------
+
   // Tallas
   document.querySelectorAll(".tag.talla").forEach(t => {
     t.onclick = () => {
