@@ -7,9 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const navbarToggler = document.getElementById('navbarToggler');
     const navPopup = document.getElementById('navPopup');
     const navbar = document.getElementById('navbar');
-    const btnCats = document.querySelectorAll('.btn-cat');
     const popupLinks = document.querySelectorAll('.popup-link, .popup-contacto');
-    const desktopLinks = document.querySelectorAll('.nav-links-desktop a, .cta-contacto');
+    const desktopLinks = document.querySelectorAll('.nav-links-desktop a, .cta-contacto, .popup-carrito');
     
     // =========================================
     // TOGGLE POPUP (MÓVIL)
@@ -29,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Si es el botón Contacto, hacer scroll suave
                 if (this.classList.contains('popup-contacto')) {
-                    document.getElementById('contacto')?.scrollIntoView({
+                    document.getElementById('contact')?.scrollIntoView({
                         behavior: 'smooth'
                     });
                 }
@@ -68,22 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // =========================================
-    // FILTRADO CATEGORÍAS
-    // =========================================
-    btnCats.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Remover active de todos
-            btnCats.forEach(b => b.classList.remove('active'));
-            // Agregar al clickeado
-            this.classList.add('active');
-            
-            // Tu lógica de filtrado
-            const cat = this.getAttribute('data-cat');
-            console.log('Categoría seleccionada:', cat);
-            // FiltraCamisas(cat); // Tu función de filtrado
-        });
-    });
     
     // =========================================
     // NAVBAR SCROLL EFFECT (tu código original)
@@ -95,27 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
             navbar.classList.remove('scrolled');
         }
     });
-    
-    // =========================================
-    // BÚSQUEDA
-    // =========================================
-    const inputSearch = document.querySelector('.input__search');
-    if (inputSearch) {
-        inputSearch.addEventListener('input', function() {
-            const term = this.value.toLowerCase().trim();
-            if (term.length >= 2) {
-                console.log('Buscando:', term);
-                // buscarCamisas(term); // Tu función de búsqueda
-            }
-        });
-        
-        inputSearch.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && this.value.trim()) {
-                console.log('Búsqueda con Enter:', this.value);
-                // buscarCamisas(this.value); // Tu función de búsqueda
-            }
-        });
-    }
+
     
     // =========================================
     // REVEAL ON SCROLL (tu código original)

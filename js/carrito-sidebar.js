@@ -7,6 +7,7 @@ console.log('🛒 carrito-sidebar.js cargado');
   const overlay = document.getElementById('carritoOverlay');
   const btnCerrar = document.getElementById('cerrarCarrito');
   const btnCarrito = document.querySelector('.btn-carrito');
+  const btnPedido = document.querySelector('.popup-carrito');
   const btnPedidoCarrito = document.getElementById('btnPedidoCarrito');
   
   if (!sidebar || !overlay) return;
@@ -74,8 +75,8 @@ console.log('🛒 carrito-sidebar.js cargado');
     if (existe) {
       Swal.fire({
         icon: 'info',
-        title: 'Ya está en el carrito',
-        text: 'Esta camisa ya está en tu carrito',
+        title: 'Ya está en el pedido',
+        text: 'Esta camisa ya está en tu carrito de pedido',
         timer: 1500
       });
       return false;
@@ -110,7 +111,7 @@ console.log('🛒 carrito-sidebar.js cargado');
     
     if (index >= 0 && index < carrito.length) {
       Swal.fire({
-        title: '¿Eliminar del carrito?',
+        title: '¿Eliminar del pedido?',
         text: `¿Quieres eliminar "${carrito[index].nombre}"?`,
         icon: 'warning',
         showCancelButton: true,
@@ -128,7 +129,7 @@ console.log('🛒 carrito-sidebar.js cargado');
             toast: true,
             position: 'top-end',
             icon: 'success',
-            title: 'Eliminado del carrito',
+            title: 'Eliminado del pedido',
             showConfirmButton: false,
             timer: 1500
           });
@@ -151,7 +152,7 @@ console.log('🛒 carrito-sidebar.js cargado');
       listaCarrito.innerHTML = `
         <div class="carrito-vacio">
           <i class="ph ph-shopping-cart-simple" style="font-size: 48px; opacity: 0.3;"></i>
-          <p>No hay camisas en el carrito</p>
+          <p>No hay camisas en el carrito de pedido</p>
         </div>
       `;
       
@@ -199,6 +200,10 @@ console.log('🛒 carrito-sidebar.js cargado');
   // Configurar botones
   if (btnCarrito) {
     btnCarrito.addEventListener('click', () => toggleCarrito(true));
+  }
+
+  if (btnPedido) {
+    btnPedido.addEventListener('click', () => toggleCarrito(true));
   }
   
   if (btnCerrar) {

@@ -68,18 +68,20 @@
             </div>
         </div>
 
-        <!-- Menú popup (Catálogo + Contacto) -->
+        <!-- Menú popup (Catálogo + Contacto) MOVIL-->
         <div class="nav-popup" id="navPopup">
             <a href="#catalogo" class="popup-link">Catálogo</a>
-            <button class="popup-contacto">Contacto</button>
+            <button class="popup-contacto">Contactos</button>
+            <button class="popup-carrito">Pedidos</button>
+            
         </div>
 
         <!-- Categorías SIN FONDO (separadas de la navbar) -->
-        <div class="nav-categorias-wrapper">
+       <div class="nav-categorias-wrapper">
             <div class="nav-categorias">
+                <!-- Botón "Todas" siempre presente -->
                 <button class="btn-cat active" data-cat="todas">Todas</button>
-                <button class="btn-cat" data-cat="cat-anime">Anime</button>
-                <button class="btn-cat" data-cat="cat-motor">Motor</button>
+                <!-- Las demás categorías se insertarán dinámicamente aquí -->
             </div>
         </div>
 
@@ -181,7 +183,7 @@
     <!-- SIDEBAR CARRITO CORREGIDO -->
     <div id="carritoSidebar" class="carrito-sidebar">
         <div class="carrito-header">
-            <h3>Tu carrito</h3>
+            <h3>Tu Pedido</h3>
             <button id="cerrarCarrito">&times;</button>
         </div>
 
