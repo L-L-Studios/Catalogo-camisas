@@ -1,8 +1,7 @@
-// carrito-sidebar.js - VERSIÓN COMPLETA CON LÍMITE DE 6 Y SIN DUPLICADOS
+// carrito-sidebar.js - ACTUALIZADO CON LÍMITE DE 10 CAMISAS TOTALES
 console.log('🛒 carrito-sidebar.js cargado');
 
 (function() {
-  // Verificar si estamos en una página con carrito
   const sidebar = document.getElementById('carritoSidebar');
   const overlay = document.getElementById('carritoOverlay');
   const btnCerrar = document.getElementById('cerrarCarrito');
@@ -13,7 +12,7 @@ console.log('🛒 carrito-sidebar.js cargado');
   if (!sidebar || !overlay) return;
   
   const KEY = "camisas_seleccionadas";
-  const MAX_CAMISAS = 6;
+  const MAX_CAMISAS_TOTALES = 10; // ← CAMBIADO DE 6 A 10
   
   // Función para obtener datos del carrito
   const getCarrito = () => {
@@ -24,6 +23,11 @@ console.log('🛒 carrito-sidebar.js cargado');
   const saveCarrito = (carrito) => {
     localStorage.setItem(KEY, JSON.stringify(carrito));
     window.dispatchEvent(new CustomEvent("camisas:update"));
+  };
+  
+  // Función para calcular camisas totales (considerando cantidad)
+  const calcularTotalCamisas = (carrito) => {
+    return carrito.reduce((total, item) => total + (item.cantidad || 1), 0);
   };
   
   // Función global para abrir/cerrar carrito
@@ -44,23 +48,29 @@ console.log('🛒 carrito-sidebar.js cargado');
     }
   };
   
-  // Función para verificar límite de 6 camisas
-  window.verificarLimiteCarrito = function() {
+  // Función para verificar límite de 10 camisas totales
+  window.verificarLimiteCarrito = function(producto) {
     const carrito = getCarrito();
-    return carrito.length >= MAX_CAMISAS;
+    const camisasActuales = calcularTotalCamisas(carrito);
+    const cantidadProducto = producto.cantidad || 1;
+    
+    return (camisasActuales + cantidadProducto) > MAX_CAMISAS_TOTALES;
   };
   
   // Función para agregar camisa (con verificación de duplicados y límite)
   window.agregarAlCarrito = function(producto) {
     const carrito = getCarrito();
+    const camisasActuales = calcularTotalCamisas(carrito);
+    const cantidadProducto = producto.cantidad || 1;
     
-    // 1. Verificar límite
-    if (carrito.length >= MAX_CAMISAS) {
+    // 1. Verificar límite total de camisas
+    if ((camisasActuales + cantidadProducto) > MAX_CAMISAS_TOTALES) {
       Swal.fire({
         icon: 'warning',
         title: 'Límite alcanzado',
-        text: `Máximo ${MAX_CAMISAS} camisas por pedido. Elimina algunas para agregar más.`,
-        timer: 2000
+        text: `Máximo ${MAX_CAMISAS_TOTALES} camisas por pedido. Tienes ${camisasActuales} y quieres agregar ${cantidadProducto} más.`,
+        timer: 3000,
+        customClass: { popup: 'swal2-popup' }
       });
       return false;
     }
@@ -77,7 +87,8 @@ console.log('🛒 carrito-sidebar.js cargado');
         icon: 'info',
         title: 'Ya está en el pedido',
         text: 'Esta camisa ya está en tu carrito de pedido',
-        timer: 1500
+        timer: 1500,
+        customClass: { popup: 'swal2-popup' }
       });
       return false;
     }
@@ -92,14 +103,16 @@ console.log('🛒 carrito-sidebar.js cargado');
     }
     
     // 5. Mostrar notificación
+    const nuevoTotal = calcularTotalCamisas(carrito);
     Swal.fire({
       toast: true,
       position: 'top-end',
       icon: 'success',
       title: 'Camisa agregada',
-      text: `(${carrito.length}/${MAX_CAMISAS} camisas)`,
+      text: `(${nuevoTotal}/${MAX_CAMISAS_TOTALES} camisas totales)`,
       showConfirmButton: false,
-      timer: 1500
+      timer: 1500,
+      customClass: { popup: 'swal-toast-avenir' }
     });
     
     return true;
@@ -118,7 +131,8 @@ console.log('🛒 carrito-sidebar.js cargado');
         confirmButtonColor: '#CB2D2D',
         cancelButtonColor: '#6c757d',
         confirmButtonText: 'Sí, eliminar',
-        cancelButtonText: 'Cancelar'
+        cancelButtonText: 'Cancelar',
+        customClass: { popup: 'swal2-popup' }
       }).then((result) => {
         if (result.isConfirmed) {
           carrito.splice(index, 1);
@@ -131,7 +145,8 @@ console.log('🛒 carrito-sidebar.js cargado');
             icon: 'success',
             title: 'Eliminado del pedido',
             showConfirmButton: false,
-            timer: 1500
+            timer: 1500,
+            customClass: { popup: 'swal-toast-avenir' }
           });
         }
       });
@@ -142,11 +157,11 @@ console.log('🛒 carrito-sidebar.js cargado');
   function actualizarVistaCarrito() {
     const listaCarrito = document.getElementById('listaCarrito');
     const totalCarrito = document.getElementById('totalCarrito');
-    const totalCarrito2 = document.getElementById('totalCarrito'); // para producto.html
     
     if (!listaCarrito) return;
     
     const carrito = getCarrito();
+    const totalCamisas = calcularTotalCamisas(carrito);
     
     if (carrito.length === 0) {
       listaCarrito.innerHTML = `
@@ -157,16 +172,35 @@ console.log('🛒 carrito-sidebar.js cargado');
       `;
       
       if (totalCarrito) totalCarrito.textContent = '0.00';
+      
+      // Actualizar contador en el botón del carrito
+      const btnCarritoContador = document.querySelector('.btn-carrito .contador');
+      if (btnCarritoContador) {
+        btnCarritoContador.textContent = '0';
+      }
+
+      // Actualizar contador en el botón del carrito en producto
+      const btnPedido = document.querySelector('.btn-carrito-producto .contador');
+      if (btnPedido) {
+        btnPedido.textContent = '0';
+      }
+      
       return;
     }
     
-    // Calcular total
-    let total = 0;
+    // Calcular total monetario
+    let totalMonetario = 0;
     let html = '';
     
     carrito.forEach((item, index) => {
       const subtotal = (item.precio || 0) * (item.cantidad || 1);
-      total += subtotal;
+      totalMonetario += subtotal;
+      
+      // Mostrar nota de costo extra si existe
+      const costoExtraHtml = item.costo_extra ? 
+        `<div class="carrito-item-costo-extra">
+           <small><strong>Extra:</strong> ${item.costo_extra}</small>
+         </div>` : '';
       
       html += `
         <div class="carrito-item">
@@ -182,6 +216,7 @@ console.log('🛒 carrito-sidebar.js cargado');
             <div class="carrito-item-cantidad">
               Cantidad: ${item.cantidad || 1}
             </div>
+            ${costoExtraHtml}
             <div class="carrito-item-subtotal">$${subtotal.toFixed(2)}</div>
           </div>
           <button class="carrito-item-eliminar" onclick="eliminarDelCarrito(${index})">
@@ -193,8 +228,26 @@ console.log('🛒 carrito-sidebar.js cargado');
     
     listaCarrito.innerHTML = html;
     
-    // Actualizar total
-    if (totalCarrito) totalCarrito.textContent = total.toFixed(2);
+    // Mostrar contador de camisas totales
+    const contadorInfo = document.createElement('div');
+    contadorInfo.className = 'carrito-contador-info';
+    contadorInfo.innerHTML = `<small>Total de camisas: ${totalCamisas}/${MAX_CAMISAS_TOTALES}</small>`;
+    listaCarrito.insertBefore(contadorInfo, listaCarrito.firstChild);
+    
+    // Actualizar total monetario
+    if (totalCarrito) totalCarrito.textContent = totalMonetario.toFixed(2);
+    
+    // Actualizar contador en el botón del carrito
+    const btnCarritoContador = document.querySelector('.btn-carrito .contador');
+    if (btnCarritoContador) {
+      btnCarritoContador.textContent = totalCamisas;
+    }
+
+     // Actualizar contador en el botón del carrito
+    const btnPedido = document.querySelector('.btn-carrito-producto .contador');
+    if (btnPedido) {
+      btnPedido.textContent = totalCamisas;
+    }
   }
   
   // Configurar botones
@@ -225,11 +278,24 @@ console.log('🛒 carrito-sidebar.js cargado');
   window.addEventListener('camisas:update', () => {
     if (sidebar.classList.contains('active')) {
       actualizarVistaCarrito();
+    } else {
+      // Solo actualizar contador
+      const carrito = getCarrito();
+      const totalCamisas = calcularTotalCamisas(carrito);
+      const btnCarritoContador = document.querySelector('.btn-carrito .contador');
+      if (btnCarritoContador) {
+        btnCarritoContador.textContent = totalCamisas;
+      }
+
+      const btnPedido = document.querySelector('.btn-carrito-producto .contador');
+      if (btnPedido) {
+        btnPedido.textContent = totalCamisas;
+      }
     }
   });
   
   // Inicializar vista del carrito
   actualizarVistaCarrito();
   
-  console.log('✅ carrito-sidebar.js configurado');
+  console.log('✅ carrito-sidebar.js configurado (límite: 10 camisas)');
 })();

@@ -32,9 +32,9 @@
 }
 
 .logo {
-  font-size: 26px;
-  font-weight: 700;
-  color: #fff;
+  width: 90px;
+  height: auto;
+  fill: #f6fffe;
 }
 
 /* Botón hamburguesa */
@@ -133,18 +133,33 @@
 /*boton carrito*/
 .btn-carrito{
   background: transparent;
-  width: 30px;
-  height: 30px;
   border: none;
+
+  padding: 8px 20px;
+  border-radius: 999px;
+  /*background: linear-gradient(135deg, #CB2D2D, #FFE100);*/
+  background: radial-gradient(
+    65.28% 65.28% at 50% 100%,
+    #FFE100cc 0%,
+    #df71ff00 100%
+  ),
+  linear-gradient(0deg, #ff5500, #CB2D2D) !important;
+  color: white;
+  font-weight: 600;
+  font-size: 16px !important;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-carrito:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(203, 45, 45, 0.4);
 }
 
 .ph.ph-shopping-cart:before{
   font-size: 25px;
   color: white;
-}
-
-#navbar.scrolled .ph.ph-shopping-cart:before{
-  color: #ac1717 !important;
 }
 
 /* MENÚ POPUP (para móvil) */
@@ -185,10 +200,8 @@
 }
 
 .popup-contacto {
-  padding: 10px 15px;
-  border-radius: 20px;
   border: none;
-  background: linear-gradient(135deg, #f83b16, #CB2D2D);
+  background: transparent;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -204,7 +217,9 @@
   margin: 0 auto;
   font-size: 16px !important;
   color: white;
-  background-color: transparent;
+  background: linear-gradient(135deg, #f83b16, #CB2D2D);
+  padding: 10px 15px;
+  border-radius: 20px;
   border: none;
 }
 
@@ -275,33 +290,13 @@
 #navbar.scrolled .nav-links-desktop a,
 #navbar.scrolled .logo {
   color: #ac1717 !important;
+  fill: #ac1717 !important;
 }
 
 #navbar.scrolled .nav-links-desktop a:hover{
   color: #CB2D2D !important;
 }
 
-.cta-contacto {
-  padding: 8px 20px;
-  border-radius: 999px;
-  border: none;
-  /*background: linear-gradient(135deg, #CB2D2D, #FFE100);*/
-  background: radial-gradient(
-    65.28% 65.28% at 50% 100%,
-    #FFE100cc 0%,
-    #df71ff00 100%
-  ),
-  linear-gradient(0deg, #ff5500, #CB2D2D);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.cta-contacto:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(203, 45, 45, 0.4);
-}
 
 /* =========================================
    RESPONSIVIDAD - MÓVIL (< 768px)

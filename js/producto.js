@@ -112,7 +112,7 @@ function renderizarProducto(p) {
         ${p.tallas.map(t => `<div class="tag talla">${t}</div>`).join("")}
       </div>
 
-      <p>Color: <strong class="color-txt">Selecciona</strong></p>
+      <p class="color-lbl"> Color: <strong class="color-txt">Selecciona</strong></p>
       <div class="colores-camisa">
         ${(p.colores || []).map(c => `
           <div class="color-dot" style="background:${c.hex}" data-color="${c.name}" title="${c.name}"></div>
@@ -124,6 +124,11 @@ function renderizarProducto(p) {
         <span class="cantidad">1</span>
         <button class="mas">+</button>
       </div>
+
+      <p>Puedes añadir elementos adicionales a tu camisa, <br> con gusto podemos hacerlo por un <strong class="coste-txt">costo extra</strong>. <strong class="lbl-opcional">(opcional)</strong> </p>
+
+      <textarea class="costo-extra" name="costo-extra" placeholder="Escribe lo que deseas agregar extra o cambio a tu pedido" rows="3"></textarea>
+        
 
       <p>Subtotal: $<span id="subtotal">${precio.toFixed(2)}</span></p>
 
@@ -241,6 +246,9 @@ function inicializarEventos(p) {
       return;
     }
 
+    // Capturar el texto del costo extra (NUEVO)
+    const costoExtra = document.querySelector(".costo-extra")?.value.trim() || "";
+
     const producto = {
       id: p.id,
       nombre: p.titulo,
@@ -248,7 +256,8 @@ function inicializarEventos(p) {
       talla,
       color,
       cantidad,
-      imagen: p.imagenes[0]
+      imagen: p.imagenes[0],
+      costo_extra: costoExtra  // ← NUEVO CAMPO AGREGADO
     };
 
     // Usar la nueva función que verifica límite y duplicados
@@ -265,13 +274,15 @@ function inicializarEventos(p) {
       // Fallback si la función no existe
       const KEY = "camisas_seleccionadas";
       const lista = JSON.parse(localStorage.getItem(KEY)) || [];
+
+      const camisasActuales = lista.reduce((total, item) => total + (item.cantidad || 1), 0);
       
-      // Verificar límite de 6 camisas
-      if (lista.length >= 6) {
+      // Verificar límite de 10 camisas
+      if ((camisasActuales + cantidad) > 10) {
         toast.fire({ 
           icon: "warning", 
           title: "Límite alcanzado",
-          text: "Máximo 6 camisas por pedido. Elimina algunas para agregar más."
+          text: `Máximo 10 camisas por pedido. Tienes ${camisasActuales} y quieres agregar ${cantidad} más.`
         });
         return;
       }
@@ -295,10 +306,12 @@ function inicializarEventos(p) {
       localStorage.setItem(KEY, JSON.stringify(lista));
       window.dispatchEvent(new CustomEvent("camisas:update"));
 
+      const nuevoTotal = lista.reduce((total, item) => total + (item.cantidad || 1), 0);
+
       toast.fire({ 
         icon: "success", 
         title: "Camisa agregada al carrito",
-        text: `(${lista.length}/6 camisas)`
+        text: `(${nuevoTotal.length}/10 camisas)`
       });
     }
   };

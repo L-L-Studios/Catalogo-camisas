@@ -16,7 +16,7 @@
     color: rgb(246, 255, 254);
     font-size: 1.8rem;
     font-weight: bold;
-    text-transform: uppercase;
+    
     margin-bottom: 20px;
 }
 
@@ -251,7 +251,7 @@ textarea.valid {
 
   width: 78%;
   max-width: 360px;
-  padding: 20px;
+  /*padding: 20px;*/
 
   border-radius: 16px;
   background: rgba(255,255,255,0.92);
@@ -263,14 +263,109 @@ textarea.valid {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 40;
 }
 
-/* ICONO TEMPORAL */
-.contact-image-card::before {
-  /*content: "⬤";*/
-  font-size: 1.8rem;
-  color: #ff9f43;
+/* =========================================
+  REDES SOCIALES
+========================================= */
+.card-redes {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 15px;
+  gap: 15px;
+  overflow: hidden;
+  border-radius: 27px;
+  z-index: 50;
+  fill: #252525;
 }
+
+.card-redes a {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.15, 0.83, 0.66, 1);
+}
+
+.socialSvg svg{
+  fill: #252525 !important;
+  
+} 
+
+.socialSvg path{
+  fill: #252525 !important;
+    width: 30px !important ;
+  height: 30px !important;
+} 
+
+.card-redes a:hover {
+  transform: scale(1.2);
+  border-radius: 15px;
+}
+/*instagram*/
+.card-redes a:nth-child(1):hover,
+.socialSvg:hover path  {
+  background-color: #d62976;
+} 
+/* Whatsapp*/
+.card-redes a:nth-child(2):hover ,
+.socialSvg:hover path {
+  background-color: #25d366;
+}
+
+.card-redes a:hover svg path {
+  fill: #fff !important;
+}
+
+.card-redes a:active {
+  transform: scale(1.1);
+  transition-duration: 0.3s;
+}
+
+/*first-child*/
+.card-redes a svg:first-child {
+  display: flex;
+  scale: 1.3;
+  position: absolute;
+  width: 20px;
+  opacity: 1;
+  transform: translateY(0px);
+  transition: all 0.4s cubic-bezier(0.15, 0.83, 0.66, 1);
+}
+
+.card-redes a svg:first-child path {
+  fill: rgb(255, 255, 255) ;
+}
+
+.card-redes a:hover svg:first-child {
+  transform: translateY(-40px);
+  opacity: 0;
+}
+/*last-child*/
+.card-redes a svg:last-child {
+  display: flex;
+  position: absolute;
+  width: 25px;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.15, 0.83, 0.66, 1);
+}
+.card-redes a svg:last-child path {
+  fill: rgb(255, 255, 255);
+}
+
+.card-redes a:hover svg:last-child {
+  opacity: 1;
+  transform: translateY(0px);
+}
+
 
 /*   ETIQUETA DE CAMISAS SELECCIONADAS */
 .camisas-seleccionadas {
@@ -304,6 +399,8 @@ textarea.valid {
 .camisa-chip button:hover {
   color: #ff4d4d;
 }
+
+
 
 
 

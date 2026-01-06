@@ -41,11 +41,9 @@ body {
 }
 
 .logo {
-  text-align: center;
-  font-weight: 700;
-  letter-spacing: 2px;
-  font-size: 26px;
-  color: white;
+  width: 70px;
+  height: auto;
+  fill: #f6fffe;
 }
 
 /* Contenedor principal con fondo animado */
@@ -179,6 +177,10 @@ body {
 @property --c-3 { syntax: '<color>'; inherits: false; initial-value: hsla(352.7,98%,41%,1) }
 @property --x-3 { syntax: '<percentage>'; inherits: false; initial-value: 24% }
 
+.ph.ph-shopping-cart:before{
+  color: white;
+}
+
 /* =========================
    RESPONSIVE PARA NAVBAR
 ========================= */
@@ -188,9 +190,6 @@ body {
     padding: 5px 15px;
   }
   
-  .logo {
-    font-size: 22px;
-  }
   
   .btn-volver {
     font-size: 1.2rem;

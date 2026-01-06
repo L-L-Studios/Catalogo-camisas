@@ -66,6 +66,11 @@
 }
 
 /*-------------------------------------------------------------------+-*/
+p{
+  margin-top: 10px;
+  padding-bottom: 0 !important ;
+}
+
 /* ===== TALLAS ===== */
 .tag.talla {
   border: 1px solid #ccc;
@@ -73,6 +78,7 @@
   background: transparent;
   cursor: pointer;
   padding: 0.20rem 0.5rem;
+  border: 1.5px solid rgba(69, 69, 69, 0.45);
 }
 
 .tag.talla.active {
@@ -82,7 +88,7 @@
     rgba(255, 255, 255, 0.15)
   );
   color: #111;
-  border: 2.5px solid rgba(69, 69, 69, 0.45);
+  border: 2.3px solid #CB2D2D;
 
   backdrop-filter: blur(10px) saturate(160%);
   -webkit-backdrop-filter: blur(10px) saturate(160%);
@@ -105,13 +111,14 @@
   width: 28px !important;
   height: 28px !important;
   border-radius: 50%;
-  border: 2px solid transparent;
+  border: 1.5px solid rgba(69, 69, 69, 0.45);
   cursor: pointer;
+
 }
 
 .color-dot.active {
   /*border-color: #000;*/
-  border: 2.5px solid rgba(69, 69, 69, 0.45);
+  border: 2.3px solid #CB2D2D;
   box-shadow:
     0 8px 22px rgba(203, 45, 45, 0.35),
     inset 0 0 0 1px rgba(255, 255, 255, 0.35);
@@ -122,6 +129,11 @@
 .color-nombre {
   font-size: 0.9rem;
   color: #555;
+}
+
+.color-lbl {
+  margin-top: 20px !important;
+  margin-bottom: 0 !important;
 }
 
 .tallas{
@@ -144,6 +156,24 @@
   color: white;
   font-size: 18px;
   cursor: pointer;
+}
+
+/*adicional costo extra*/
+.costo-extra {
+  max-height: 90px !important;
+  min-height: 70px !important;
+  border-radius: 5px !important;
+  border: 1px solid rgb(255, 185, 185);
+  background: transparent;
+  font-size: 14px;
+}
+
+.coste-txt{
+  text-decoration: underline #e0c704 2px;
+}
+
+.lbl-opcional{
+font-size: 13.5px !important;
 }
 
 /* ===== SUBTOTAL ===== */

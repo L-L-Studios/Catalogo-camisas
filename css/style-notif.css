@@ -1,3 +1,23 @@
+.swal2-container {
+  z-index: 99999 !important;
+}
+
+.swal2-popup {
+  z-index: 99999 !important;
+}
+
+.carrito-sidebar {
+  z-index: 99998 !important;
+}
+
+.carrito-overlay {
+  z-index: 99997 !important;
+}
+
+.swal-toast-avenir {
+  z-index: 99999 !important;
+}
+
 /* SweetAlert base */
 .swal2-popup {
   font-family: Avenir, sans-serif !important;

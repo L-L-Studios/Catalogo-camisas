@@ -1,9 +1,9 @@
-// pedido_camisa_supabase.js - VERSIÓN MEJORADA CON VALIDACIÓN
+// pedido_camisa_supabase.js - VERSIÓN CON ENVÍO DE CORREOS
 document.addEventListener('DOMContentLoaded', function() {
   if (window.__pedido_registrado__) return;
   window.__pedido_registrado__ = true;
 
-  const btnPedido = document.getElementById("btnPedidoCarrito") || 
+  const btnPedido = document.getElementById("btnPedido") || 
                     document.getElementById("btnPedidoCarrito");
 
   if (!btnPedido) return;
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
       return sum + (item.precio * item.cantidad);
     }, 0);
 
-    // Confirmación antes de enviar
+    // Mostrar resumen del pedido
     const confirm = await Swal.fire({
       title: "¿Confirmar pedido?",
       html: `
@@ -76,14 +76,23 @@ document.addEventListener('DOMContentLoaded', function() {
           <p>📧 ${email}</p>
           <p>📱 ${whatsapp}</p>
           <p>📍 ${direccion}</p>
+          <p>💰 ${metodoPago === 'efectivo' ? 'Pago en efectivo' : 'Transferencia'}</p>
           <hr style="margin: 10px 0">
-          <h4>Camisas:</h4>
+          <h4>Camisas (${camisas.reduce((sum, item) => sum + item.cantidad, 0)} unidades):</h4>
           <ul style="margin-left: 20px; margin-bottom: 10px;">
-            ${camisas.map(item => 
-              `<li>${item.nombre} (${item.talla}, ${item.color}) x${item.cantidad}</li>`
-            ).join('')}
+            ${camisas.map(item => {
+              let extraInfo = '';
+              if (item.costo_extra) {
+                extraInfo = `<br><small><em>Extra: ${item.costo_extra}</em></small>`;
+              }
+              return `<li>${item.nombre} (${item.talla}, ${item.color}) x${item.cantidad}${extraInfo}</li>`;
+            }).join('')}
           </ul>
           <p><strong>Total: $${total.toFixed(2)}</strong></p>
+          <hr style="margin: 10px 0">
+          <p style="font-size: 12px; color: #666;">
+            Se enviará una confirmación a tu correo y al administrador.
+          </p>
         </div>
       `,
       icon: "question",
@@ -91,28 +100,25 @@ document.addEventListener('DOMContentLoaded', function() {
       confirmButtonText: "Sí, enviar pedido",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#CB2D2D",
-      customClass: { popup: 'swal2-popup' }
+      cancelButtonColor: "#6c757d",
+      customClass: { popup: 'swal2-popup' },
+      width: '500px'
     });
 
     if (!confirm.isConfirmed) return;
 
-    // Mostrar loading
-    Swal.fire({
-      title: "Enviando pedido...",
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      willOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
+    // Procesar pedido
     try {
-      // Verificar que Supabase esté disponible
+      // 1. Guardar en Supabase
       if (!window.supabase) {
         throw new Error("Supabase no disponible");
       }
 
-      const { error } = await window.supabase
+      // Generar número de pedido
+      const numeroPedido = 'VRX-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+      
+      // Insertar en Supabase CON el campo costo_extra
+      const { error: supabaseError } = await window.supabase
         .from("pedidos_camisas")
         .insert({
           nombre,
@@ -120,42 +126,78 @@ document.addEventListener('DOMContentLoaded', function() {
           direccion,
           whatsapp,
           metodo_pago: metodoPago,
-          camisas: JSON.stringify(camisas),
+          camisas: JSON.stringify(camisas.map(item => ({
+            ...item,
+            costo_extra: item.costo_extra || null
+          }))),
           total: total.toFixed(2),
+          costo_extra: camisas.some(item => item.costo_extra) ? 
+            "Este pedido contiene modificaciones adicionales" : null,
           estado: "pendiente",
           created_at: new Date().toISOString()
         });
 
-      if (error) throw error;
+      if (supabaseError) throw supabaseError;
 
+      // 2. Enviar correos si la función existe
+      let correoEnviado = false;
+      if (window.enviarCorreosPedido && typeof window.enviarCorreosPedido === 'function') {
+        const resultadoCorreo = await window.enviarCorreosPedido({
+          nombre,
+          email,
+          direccion,
+          whatsapp,
+          metodo_pago: metodoPago,
+          camisas,
+          total: total.toFixed(2),
+          numero_pedido: numeroPedido
+        });
+        
+        correoEnviado = resultadoCorreo.success;
+      }
+
+      // 3. Mostrar confirmación
       Swal.fire({
         icon: "success",
-        title: "¡Pedido enviado!",
-        text: "Te contactaremos pronto para confirmar",
-        timer: 2000,
-        showConfirmButton: false,
-        customClass: { popup: 'swal2-popup' }
+        title: "¡Pedido realizado!",
+        html: `
+          <div style="text-align: left; font-size: 14px;">
+            <p><strong>Número de pedido:</strong> ${numeroPedido}</p>
+            <p><strong>Total:</strong> $${total.toFixed(2)}</p>
+            ${correoEnviado ? 
+              '<p>✅ Se envió una confirmación a tu correo</p>' : 
+              '<p>⚠️ El pedido se guardó, pero no se pudo enviar el correo</p>'}
+            <p style="margin-top: 15px; font-size: 12px; color: #666;">
+              Nos pondremos en contacto contigo dentro de las próximas 24 horas.
+            </p>
+          </div>
+        `,
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#CB2D2D",
+        customClass: { popup: 'swal2-popup' },
+        width: '500px'
       });
 
-      // Limpiar carrito
+      // 4. Limpiar carrito
       localStorage.removeItem("camisas_seleccionadas");
       window.dispatchEvent(new CustomEvent("camisas:update"));
       
-      // Limpiar formulario
-      if (document.getElementById("pedidoNombre")) document.getElementById("pedidoNombre").value = "";
-      if (document.getElementById("pedidoEmail")) document.getElementById("pedidoEmail").value = "";
-      if (document.getElementById("pedidoDireccion")) document.getElementById("pedidoDireccion").value = "";
-      if (document.getElementById("pedidoWhatsapp")) document.getElementById("pedidoWhatsapp").value = "";
+      // 5. Limpiar formulario
+      const inputs = ["pedidoNombre", "pedidoEmail", "pedidoDireccion", "pedidoWhatsapp"];
+      inputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = "";
+      });
       
-      // Cerrar carrito
+      // 6. Cerrar carrito
       if (window.toggleCarrito) {
         toggleCarrito(false);
       }
 
     } catch (error) {
-      console.error("Error enviando pedido:", error);
+      console.error("Error en el pedido:", error);
       
-      let mensajeError = "No se pudo enviar el pedido. Intenta nuevamente.";
+      let mensajeError = "No se pudo completar el pedido. Intenta nuevamente.";
       if (error.message.includes("duplicate") || error.code === "23505") {
         mensajeError = "Ya tienes un pedido pendiente con este correo";
       }
@@ -164,6 +206,8 @@ document.addEventListener('DOMContentLoaded', function() {
         icon: "error",
         title: "Error",
         text: mensajeError,
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#CB2D2D",
         customClass: { popup: 'swal2-popup' }
       });
     }
