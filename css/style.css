@@ -71,12 +71,83 @@ body {
   fill: white;
 }
 
+.row-info-catalogo{
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+
+  align-items: flex-start;
+}
+
+/*.info-cat-left {}*/
+
+.info-cat-right{
+  margin-top: 3.5rem;
+}
+
+/* MINICARD */
+.card-prox{
+  position: relative;
+  padding: 18px 16px;
+  border-radius: 20px;
+  background: radial-gradient(circle at bottom left, #f67153d9 0%, #ffebeb 35%, #f6fffe 100%);
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* mismos brillos */
+.card-prox .notiglow,
+.card-prox .notiborderglow{
+  position: absolute;
+  width: 16rem;
+  height: 16rem;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle closest-side at center, rgb(233,62,62), transparent);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.card-prox:hover .notiglow,
+.card-prox:hover .notiborderglow{
+  opacity: .12;
+}
+
+/* textos */
+.lbl-prox{
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.txt-prox{
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.icon-prox{
+  display: flex;
+  justify-content: space-between;
+  opacity: .8;
+  gap: 30px;
+}
+
 /* =========================
    Telefono
 ========================= */
 @media (min-width: 230px) and (max-width: 768px) {
   .contenedor {
     margin-top: 4rem
+  }
+
+  .row-info-catalogo{
+    display: block !important;
+    align-items: flex-start;
+  }
+
+  .info-cat-right{
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
   }
 }
 /* =========================

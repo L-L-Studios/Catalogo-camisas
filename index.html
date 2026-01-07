@@ -88,7 +88,7 @@
         <div class="nav-popup" id="navPopup">
             <a href="#catalogo" class="popup-link">Catálogo</a>
             <button class="popup-contacto">Contacto: Pedido personalizado</button>
-            <button class="popup-carrito">Pedido normal</button>
+            <button class="popup-carrito">Pedido normal <i class="ph ph-shopping-cart"></i> <span class="contador">0</span> </button>
             
         </div>
 
@@ -112,13 +112,20 @@
     <main>
         <div class="content-camisas"> 
             <section class="catalogo" id="catalogo">
+
                 <div class="contenedor">
-                    <h2 class="lbl-catalogo">Catálogo de camisas</h2>
-                    <p class="lbl-desc-cat">
+
+                    <div class="row-info-catalogo">
+
+                    <!-- IZQUIERDA — TEXTO DEL CATÁLOGO -->
+                    <div class="info-cat-left">
+                        <h2 class="lbl-catalogo">Catálogo de camisas</h2>
+
+                        <p class="lbl-desc-cat">
                         Selecciona las camisas de tu preferencia <strong>desde dentro de cada tarjeta</strong>, 
                         eligiendo talla, color y cantidad. <br>
-                        Puedes quitarlas en cualquier momento presionando nuevamente el ícono de la camisa. "
-                        <span class="icono-desc-cat">                
+                        Puedes quitarlas en cualquier momento presionando nuevamente el ícono de la camisa.
+                        <span class="icono-desc-cat">
                             <svg viewBox="0 0 512 512" width="20" height="20">
                                 <path d="M499.453,116.763L343.871,59.708c-5.406-1.985-11.41-1.43-16.361,1.508
                                 c0,0-4.04,42.46-71.51,42.46s-71.51-42.46-71.51-42.46c-4.951-2.938-10.954-3.492-16.354-1.508
@@ -130,14 +137,38 @@
                                 c2.234-9.418-2.93-19.035-12.028-22.364z" />
                             </svg>
                         </span>
-                        " <br>
-                        <strong class="lbl-entrega" style="font-size: 16px; text-decoration: chartreuse wavy;">  "Los pedidos se entregan aproximadamente entre 10 y 15 días."</strong>
-                    </p>
-                    
+                        </p>
+                    </div>
+
+                    <!-- DERECHA — MINICARD -->
+                    <div class="info-cat-right">
+                        <div class="card-prox shadow-sm">
+
+                        <span class="notiglow"></span>
+                        <span class="notiborderglow"></span>
+
+                        <h4 class="lbl-prox">Entrega de pedido próximamente:</h4>
+
+                        
+                        <div class="icon-prox">
+
+                           <p class="txt-prox" id="texto-proxima-entrega">
+                                Cargando fecha...
+                            </p>
+
+                            <svg fill="#000000" width="40px" height="40px" viewBox="0 0 32 32" data-name="Layer 4" id="Layer_4" xmlns="http://www.w3.org/2000/svg"><title/><path d="M30,15.5a0.5,0.5,0,0,0-.5.5A13.52,13.52,0,1,1,28,9.86l-1.44-.38a0.51,0.51,0,0,0-.61.35,0.5,0.5,0,0,0,.35.61l2.56,0.68,0.13,0a0.5,0.5,0,0,0,.48-0.37l0.67-2.49a0.5,0.5,0,0,0-.35-0.61,0.51,0.51,0,0,0-.61.35L28.85,9.29A14.49,14.49,0,1,0,30.5,16,0.5,0.5,0,0,0,30,15.5Z"/><ellipse cx="4.06" cy="16" rx="0.94" ry="0.93"/><ellipse cx="16" cy="4.07" rx="0.94" ry="0.93"/><ellipse cx="27.94" cy="16" rx="0.94" ry="0.93"/><ellipse cx="16" cy="27.93" rx="0.94" ry="0.93"/><path d="M10.64,21.27a0.5,0.5,0,0,0,.71,0l5-4.92A0.5,0.5,0,0,0,16.5,16l0-8.66a0.5,0.5,0,0,0-.5-0.5h0a0.5,0.5,0,0,0-.5.5l0,8.45-4.85,4.77A0.5,0.5,0,0,0,10.64,21.27Z"/></svg>
+                        </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                
                     <!-- GRID CATÁLOGO - AHORA SOLO UN SCRIPT -->
                     <div id="section-catalogo-completo"></div>
                     
                 </div>
+
             </section>
 
             <!--ZONA CONTACTO-->
@@ -272,6 +303,96 @@
     <script src="js-pedido/enviar-correo.js"></script>
 
     <script src="js-pedido/pedido_camisa_supabase.js"></script>
+
+<!-- Código del usuario - MEJORADO -->
+<script>
+(async () => {
+    while (!window.supabase) {
+        await new Promise(r => setTimeout(r, 100));
+    }
+
+    const el = document.getElementById("texto-proxima-entrega");
+    
+    // Función para cargar y mostrar la fecha
+    async function cargarFechaProxima() {
+        try {
+            const { data, error } = await supabase
+                .from("config_tienda")
+                .select("proxima_entrega")
+                .eq("id", 1)
+                .single();
+
+            if (error) throw error;
+
+            if (!data?.proxima_entrega) {
+                el.textContent = "Próximamente";
+                return;
+            }
+
+            // 🔥 CORRECCIÓN: Manejo correcto de fechas con zona horaria
+            // La fecha viene como "YYYY-MM-DD" desde PostgreSQL
+            // Necesitamos evitar que JavaScript la interprete como UTC
+            
+            // Solución 1: Agregar "T00:00:00" para forzar hora local
+            const fechaStr = data.proxima_entrega;
+            const fechaLocal = new Date(fechaStr + 'T00:00:00');
+            
+            // Solución alternativa: Usar partes de la fecha
+            // const [year, month, day] = fechaStr.split('-');
+            // const fechaLocal = new Date(year, month - 1, day);
+            
+            const hoy = new Date();
+            
+            // Ajustar ambas fechas a medianoche local para comparación correcta
+            const hoyAjustado = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+            const fechaAjustada = new Date(fechaLocal.getFullYear(), fechaLocal.getMonth(), fechaLocal.getDate());
+            
+            const diffTime = fechaAjustada - hoyAjustado;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            console.log("Fecha en BD:", fechaStr);
+            console.log("Fecha interpretada:", fechaLocal.toLocaleDateString());
+            console.log("Diferencia de días:", diffDays);
+            
+            if (diffDays < 0) {
+                el.textContent = "Fecha pasada - actualizar en administración";
+            } else if (diffDays === 0) {
+                el.textContent = "¡Hoy!";
+            } else if (diffDays === 1) {
+                el.textContent = "Mañana";
+            } else if (diffDays <= 7) {
+                el.textContent = `En ${diffDays} días`;
+            } else {
+                // Mostrar fecha completa
+                el.textContent = fechaLocal.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+            
+        } catch (error) {
+            console.error("Error cargando fecha:", error);
+            el.textContent = "Próximamente";
+        }
+    }
+
+    // Cargar fecha inicial
+    cargarFechaProxima();
+
+    // ✅ Escuchar cambios en localStorage
+    if (window.addEventListener) {
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'fecha-proxima-actualizada') {
+                console.log('Fecha actualizada desde administrador, recargando...');
+                setTimeout(cargarFechaProxima, 500);
+            }
+        });
+    }
+
+})();
+</script>
 
 
 </body>
