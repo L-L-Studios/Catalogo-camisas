@@ -1,4 +1,5 @@
-// pedido_camisa_supabase.js - VERSIÓN CORREGIDA
+
+// pedido_camisa_supabase.js - VERSIÓN CORREGIDA PARA GITHUB PAGES
 document.addEventListener('DOMContentLoaded', function() {
   if (window.__pedido_registrado__) return;
   window.__pedido_registrado__ = true;
@@ -16,6 +17,42 @@ document.addEventListener('DOMContentLoaded', function() {
     timerProgressBar: true,
     customClass: { popup: "swal-toast-avenir" }
   });
+
+  // Función CORREGIDA para obtener la ruta base
+  function getBaseUrl() {
+    console.log('🔍 Analizando URL actual:', {
+      hostname: window.location.hostname,
+      pathname: window.location.pathname,
+      href: window.location.href
+    });
+    
+    // Si estamos en GitHub Pages
+    if (window.location.hostname.includes('github.io')) {
+      const pathSegments = window.location.pathname.split('/');
+      console.log('📁 Segmentos de ruta:', pathSegments);
+      
+      // GitHub Pages: /repositorio/ o /usuario.github.io/repositorio/
+      // Buscamos el nombre del repositorio
+      for (let i = 0; i < pathSegments.length; i++) {
+        const segment = pathSegments[i];
+        // El segmento después de github.io es el nombre del repositorio
+        if (segment && segment !== '' && segment !== 'index.html' && 
+            !segment.includes('.html') && i > 0) {
+          console.log('✅ Nombre del repositorio encontrado:', segment);
+          return '/' + segment + '/';
+        }
+      }
+      
+      // Si no encontramos el nombre del repositorio, verificar si estamos en la raíz
+      // O usar una detección más agresiva
+      const repoName = 'Catalogo-camisas'; // ← NOMBRE EXACTO DE TU REPOSITORIO
+      console.log('⚠️ Usando nombre de repositorio por defecto:', repoName);
+      return '/' + repoName + '/';
+    }
+    
+    console.log('🏠 Usando ruta base local: /');
+    return '/'; // Para desarrollo local
+  }
 
   // Función para validar datos del carrito
   function validarDatosCarrito() {
@@ -125,9 +162,28 @@ document.addEventListener('DOMContentLoaded', function() {
       // Generar token de confirmación
       const tokenConfirmacion = generarTokenConfirmacion();
       
-      // Crear URL de confirmación
+      // Crear URL de confirmación - VERSIÓN CORREGIDA
       const baseUrl = getBaseUrl();
-      const linkConfirmacion = `${window.location.origin}${baseUrl}confirmar-pedido.html?token=${tokenConfirmacion}`;
+      const origin = window.location.origin;
+      
+      console.log('🔗 Generando enlace de confirmación:', {
+        origin: origin,
+        baseUrl: baseUrl,
+        token: tokenConfirmacion
+      });
+      
+      // Construir la URL correctamente
+      let linkConfirmacion;
+      
+      if (origin.includes('github.io')) {
+        // Para GitHub Pages: https://usuario.github.io/repositorio/confirmar-pedido.html
+        linkConfirmacion = `${origin}${baseUrl}confirmar-pedido.html?token=${tokenConfirmacion}`;
+      } else {
+        // Para local: http://localhost/confirmar-pedido.html
+        linkConfirmacion = `${origin}${baseUrl}confirmar-pedido.html?token=${tokenConfirmacion}`;
+      }
+      
+      console.log('✅ Enlace generado:', linkConfirmacion);
       
       // Preparar datos para el correo
       const datosCorreo = {
@@ -151,6 +207,13 @@ document.addEventListener('DOMContentLoaded', function() {
       
       localStorage.setItem('pedido_pendiente_confirmacion', JSON.stringify(pedidoTemporal));
       
+      // Mostrar en consola para debug
+      console.log('💾 Pedido temporal guardado:', {
+        token: tokenConfirmacion,
+        enlace: linkConfirmacion,
+        datos: datosCorreo
+      });
+      
       // Enviar correo de confirmación
       if (window.enviarCorreoConfirmacion && typeof window.enviarCorreoConfirmacion === 'function') {
         const resultadoCorreo = await window.enviarCorreoConfirmacion(datosCorreo);
@@ -166,6 +229,10 @@ document.addEventListener('DOMContentLoaded', function() {
           html: `
             <div style="text-align: left; font-size: 14px;">
               <p>Se ha enviado un correo a <strong>${email}</strong> con el enlace de confirmación.</p>
+              <p><strong>Enlace de confirmación:</strong></p>
+              <p style="word-break: break-all; background: #f5f5f5; padding: 10px; border-radius: 5px;">
+                <a href="${linkConfirmacion}" target="_blank">${linkConfirmacion}</a>
+              </p>
               <p><strong>Instrucciones:</strong></p>
               <ol style="text-align: left; margin-left: 20px;">
                 <li>Revisa tu bandeja de entrada (y spam/correo no deseado)</li>
@@ -180,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
           confirmButtonText: "Entendido",
           confirmButtonColor: "#CB2D2D",
           customClass: { popup: 'swal2-popup' },
-          width: '500px'
+          width: '600px'
         });
 
         // Limpiar carrito y formulario
@@ -212,7 +279,16 @@ document.addEventListener('DOMContentLoaded', function() {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "No se pudo enviar la confirmación. Intenta nuevamente.",
+        html: `
+          <div style="text-align: left;">
+            <p>No se pudo enviar la confirmación. Intenta nuevamente.</p>
+            <p><strong>Detalles del error:</strong></p>
+            <p style="color: #666; font-size: 14px;">${error.message}</p>
+            <p style="margin-top: 15px; font-size: 12px;">
+              Si el problema persiste, contacta con soporte.
+            </p>
+          </div>
+        `,
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#CB2D2D",
         customClass: { popup: 'swal2-popup' }
@@ -220,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 });
-
 
 function getBaseUrl() {
     if (window.location.hostname.includes('github.io')) {

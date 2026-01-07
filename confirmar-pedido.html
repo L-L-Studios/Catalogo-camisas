@@ -162,17 +162,38 @@
 </script>
 
 <script>
+
     // FUNCIÓN PARA OBTENER LA RUTA BASE (IMPORTANTE PARA GITHUB PAGES)
     function getBaseUrl() {
-        // Si estamos en GitHub Pages, la estructura es /nombre-repositorio/
-        if (window.location.hostname.includes('github.io')) {
-            const pathSegments = window.location.pathname.split('/');
-            // Obtener el nombre del repositorio (segundo segmento)
-            if (pathSegments.length > 2 && pathSegments[1]) {
-                return '/' + pathSegments[1] + '/';
-            }
+    console.log('🔍 Analizando URL actual:', {
+        hostname: window.location.hostname,
+        pathname: window.location.pathname,
+        href: window.location.href
+    });
+    
+    // Si estamos en GitHub Pages
+    if (window.location.hostname.includes('github.io')) {
+        const pathSegments = window.location.pathname.split('/');
+        console.log('📁 Segmentos de ruta:', pathSegments);
+        
+        // Buscar el nombre del repositorio
+        for (let i = 0; i < pathSegments.length; i++) {
+        const segment = pathSegments[i];
+        if (segment && segment !== '' && segment !== 'confirmar-pedido.html' && 
+            !segment.includes('.html') && i > 0) {
+            console.log('✅ Nombre del repositorio encontrado:', segment);
+            return '/' + segment + '/';
         }
-        return '/'; // Para local
+        }
+        
+        // Si no encontramos, usar el nombre del repositorio
+        const repoName = 'Catalogo-camisas'; // ← NOMBRE DE TU REPOSITORIO
+        console.log('⚠️ Usando nombre de repositorio por defecto:', repoName);
+        return '/' + repoName + '/';
+    }
+    
+    console.log('🏠 Usando ruta base local: /');
+    return '/';
     }
 
     document.addEventListener('DOMContentLoaded', async function() {
