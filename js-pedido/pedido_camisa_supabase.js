@@ -126,7 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const tokenConfirmacion = generarTokenConfirmacion();
       
       // Crear URL de confirmación
-      const linkConfirmacion = `${window.location.origin}/confirmar-pedido.html?token=${tokenConfirmacion}`;
+      const baseUrl = getBaseUrl();
+      const linkConfirmacion = `${window.location.origin}${baseUrl}confirmar-pedido.html?token=${tokenConfirmacion}`;
       
       // Preparar datos para el correo
       const datosCorreo = {
@@ -219,3 +220,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 });
+
+
+function getBaseUrl() {
+    if (window.location.hostname.includes('github.io')) {
+        const pathSegments = window.location.pathname.split('/');
+        if (pathSegments.length > 2 && pathSegments[1]) {
+            return '/' + pathSegments[1] + '/';
+        }
+    }
+    return '/';
+}
