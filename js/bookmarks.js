@@ -23,7 +23,7 @@ console.log('🔖 bookmarks.js cargado');
 
       const label = document.createElement("label");
       label.className = "ui-bookmark";
-      label.setAttribute("data-tooltip", "Haz click para agregar al carrito");
+      label.setAttribute("data-tooltip", "Puedes quitarla del pedido");
 
       label.innerHTML = `
         <input type="checkbox">
@@ -54,44 +54,31 @@ console.log('🔖 bookmarks.js cargado');
         e.preventDefault();
         e.stopPropagation();
 
-        if (input.checked) {
-          // Remover del carrito
-          const nuevasCamisas = get().filter(item => item.id !== id);
-          localStorage.setItem(KEY, JSON.stringify(nuevasCamisas));
-          card.classList.remove("card-selected");
-          input.checked = false;
-          
-          window.dispatchEvent(new CustomEvent("camisas:update"));
-        } else {
-          // Agregar al carrito (con información básica)
-          const producto = {
-            id: id,
-            nombre: card.querySelector('.lbl-nombre-camisa')?.textContent || 'Producto',
-            precio: parseFloat(card.querySelector('.price-camisa')?.textContent.replace('$', '') || 0),
-            talla: 'Por seleccionar',
-            color: 'Por seleccionar',
-            cantidad: 1,
-            imagen: card.querySelector('.img-card')?.src || 'images/color.png'
-          };
-          
-          // Usar la nueva función que verifica límite y duplicados
-          if (window.agregarAlCarrito && typeof window.agregarAlCarrito === 'function') {
-            const agregado = window.agregarAlCarrito(producto);
-            if (agregado) {
-              card.classList.add("card-selected");
-              input.checked = true;
-            }
-          } else {
-            // Fallback si la función no existe
-            const camisas = get();
-            camisas.push(producto);
-            localStorage.setItem(KEY, JSON.stringify(camisas));
-            card.classList.add("card-selected");
-            input.checked = true;
-            window.dispatchEvent(new CustomEvent("camisas:update"));
-          }
+        // ❌ Si NO está seleccionado, NO se puede agregar desde el index
+        if (!input.checked) {
+          Swal.fire({
+            icon: "info",
+            title: "Selecciona desde la tarjeta",
+            text: "Abre la tarjeta y elige talla, color y cantidad.",
+            toast: true,
+            position: "top-end",   // 👉 esquina superior derecha
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            showCloseButton: true
+          });
+          return;
         }
+
+        // ✔️ Si ya estaba seleccionado, entonces SÍ se puede quitar
+        const nuevasCamisas = get().filter(item => item.id !== id);
+        localStorage.setItem(KEY, JSON.stringify(nuevasCamisas));
+        card.classList.remove("card-selected");
+        input.checked = false;
+
+        window.dispatchEvent(new CustomEvent("camisas:update"));
       });
+
 
       return label;
     }
