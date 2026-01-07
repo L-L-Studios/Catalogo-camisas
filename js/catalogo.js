@@ -284,7 +284,7 @@ function mostrarMensajeNoEncontrado(searchTerm) {
     <!-- Tarjeta principal -->
     <div class="tarjeta-recip">
       <div class="imagen-superior">
-        <img src="images/camisa-not-found.jpg" alt="Camisa no encontrada">
+        <img src="images/camisa-not-found2.png" alt="Camisa no encontrada">
         <div class="icono-error">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/>

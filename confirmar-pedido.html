@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Pedido - VRX</title>
+    <link href="https://fonts.cdnfonts.com/css/avenir" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style_notificacion.css">
+    <style>
+        body {
+            font-family: 'Avenir', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5, #e8e8e8);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .confirmacion-container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .confirmacion-header {
+            background: linear-gradient(135deg, #CB2D2D, #BA3C3C);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .confirmacion-logo {
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+        .confirmacion-body {
+            padding: 30px;
+        }
+        .pedido-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .pedido-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .pedido-item:last-child {
+            border-bottom: none;
+        }
+        .btn-confirmar {
+            background: linear-gradient(135deg, #CB2D2D, #BA3C3C);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .btn-confirmar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(203, 45, 45, 0.3);
+        }
+        .btn-confirmar:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #CB2D2D;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success-message {
+            text-align: center;
+            padding: 40px;
+        }
+        .success-icon {
+            font-size: 60px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #CB2D2D;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmacion-container" id="confirmacionContainer">
+        <div class="confirmacion-header">
+            <div class="confirmacion-logo">VRX</div>
+            <h1>Confirmación de Pedido</h1>
+        </div>
+        
+        <div class="confirmacion-body">
+            <div id="pedidoInfo">
+                <p>Estás a punto de confirmar tu pedido en VRX. Revisa los detalles:</p>
+                
+                <div class="pedido-details" id="detallesPedido">
+                    <!-- Los detalles se cargarán dinámicamente -->
+                </div>
+                
+                <p style="text-align: center; color: #666; font-size: 14px;">
+                    Al confirmar, tu pedido será registrado en nuestro sistema y te contactaremos pronto.
+                </p>
+                
+                <button class="btn-confirmar" id="btnConfirmarPedido">
+                    <span id="btnText">Confirmar Pedido</span>
+                    <span id="btnLoading" class="loading" style="display:none;"></span>
+                </button>
+            </div>
+            
+            <div id="successMessage" style="display:none;" class="success-message">
+                <div class="success-icon">✓</div>
+                <h2>¡Pedido Confirmado!</h2>
+                <p>Tu pedido ha sido registrado exitosamente.</p>
+                <p>Te contactaremos dentro de las próximas 24 horas.</p>
+                <p id="numeroPedido"></p>
+                <a href="index.html" style="color: #CB2D2D; text-decoration: underline;">Volver al inicio</a>
+            </div>
+            
+            <div id="errorMessage" style="display:none;" class="error-message">
+                <div style="font-size: 60px;">❌</div>
+                <h2>Error en la Confirmación</h2>
+                <p id="errorText"></p>
+                <a href="index.html" style="color: #CB2D2D; text-decoration: underline;">Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/supabase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            
+            const btnConfirmar = document.getElementById('btnConfirmarPedido');
+            const btnText = document.getElementById('btnText');
+            const btnLoading = document.getElementById('btnLoading');
+            const detallesPedido = document.getElementById('detallesPedido');
+            const pedidoInfo = document.getElementById('pedidoInfo');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            const numeroPedido = document.getElementById('numeroPedido');
+            
+            if (!token) {
+                mostrarError('Token de confirmación no válido o ha expirado.');
+                return;
+            }
+            
+            // Obtener pedido temporal del localStorage
+            const pedidoTemporal = JSON.parse(localStorage.getItem('pedido_pendiente_confirmacion'));
+            
+            if (!pedidoTemporal || pedidoTemporal.token_confirmacion !== token) {
+                mostrarError('Token de confirmación no válido o ha expirado.');
+                return;
+            }
+            
+            // Verificar expiración
+            const fechaExpiracion = new Date(pedidoTemporal.expira);
+            if (fechaExpiracion < new Date()) {
+                mostrarError('El token de confirmación ha expirado. Por favor, realiza un nuevo pedido.');
+                localStorage.removeItem('pedido_pendiente_confirmacion');
+                return;
+            }
+            
+            // Mostrar detalles del pedido
+            mostrarDetallesPedido(pedidoTemporal);
+            
+            // Configurar evento de confirmación
+            btnConfirmar.onclick = async () => {
+                btnConfirmar.disabled = true;
+                btnText.textContent = 'Confirmando...';
+                btnLoading.style.display = 'inline-block';
+                
+                try {
+                    // Guardar en Supabase
+                    await guardarPedidoEnSupabase(pedidoTemporal);
+                    
+                    // Mostrar éxito
+                    pedidoInfo.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    numeroPedido.textContent = `Número de pedido: ${pedidoTemporal.token_confirmacion}`;
+                    
+                    // Limpiar pedido temporal
+                    localStorage.removeItem('pedido_pendiente_confirmacion');
+                    
+                } catch (error) {
+                    console.error('Error confirmando pedido:', error);
+                    mostrarError('Error al confirmar el pedido. Por favor, intenta nuevamente.');
+                    btnConfirmar.disabled = false;
+                    btnText.textContent = 'Confirmar Pedido';
+                    btnLoading.style.display = 'none';
+                }
+            };
+            
+            function mostrarDetallesPedido(pedido) {
+                let html = `
+                    <div class="pedido-item">
+                        <strong>Cliente:</strong>
+                        <span>${pedido.nombre}</span>
+                    </div>
+                    <div class="pedido-item">
+                        <strong>Email:</strong>
+                        <span>${pedido.email}</span>
+                    </div>
+                    <div class="pedido-item">
+                        <strong>WhatsApp:</strong>
+                        <span>${pedido.whatsapp}</span>
+                    </div>
+                    <div class="pedido-item">
+                        <strong>Dirección:</strong>
+                        <span>${pedido.direccion}</span>
+                    </div>
+                    <div class="pedido-item">
+                        <strong>Método de pago:</strong>
+                        <span>${pedido.metodo_pago === 'efectivo' ? 'Pago en efectivo' : 'Transferencia'}</span>
+                    </div>
+                    <hr style="margin: 15px 0;">
+                    <h5>Productos:</h5>
+                `;
+                
+                pedido.camisas.forEach((item, index) => {
+                    html += `
+                        <div class="pedido-item">
+                            <div>
+                                <strong>${item.nombre}</strong><br>
+                                <small>Talla: ${item.talla} | Color: ${item.color} | Cantidad: ${item.cantidad}</small>
+                                ${item.costo_extra ? `<br><small><em>Extra: ${item.costo_extra}</em></small>` : ''}
+                            </div>
+                            <div>$${(item.precio * item.cantidad).toFixed(2)}</div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    <hr style="margin: 15px 0;">
+                    <div class="pedido-item" style="font-size: 18px; font-weight: bold;">
+                        <strong>TOTAL:</strong>
+                        <span>$${pedido.total} USD</span>
+                    </div>
+                `;
+                
+                detallesPedido.innerHTML = html;
+            }
+            
+async function guardarPedidoEnSupabase(pedido) {
+  if (!window.supabase) {
+    throw new Error('Supabase no disponible');
+  }
+  
+  // Generar número de pedido final
+  const numeroPedidoFinal = 'VRX-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+  
+  console.log('📝 Datos del pedido para guardar:', {
+    nombre: pedido.nombre,
+    email: pedido.email,
+    total: pedido.total,
+    camisasCount: pedido.camisas.length
+  });
+  
+  try {
+    // VERIFICAR QUE LOS DATOS ESTÉN EN EL FORMATO CORRECTO
+    // La tabla NO tiene: token_confirmacion, numero_pedido
+    // La tabla SÍ tiene: costo_extra (pero no lo estamos enviando)
+    
+    // Preparar datos exactamente como los espera la tabla
+    const datosParaInsertar = {
+      nombre: pedido.nombre || '',
+      email: pedido.email || '',
+      direccion: pedido.direccion || '',
+      whatsapp: pedido.whatsapp || '',
+      metodo_pago: pedido.metodo_pago || 'efectivo',
+      camisas: JSON.stringify(pedido.camisas), // Esto es correcto: jsonb
+      total: parseFloat(pedido.total) || 0, // Convertir a numeric
+      estado: 'pendiente',
+      // La tabla NO tiene estos campos: token_confirmacion, numero_pedido
+      // Pero podemos guardar el token en costo_extra temporalmente
+      costo_extra: `Token: ${pedido.token_confirmacion} | Número: ${numeroPedidoFinal}`,
+      // created_at se genera automáticamente
+    };
+    
+    console.log('🔄 Insertando en Supabase con estos datos:', datosParaInsertar);
+    
+    const { data, error } = await window.supabase
+      .from("pedidos_camisas")
+      .insert([datosParaInsertar])
+      .select();
+    
+    if (error) {
+      console.error('❌ Error Supabase detallado:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      
+      // Si es error de tipo de datos, intentar con string para total
+      if (error.code === '22P02' || error.message.includes('invalid input syntax')) {
+        console.log('🔄 Intentando con total como texto...');
+        
+        const datosAlternativos = {
+          ...datosParaInsertar,
+          total: pedido.total.toString() // Convertir a string
+        };
+        
+        const { data: data2, error: error2 } = await window.supabase
+          .from("pedidos_camisas")
+          .insert([datosAlternativos])
+          .select();
+        
+        if (error2) throw error2;
+        
+        console.log('✅ Pedido guardado (con total como texto):', data2);
+        return numeroPedidoFinal;
+      }
+      
+      throw error;
+    }
+    
+    console.log('✅ Pedido guardado exitosamente:', data);
+    return numeroPedidoFinal;
+    
+  } catch (error) {
+    console.error('❌ ERROR FATAL al guardar pedido:', error);
+    
+    // Intentar una versión MÍNIMA para diagnóstico
+    try {
+      console.log('🔄 Intentando inserción mínima para diagnóstico...');
+      
+      const datosMinimos = {
+        nombre: 'Test',
+        email: 'test@test.com',
+        direccion: 'Test',
+        whatsapp: '1234567890',
+        metodo_pago: 'efectivo',
+        camisas: JSON.stringify([{nombre: 'Test', precio: 10}]),
+        total: 10,
+        estado: 'pendiente'
+      };
+      
+      const { data: testData, error: testError } = await window.supabase
+        .from('pedidos_camisas')
+        .insert([datosMinimos])
+        .select();
+      
+      if (testError) {
+        console.error('❌ Error incluso con datos mínimos:', testError);
+        throw new Error(`Error de Supabase: ${testError.message}`);
+      }
+      
+      console.log('✅ Datos mínimos funcionan:', testData);
+      throw new Error('La inserción falló con datos reales pero funciona con mínimos');
+      
+    } catch (innerError) {
+      throw new Error(`No se pudo guardar el pedido: ${innerError.message}`);
+    }
+  }
+}
+
+            function mostrarError(mensaje) {
+                pedidoInfo.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorText.textContent = mensaje;
+            }
+        });
+    </script>
+</body>
+</html>

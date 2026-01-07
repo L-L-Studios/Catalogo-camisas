@@ -221,7 +221,7 @@ textarea.valid {
 /* IMAGEN */
 .contact-image {
   width: 100%;
-  height: 100%;
+  height: 432.4px !important; /*mismo alto que el form contacto*/
   object-fit: cover;
   display: block;
   filter: saturate(1.05) contrast(1.04);

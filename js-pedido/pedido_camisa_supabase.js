@@ -1,11 +1,10 @@
-// pedido_camisa_supabase.js - VERSIÓN CON ENVÍO DE CORREOS
+// pedido_camisa_supabase.js - VERSIÓN CORREGIDA
 document.addEventListener('DOMContentLoaded', function() {
   if (window.__pedido_registrado__) return;
   window.__pedido_registrado__ = true;
 
-  const btnPedido = document.getElementById("btnPedido") || 
-                    document.getElementById("btnPedidoCarrito");
-
+  const btnPedido = document.getElementById("btnPedidoCarrito");
+  
   if (!btnPedido) return;
 
   // Configurar SweetAlert toast
@@ -35,6 +34,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     return { valido: true, datos: { nombre, email, direccion, whatsapp } };
+  }
+
+  // Generar token único para confirmación
+  function generarTokenConfirmacion() {
+    return 'VRX-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
   }
 
   // Configurar evento del botón
@@ -69,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mostrar resumen del pedido
     const confirm = await Swal.fire({
-      title: "¿Confirmar pedido?",
+      title: "Confirmar pedido",
       html: `
         <div style="text-align: left; font-size: 14px;">
           <p><strong>${nombre}</strong></p>
@@ -78,26 +82,26 @@ document.addEventListener('DOMContentLoaded', function() {
           <p>📍 ${direccion}</p>
           <p>💰 ${metodoPago === 'efectivo' ? 'Pago en efectivo' : 'Transferencia'}</p>
           <hr style="margin: 10px 0">
-          <h4>Camisas (${camisas.reduce((sum, item) => sum + item.cantidad, 0)} unidades):</h4>
-          <ul style="margin-left: 20px; margin-bottom: 10px;">
+          <h5>Camisas (${camisas.reduce((sum, item) => sum + item.cantidad, 0)} unidades):</h5>
+          <div style="max-height: 200px; overflow-y: auto; margin-bottom: 10px;">
             ${camisas.map(item => {
               let extraInfo = '';
               if (item.costo_extra) {
                 extraInfo = `<br><small><em>Extra: ${item.costo_extra}</em></small>`;
               }
-              return `<li>${item.nombre} (${item.talla}, ${item.color}) x${item.cantidad}${extraInfo}</li>`;
+              return `<p style="margin: 5px 0;">• ${item.nombre} (${item.talla}, ${item.color}) x${item.cantidad}${extraInfo}</p>`;
             }).join('')}
-          </ul>
-          <p><strong>Total: $${total.toFixed(2)}</strong></p>
+          </div>
+          <p><strong>Total: $${total.toFixed(2)} USD</strong></p>
           <hr style="margin: 10px 0">
           <p style="font-size: 12px; color: #666;">
-            Se enviará una confirmación a tu correo y al administrador.
+            Se enviará un correo de confirmación a ${email}
           </p>
         </div>
       `,
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Sí, enviar pedido",
+      confirmButtonText: "Enviar confirmación",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#CB2D2D",
       cancelButtonColor: "#6c757d",
@@ -107,105 +111,107 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!confirm.isConfirmed) return;
 
-    // Procesar pedido
-    try {
-      // 1. Guardar en Supabase
-      if (!window.supabase) {
-        throw new Error("Supabase no disponible");
+    // Mostrar loading
+    Swal.fire({
+      title: "Preparando confirmación...",
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      willOpen: () => {
+        Swal.showLoading();
       }
+    });
 
-      // Generar número de pedido
-      const numeroPedido = 'VRX-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+    try {
+      // Generar token de confirmación
+      const tokenConfirmacion = generarTokenConfirmacion();
       
-      // Insertar en Supabase CON el campo costo_extra
-      const { error: supabaseError } = await window.supabase
-        .from("pedidos_camisas")
-        .insert({
-          nombre,
-          email: email.toLowerCase(),
-          direccion,
-          whatsapp,
-          metodo_pago: metodoPago,
-          camisas: JSON.stringify(camisas.map(item => ({
-            ...item,
-            costo_extra: item.costo_extra || null
-          }))),
-          total: total.toFixed(2),
-          costo_extra: camisas.some(item => item.costo_extra) ? 
-            "Este pedido contiene modificaciones adicionales" : null,
-          estado: "pendiente",
-          created_at: new Date().toISOString()
+      // Crear URL de confirmación
+      const linkConfirmacion = `${window.location.origin}/confirmar-pedido.html?token=${tokenConfirmacion}`;
+      
+      // Preparar datos para el correo
+      const datosCorreo = {
+        nombre,
+        email,
+        direccion,
+        whatsapp,
+        metodo_pago: metodoPago,
+        camisas,
+        total: total.toFixed(2),
+        token_confirmacion: tokenConfirmacion,
+        link_confirmacion: linkConfirmacion
+      };
+      
+      // Guardar pedido temporalmente en localStorage
+      const pedidoTemporal = {
+        ...datosCorreo,
+        fecha_creacion: new Date().toISOString(),
+        expira: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 horas
+      };
+      
+      localStorage.setItem('pedido_pendiente_confirmacion', JSON.stringify(pedidoTemporal));
+      
+      // Enviar correo de confirmación
+      if (window.enviarCorreoConfirmacion && typeof window.enviarCorreoConfirmacion === 'function') {
+        const resultadoCorreo = await window.enviarCorreoConfirmacion(datosCorreo);
+        
+        if (!resultadoCorreo.success) {
+          throw new Error('No se pudo enviar el correo de confirmación');
+        }
+
+        // Mostrar mensaje de éxito
+        Swal.fire({
+          icon: "success",
+          title: "¡Correo enviado!",
+          html: `
+            <div style="text-align: left; font-size: 14px;">
+              <p>Se ha enviado un correo a <strong>${email}</strong> con el enlace de confirmación.</p>
+              <p><strong>Instrucciones:</strong></p>
+              <ol style="text-align: left; margin-left: 20px;">
+                <li>Revisa tu bandeja de entrada (y spam/correo no deseado)</li>
+                <li>Haz clic en el botón "Confirmar Pedido" del correo</li>
+                <li>Tu pedido se registrará automáticamente</li>
+              </ol>
+              <p style="margin-top: 15px; font-size: 12px; color: #666;">
+                ⚠️ El pedido expirará en 24 horas si no se confirma.
+              </p>
+            </div>
+          `,
+          confirmButtonText: "Entendido",
+          confirmButtonColor: "#CB2D2D",
+          customClass: { popup: 'swal2-popup' },
+          width: '500px'
         });
 
-      if (supabaseError) throw supabaseError;
-
-      // 2. Enviar correos si la función existe
-      let correoEnviado = false;
-      if (window.enviarCorreosPedido && typeof window.enviarCorreosPedido === 'function') {
-        const resultadoCorreo = await window.enviarCorreosPedido({
-          nombre,
-          email,
-          direccion,
-          whatsapp,
-          metodo_pago: metodoPago,
-          camisas,
-          total: total.toFixed(2),
-          numero_pedido: numeroPedido
+        // Limpiar carrito y formulario
+        localStorage.removeItem("camisas_seleccionadas");
+        window.dispatchEvent(new CustomEvent("camisas:update"));
+        
+        // Limpiar formulario
+        const inputs = ["pedidoNombre", "pedidoEmail", "pedidoDireccion", "pedidoWhatsapp"];
+        inputs.forEach(id => {
+          const input = document.getElementById(id);
+          if (input) input.value = "";
         });
         
-        correoEnviado = resultadoCorreo.success;
-      }
+        // Cerrar carrito
+        if (window.toggleCarrito) {
+          toggleCarrito(false);
+        }
 
-      // 3. Mostrar confirmación
-      Swal.fire({
-        icon: "success",
-        title: "¡Pedido realizado!",
-        html: `
-          <div style="text-align: left; font-size: 14px;">
-            <p><strong>Número de pedido:</strong> ${numeroPedido}</p>
-            <p><strong>Total:</strong> $${total.toFixed(2)}</p>
-            ${correoEnviado ? 
-              '<p>✅ Se envió una confirmación a tu correo</p>' : 
-              '<p>⚠️ El pedido se guardó, pero no se pudo enviar el correo</p>'}
-            <p style="margin-top: 15px; font-size: 12px; color: #666;">
-              Nos pondremos en contacto contigo dentro de las próximas 24 horas.
-            </p>
-          </div>
-        `,
-        confirmButtonText: "Aceptar",
-        confirmButtonColor: "#CB2D2D",
-        customClass: { popup: 'swal2-popup' },
-        width: '500px'
-      });
-
-      // 4. Limpiar carrito
-      localStorage.removeItem("camisas_seleccionadas");
-      window.dispatchEvent(new CustomEvent("camisas:update"));
-      
-      // 5. Limpiar formulario
-      const inputs = ["pedidoNombre", "pedidoEmail", "pedidoDireccion", "pedidoWhatsapp"];
-      inputs.forEach(id => {
-        const input = document.getElementById(id);
-        if (input) input.value = "";
-      });
-      
-      // 6. Cerrar carrito
-      if (window.toggleCarrito) {
-        toggleCarrito(false);
+      } else {
+        throw new Error('Función de envío de correo no disponible');
       }
 
     } catch (error) {
-      console.error("Error en el pedido:", error);
+      console.error("Error en el proceso de confirmación:", error);
       
-      let mensajeError = "No se pudo completar el pedido. Intenta nuevamente.";
-      if (error.message.includes("duplicate") || error.code === "23505") {
-        mensajeError = "Ya tienes un pedido pendiente con este correo";
-      }
+      // Eliminar pedido temporal si hubo error
+      localStorage.removeItem('pedido_pendiente_confirmacion');
       
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: mensajeError,
+        text: "No se pudo enviar la confirmación. Intenta nuevamente.",
         confirmButtonText: "Aceptar",
         confirmButtonColor: "#CB2D2D",
         customClass: { popup: 'swal2-popup' }

@@ -1,134 +1,173 @@
-// enviar-correo.js - Sistema de envío de correos con EmailJS
+// enviar-correo.js - VERSIÓN CORREGIDA FINAL
 console.log('📧 Cargando sistema de correos...');
 
 (function() {
-  // Configuración de EmailJS (gratis)
-  const EMAILJS_USER_ID = 'YOUR_USER_ID'; // Cambiar por tu User ID de EmailJS
-  const EMAILJS_SERVICE_ID = 'service_vrx_pedidos'; // Crear este servicio en EmailJS
-  const EMAILJS_TEMPLATE_ID = 'template_pedido_vrx'; // Crear este template en EmailJS
+  // === CONFIGURACIÓN EMAILJS ===
+  const EMAILJS_USER_ID = '3OTktLhSaXJkgGTcX';
+  const EMAILJS_SERVICE_ID = 'pedido_vrx_cliente';
+  const EMAILJS_TEMPLATE_CONFIRMACION = 'template_x3ow6r4';
   
-  // Verificar si EmailJS está disponible
-  if (typeof emailjs === 'undefined') {
-    console.log('📧 Cargando EmailJS...');
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
-    script.onload = () => {
-      console.log('✅ EmailJS cargado');
-      emailjs.init(EMAILJS_USER_ID);
-    };
-    document.head.appendChild(script);
+  // Estado de inicialización
+  let emailjsReady = false;
+  
+  // Inicializar EmailJS
+  function inicializarEmailJS() {
+    if (typeof emailjs === 'undefined') {
+      console.log('📧 Cargando librería EmailJS...');
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+      script.onload = () => {
+        console.log('✅ EmailJS cargado, inicializando...');
+        try {
+          emailjs.init(EMAILJS_USER_ID);
+          emailjsReady = true;
+          console.log('✅ EmailJS inicializado correctamente');
+        } catch (error) {
+          console.error('❌ Error inicializando EmailJS:', error);
+        }
+      };
+      document.head.appendChild(script);
+    } else {
+      emailjsReady = true;
+    }
   }
   
-  // Función para enviar correo de confirmación al cliente
-  window.enviarCorreoCliente = async function(datosPedido) {
+  // Función para enviar correo de confirmación
+  window.enviarCorreoConfirmacion = async function(datosPedido) {
     try {
+      console.log('📤 Preparando envío de correo de confirmación...');
+      
+      // Validación crítica de todos los datos necesarios
+      const datosRequeridos = ['email', 'nombre', 'whatsapp', 'direccion', 'link_confirmacion'];
+      datosRequeridos.forEach(dato => {
+        if (!datosPedido[dato] || datosPedido[dato].trim() === '') {
+          throw new Error(`Falta el dato requerido: ${dato}`);
+        }
+      });
+      
+      if (!datosPedido.email.includes('@')) {
+        throw new Error(`Email inválido: ${datosPedido.email}`);
+      }
+      
+      // Esperar EmailJS
+      if (!emailjsReady) {
+        await new Promise(resolve => {
+          const check = setInterval(() => {
+            if (emailjsReady) {
+              clearInterval(check);
+              resolve();
+            }
+          }, 100);
+        });
+      }
+      
+      // Formatear productos para el HTML - MÁS SIMPLE Y SEGURO
+      const productosHTML = datosPedido.camisas.map(item => {
+        const subtotal = (item.precio * item.cantidad).toFixed(2);
+        let extraHTML = '';
+        if (item.costo_extra && item.costo_extra.trim() !== '') {
+          extraHTML = `<div style="color: #e65100; font-style: italic; margin-top: 5px;">✏️ Extra: ${item.costo_extra}</div>`;
+        }
+        
+        return `
+          <div style="margin-bottom: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #CB2D2D;">
+            <div style="font-weight: bold; color: #333; font-size: 16px;">${item.nombre}</div>
+            <div style="color: #666; margin: 8px 0;">
+              <span style="display: inline-block; margin-right: 10px;">📏 Talla: ${item.talla}</span>
+              <span style="display: inline-block; margin-right: 10px;">🎨 Color: ${item.color}</span>
+              <span style="display: inline-block;">📦 Cantidad: ${item.cantidad}</span>
+            </div>
+            ${extraHTML}
+            <div style="text-align: right; font-weight: bold; color: #CB2D2D; font-size: 16px;">
+              $${subtotal} USD
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Calcular total
+      const total = datosPedido.camisas.reduce((sum, item) => 
+        sum + (item.precio * item.cantidad), 0
+      ).toFixed(2);
+      
+      // Fecha y hora
+      const ahora = new Date();
+      const fecha = ahora.toLocaleDateString('es-ES');
+      const hora = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+      
+      // Y ASEGÚRATE DE QUE ESTAS VARIABLES SIEMPRE TENGAN VALOR:
+      const templateParams = {
+        email: datosPedido.email,
+        
+        // VARIABLES PRINCIPALES - NUNCA VACÍAS
+        order_id: datosPedido.token_confirmacion ? datosPedido.token_confirmacion.substring(0, 10) : 'VRX-' + Date.now(),
+        customer_name: datosPedido.nombre || 'Cliente',
+        customer_email: datosPedido.email || 'No especificado',
+        customer_phone: datosPedido.whatsapp || 'No especificado',
+        shipping_address: datosPedido.direccion || 'No especificada',
+        payment_method: datosPedido.metodo_pago === 'efectivo' ? 'Pago en Efectivo' : datosPedido.metodo_pago || 'Transferencia',
+        order_date: fecha,
+        order_time: hora,
+        order_items: productosHTML,
+        order_total: `$${total} USD`,
+        confirmation_link: datosPedido.link_confirmacion,
+        
+        // VARIABLES DE CONTACTO
+        whatsapp_number: datosPedido.whatsapp || 'No disponible',
+        whatsapp_contact: datosPedido.whatsapp ? `https://wa.me/${datosPedido.whatsapp.replace(/\D/g, '')}` : '#',
+        
+        // AÑO ACTUAL (SIEMPRE TIENE VALOR)
+        year: new Date().getFullYear().toString()
+      };
+      
+      console.log('📤 Enviando correo con TODAS las variables:', {
+        emailDestino: templateParams.email,
+        nombre: templateParams.customer_name,
+        total: templateParams.order_total,
+        linkConfirmacion: templateParams.confirmation_link,
+        whatsapp: templateParams.customer_phone
+      });
+      
+      // Validar que las variables críticas no estén vacías
+      const variablesCriticas = ['email', 'customer_name', 'confirmation_link', 'order_total'];
+      variablesCriticas.forEach(variable => {
+        if (!templateParams[variable] || templateParams[variable].trim() === '') {
+          throw new Error(`Variable crítica vacía: ${variable} = ${templateParams[variable]}`);
+        }
+      });
+      
+      // Enviar correo
+      console.log('📤 Ejecutando emailjs.send...');
       const response = await emailjs.send(
         EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID + '_cliente', // Template para cliente
-        {
-          nombre_cliente: datosPedido.nombre,
-          email_cliente: datosPedido.email,
-          numero_pedido: datosPedido.numero_pedido || Date.now(),
-          fecha_pedido: new Date().toLocaleDateString('es-MX'),
-          hora_pedido: new Date().toLocaleTimeString('es-MX'),
-          total_pedido: `$${parseFloat(datosPedido.total).toFixed(2)}`,
-          direccion_entrega: datosPedido.direccion,
-          whatsapp_cliente: datosPedido.whatsapp,
-          metodo_pago: datosPedido.metodo_pago,
-          lista_camisas: datosPedido.camisas.map(item => 
-            `• ${item.nombre} (Talla: ${item.talla}, Color: ${item.color}, Cantidad: ${item.cantidad})${item.costo_extra ? ` - Extra: ${item.costo_extra}` : ''}`
-          ).join('<br>'),
-          instrucciones_contacto: 'Nos pondremos en contacto contigo dentro de las próximas 24 horas para confirmar disponibilidad y detalles de pago.',
-          link_contacto: 'https://wa.me/5211234567890' // Cambiar por tu WhatsApp
-        }
+        EMAILJS_TEMPLATE_CONFIRMACION,
+        templateParams
       );
       
-      console.log('✅ Correo enviado al cliente:', response.status);
-      return true;
-    } catch (error) {
-      console.error('❌ Error enviando correo al cliente:', error);
-      return false;
-    }
-  };
-  
-  // Función para enviar correo al administrador
-  window.enviarCorreoAdmin = async function(datosPedido) {
-    try {
-      const response = await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID + '_admin', // Template para admin
-        {
-          numero_pedido: datosPedido.numero_pedido || Date.now(),
-          fecha_hora: new Date().toLocaleString('es-MX'),
-          cliente_nombre: datosPedido.nombre,
-          cliente_email: datosPedido.email,
-          cliente_whatsapp: datosPedido.whatsapp,
-          cliente_direccion: datosPedido.direccion,
-          total_pedido: `$${parseFloat(datosPedido.total).toFixed(2)}`,
-          metodo_pago: datosPedido.metodo_pago,
-          detalle_pedido: datosPedido.camisas.map(item => 
-            `🛒 ${item.cantidad}x ${item.nombre} | Talla: ${item.talla} | Color: ${item.color}${item.costo_extra ? ` | Extra: ${item.costo_extra}` : ''} | $${(item.precio * item.cantidad).toFixed(2)}`
-          ).join('<br><br>'),
-          subtotal: `$${parseFloat(datosPedido.total).toFixed(2)}`,
-          estado_pedido: 'PENDIENTE',
-          link_panel: 'https://app.supabase.com' // Link al panel de Supabase
-        }
-      );
-      
-      console.log('✅ Correo enviado al admin:', response.status);
-      return true;
-    } catch (error) {
-      console.error('❌ Error enviando correo al admin:', error);
-      return false;
-    }
-  };
-  
-  // Función principal para enviar ambos correos
-  window.enviarCorreosPedido = async function(datosPedido) {
-    // Generar número de pedido único
-    const numeroPedido = 'VRX-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-    datosPedido.numero_pedido = numeroPedido;
-    
-    // Mostrar loading
-    Swal.fire({
-      title: "Enviando confirmación...",
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      willOpen: () => {
-        Swal.showLoading();
-      }
-    });
-    
-    try {
-      // Enviar correo al administrador
-      const adminEnviado = await enviarCorreoAdmin(datosPedido);
-      
-      if (!adminEnviado) {
-        throw new Error('No se pudo enviar el correo al administrador');
-      }
-      
-      // Enviar correo al cliente
-      const clienteEnviado = await enviarCorreoCliente(datosPedido);
-      
-      if (!clienteEnviado) {
-        console.warn('⚠️ No se pudo enviar correo al cliente, pero el pedido se registró');
-      }
-      
-      return {
-        success: true,
-        numero_pedido: numeroPedido,
-        correo_cliente_enviado: clienteEnviado,
-        correo_admin_enviado: adminEnviado
+      console.log('✅ ¡Correo enviado exitosamente! Estado:', response.status);
+      return { 
+        success: true, 
+        message: 'Correo de confirmación enviado',
+        response: response 
       };
       
     } catch (error) {
-      console.error('❌ Error en envío de correos:', error);
-      return {
-        success: false,
-        error: error.message
+      console.error('❌ ERROR DETALLADO:', {
+        status: error.status,
+        text: error.text,
+        message: error.message
+      });
+      
+      return { 
+        success: false, 
+        error: error.text || 'Error al enviar correo',
+        status: error.status
       };
     }
   };
   
-  console.log('✅ Sistema de correos configurado');
+  // Inicializar
+  inicializarEmailJS();
+  
+  console.log('✅ Sistema de correos listo para usar');
 })();
