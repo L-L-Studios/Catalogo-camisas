@@ -187,26 +187,99 @@
                     <h3>Envíanos un mensaje</h3>
                     <form method="POST" id="contactForm">
 
-                        <input type="text" name="name" placeholder="Tu nombre" />
-                        <small class="error-msg"></small>
+                        <div class="form-grid">
 
-                        <input type="email" name="email" placeholder="Tu correo" />
-                        <small class="error-msg"></small>
+                            <!-- FORMULARIO LADO IZQUIERDO-->
+                            <div class="form-izq">
 
-                        <textarea name="message" placeholder="Tu pedido" rows="6"></textarea>
-                        <small class="error-msg"></small>
-                        
-                        <input type="hidden" name="_confirmation" value="true">
+                                <input type="text" name="name" placeholder="Tu nombre" />
+                                <small class="error-msg"></small>
 
-                        <!-- Honeypot anti-spam -->
-                        <input type="text" name="_gotcha" style="display:none">
+                                <input type="email" name="email" placeholder="Tu correo" />
+                                <small class="error-msg"></small>
 
-                        <!-- Mensaje de bloqueo -->
-                        <p id="formStatus" style="display:none;"></p>
+                                <textarea name="message" placeholder="Tu pedido personalizado (Detalles)" rows="6"></textarea>
+                                <small class="error-msg"></small>
 
-                        <button type="submit" id="btn-enviar">Enviar</button>
+                            <input type="hidden" name="_confirmation" value="true">
+
+                            <!-- Honeypot anti-spam -->
+                            <input type="text" name="_gotcha" style="display:none">
+
+                            <!-- Mensaje de bloqueo -->
+                            <p id="formStatus" style="display:none;"></p>
+
+                            <button type="submit" id="btn-enviar">Enviar</button>
+
+                            </div>
+
+                            <!-- FORMULARIO LADO DERECHO-->
+                            <div class="form-der">
+
+                            <!-- IMAGEN-->
+                                <div class="img-upload-contact">
+
+                                    <label for="input-img" class="img-box" id="img-box">
+                                        <span class="img-placeholder">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+                                            <path d="M4 16l4-4 4 4 4-4 4 4" stroke="currentColor" stroke-width="2"/>
+                                            <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="2"/>
+                                        </svg>
+                                        <p>Seleccionar imagen</p>
+                                        </span>
+                                        <img id="preview-img" hidden>
+                                    </label>
+
+                                    <input 
+                                        type="file"
+                                        id="input-img"
+                                        accept="image/*"
+                                        hidden
+                                    >
+
+                                </div>
+                                <small class="error-msg"></small>
+
+                                <!-- TALLAS-->
+                                <div class="card border-0 bg-light mb-4 card-tallas">
+                                    <div class="card-body">
+                                        <p class="text-muted small mb-3">Selecciona la talla para tu camisa personalizada</p>
+                                        
+                                        <!-- Contenedor de tallas -->
+                                        <div class="d-flex gap-2 flex-wrap" id="tallas">
+                                            <div class="talla" data-talla="S">S</div>
+                                            <div class="talla" data-talla="M">M</div>
+                                            <div class="talla" data-talla="L">L</div>
+                                            <div class="talla" data-talla="XL">XL</div>
+                                            <div class="talla" data-talla="XXL">XXL</div>
+                                            <div class="talla" data-talla="XXXL">XXXL</div>
+                                        </div>
+                                        
+                                        <!-- Input oculto para almacenar la talla seleccionada -->
+                                        <input type="hidden" name="talla" id="talla-input" value="">
+                                        
+                                        <!-- Mensaje de error para talla -->
+                                        <small class="error-msg" id="talla-error"></small>
+                                        
+                                        <!-- Mostrar talla seleccionada -->
+                                        <div class="talla-seleccionada-display" id="talla-seleccionada-display">
+                                            <strong>Talla seleccionada:</strong> 
+                                            <span id="talla-seleccionada-text"></span>
+                                            <button type="button" class="btn btn-sm btn-link p-0 ms-2" id="cambiar-talla">
+                                                <small>Cambiar</small>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+
+                            </div>
+
+                        </div>
+
+
                     </form>
-
 
                     </div>
                 </div>
@@ -219,16 +292,9 @@
                         <!-- iconos de redes sociales -->
                         <div class="card-redes">
                             <a>
-                                <svg class="socialSvg" viewBox="0 0 16 16">
-                                <path
-                                    d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"
-                                ></path>
-                                </svg>
-                                <svg class="socialSvg" viewBox="0 0 16 16">
-                                <path
-                                    d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"
-                                ></path>
-                                </svg>
+                                <svg class="socialSvg" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="M11.99121,1.00044a10.61443,10.61443,0,0,0-11,10.70019,10.46132,10.46132,0,0,0,3.41406,7.86524L4.457,21.2563a1.79959,1.79959,0,0,0,1.79883,1.74316,1.81992,1.81992,0,0,0,.72656-.15234l1.9209-.84668a11.89548,11.89548,0,0,0,3.08789.40039,10.61525,10.61525,0,0,0,11.001-10.7002A10.61525,10.61525,0,0,0,11.99121,1.00044Zm0,19.40039a9.86205,9.86205,0,0,1-2.63476-.35059,1.79856,1.79856,0,0,0-1.19629.0918l-1.71387.75586-.04492-1.49316a1.80968,1.80968,0,0,0-.60157-1.27442,8.4876,8.4876,0,0,1-2.80859-6.42969,8.65949,8.65949,0,0,1,9-8.70019,8.70522,8.70522,0,1,1,0,17.40039ZM15.72559,8.5854l-2.3125,2.75488L10.06641,9.28364a.99809.99809,0,0,0-1.28907.21L5.72559,13.13032a.99955.99955,0,1,0,1.53125,1.28516l2.498-2.97559,3.34668,2.05567a.99823.99823,0,0,0,1.28906-.209l2.86622-3.416A.99955.99955,0,1,0,15.72559,8.5854Z"/></svg>
+
+                                <svg class="socialSvg" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg" data-name="Layer 1"><path d="M11.99121,1.00044a10.61443,10.61443,0,0,0-11,10.70019,10.46132,10.46132,0,0,0,3.41406,7.86524L4.457,21.2563a1.79959,1.79959,0,0,0,1.79883,1.74316,1.81992,1.81992,0,0,0,.72656-.15234l1.9209-.84668a11.89548,11.89548,0,0,0,3.08789.40039,10.61525,10.61525,0,0,0,11.001-10.7002A10.61525,10.61525,0,0,0,11.99121,1.00044Zm0,19.40039a9.86205,9.86205,0,0,1-2.63476-.35059,1.79856,1.79856,0,0,0-1.19629.0918l-1.71387.75586-.04492-1.49316a1.80968,1.80968,0,0,0-.60157-1.27442,8.4876,8.4876,0,0,1-2.80859-6.42969,8.65949,8.65949,0,0,1,9-8.70019,8.70522,8.70522,0,1,1,0,17.40039ZM15.72559,8.5854l-2.3125,2.75488L10.06641,9.28364a.99809.99809,0,0,0-1.28907.21L5.72559,13.13032a.99955.99955,0,1,0,1.53125,1.28516l2.498-2.97559,3.34668,2.05567a.99823.99823,0,0,0,1.28906-.209l2.86622-3.416A.99955.99955,0,1,0,15.72559,8.5854Z"/></svg>
                             </a>
 
                             <a>
@@ -256,6 +322,7 @@
         
     </main>
 
+
     <!-- SIDEBAR CARRITO CORREGIDO -->
     <div id="carritoSidebar" class="carrito-sidebar">
         <div class="carrito-header">
@@ -271,7 +338,7 @@
             <div class="carrito-datos">
                 <input type="text" id="pedidoNombre" placeholder="Nombre completo">
                 <input type="email" id="pedidoEmail" placeholder="Correo">
-                <input type="text" id="pedidoDireccion" placeholder="Dirección">
+                <input type="text" id="pedidoDireccion" placeholder="Dirección de entrega (calle, colonia, referencias)">
                 <input type="tel" id="pedidoWhatsapp" placeholder="WhatsApp">
 
                 <select id="pedidoPago">
@@ -298,6 +365,13 @@
     <script src="js/nabvar.js"></script>
     <script src="js/catalogo.js"></script> 
     <script src="js/bookmarks.js"></script>
+
+    <script src="js-pedido/producto-personalizado.js"></script>
+
+ <!--   <script src="js/form-camisas.js"></script>
+    <script src="js/form-notif.js"></script>
+    <script src="js/form-val.js"></script>-->
+
     <script src="js/carrito-sidebar.js"></script>
 
     <script src="js-pedido/enviar-correo.js"></script>
@@ -329,18 +403,9 @@
                 return;
             }
 
-            // 🔥 CORRECCIÓN: Manejo correcto de fechas con zona horaria
-            // La fecha viene como "YYYY-MM-DD" desde PostgreSQL
-            // Necesitamos evitar que JavaScript la interprete como UTC
-            
-            // Solución 1: Agregar "T00:00:00" para forzar hora local
             const fechaStr = data.proxima_entrega;
             const fechaLocal = new Date(fechaStr + 'T00:00:00');
-            
-            // Solución alternativa: Usar partes de la fecha
-            // const [year, month, day] = fechaStr.split('-');
-            // const fechaLocal = new Date(year, month - 1, day);
-            
+
             const hoy = new Date();
             
             // Ajustar ambas fechas a medianoche local para comparación correcta

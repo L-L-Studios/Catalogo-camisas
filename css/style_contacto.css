@@ -32,7 +32,7 @@
 
 /* GRID */
 #contact .contact-grid {
-  max-width: 1200px;
+  max-width: 1350px;
   margin: 0 auto;
   padding: 0 16px;
 
@@ -65,6 +65,19 @@
     inset 0 1px 0 rgba(255,255,255,0.6);
 }
 
+.form-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 36px;
+  align-items: start;
+}
+
+.form-izq,
+.form-der {
+  display: flex;
+  flex-direction: column;
+}
+
 #contact .contact-box h3 {
   margin-bottom: 14px;
   font-size: 1.25rem;
@@ -95,25 +108,26 @@
 
 /*BOTON ENVIAR AL CONTACTO*/
 #btn-enviar{
-    all: unset;
-    width: 100px;
-    height: 30px;
-    font-size: 16px;
-    background: transparent;
-    border: none;
-    position: relative;
-    color: #f0f0f0 !important;
-    cursor: pointer;
-    z-index: 1;
-    padding: 10px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    transition: 0.3s ease-in-out;
+  all: unset;
+  width: 100px;
+  height: 30px;
+  font-size: 16px;
+  background: transparent;
+  border: none;
+  position: relative;
+  color: #f0f0f0 !important;
+  cursor: pointer;
+  z-index: 1;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: 0.3s ease-in-out;
+  margin-top: 20px;
 }
 
 #btn-enviar:hover {
@@ -201,7 +215,108 @@ textarea.valid {
   color: #4caf50;
 }
 
+/*Agregar imagen de referencia*/
 
+.img-upload-contact{
+  margin: 5px 0 15px 0;
+}
+
+
+.img-upload {
+  max-width: 280px;
+}
+
+.img-box {
+  border: 2.5px dashed #ffffff;
+  border-radius: 16px;
+  height: 200px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #6c757d;
+  transition: 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.img-box:hover {
+  border-color: #CB2D2D;
+  color: #CB2D2D;
+}
+
+.img-placeholder p {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.img-box.has-img .img-placeholder {
+  display: none;
+}
+
+
+/* Estilos para las tallas */
+.card-tallas{
+  border-radius: 15px;
+}
+
+#tallas {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+
+}
+
+.talla {
+  width: auto;
+  height: 30px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+  user-select: none;
+}
+
+.talla:hover {
+  border-color: #CB2D2D;
+  color: #CB2D2D;
+  transform: translateY(-2px);
+}
+
+.talla.seleccionada {
+  background-color: #CB2D2D;
+  color: white;
+  border-color: #CB2D2D;
+}
+
+/* Ocultar talla seleccionada por defecto */
+.talla-seleccionada-display {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.talla-seleccionada-display.visible {
+  display: block;
+}
 
 
 /* =========================================
@@ -212,7 +327,6 @@ textarea.valid {
   position: relative;
   border-radius: 22px;
   overflow: hidden;
-  min-height: 280px; /* MENOS ALTO */
 
   box-shadow:
     0 20px 45px rgba(0,0,0,0.22);
@@ -221,11 +335,15 @@ textarea.valid {
 /* IMAGEN */
 .contact-image {
   width: 100%;
-  height: 432.4px !important; /*mismo alto que el form contacto*/
+  height: 459.6px; 
   object-fit: cover;
   display: block;
   filter: saturate(1.05) contrast(1.04);
 }
+
+/*#btn-enviar:hover.contact-image {
+  height: 541.2 !important; 
+}*/
 
 /* OVERLAY SUAVE */
 .contact-image-wrap::after {
@@ -312,7 +430,7 @@ textarea.valid {
 /*instagram*/
 .card-redes a:nth-child(1):hover,
 .socialSvg:hover path  {
-  background-color: #d62976;
+  background-color: #0084FF;
 } 
 /* Whatsapp*/
 .card-redes a:nth-child(2):hover ,

@@ -63,7 +63,7 @@
         <div class="carrito-datos">
             <input type="text" id="pedidoNombre" placeholder="Nombre completo">
             <input type="email" id="pedidoEmail" placeholder="Correo">
-            <input type="text" id="pedidoDireccion" placeholder="Dirección">
+            <input type="text" id="pedidoDireccion" placeholder="Dirección de entrega (calle, colonia, referencias)">
             <input type="tel" id="pedidoWhatsapp" placeholder="WhatsApp">
 
             <select id="pedidoPago">
@@ -72,7 +72,7 @@
         </div>
 
         <p>Total: $<span id="totalCarrito">0.00</span></p>
-        <button id="btnPedido">
+        <button id="btnPedidoCarrito" id="btnPedido">
         Realizar pedido
         </button>
     </div>
@@ -87,9 +87,11 @@
 <!-- Conexión a Supabase -->
 <script src="js/supabase.js"></script>
 <script src="js/producto.js"></script>
+
 <script src="js/carrito-sidebar.js"></script>
-<script src="js-pedido/pedido_camisa_supabase.js"></script>
 <script src="js-pedido/enviar-correo.js"></script>
+<script src="js-pedido/pedido_camisa_supabase.js"></script>
+
 
 <script>
 // Configurar el botón de carrito en producto.html
