@@ -105,7 +105,6 @@
   min-height: 120px; /* MENOS ALTO */
 }
 
-
 /*BOTON ENVIAR AL CONTACTO*/
 #btn-enviar{
   all: unset;
@@ -127,7 +126,7 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   transition: 0.3s ease-in-out;
-  margin-top: -60px;
+  margin-top: -80px;
 }
 
 #btn-enviar:hover {
