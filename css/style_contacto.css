@@ -127,7 +127,7 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   transition: 0.3s ease-in-out;
-  margin-top: 20px;
+  margin-top: -60px;
 }
 
 #btn-enviar:hover {
@@ -543,5 +543,16 @@ textarea.valid {
   #contact .section-title,
   #contact .section-sub {
     text-align: center;
+  }
+
+  /*form-derecha q izquierda*/
+  .form-grid {
+    display: block;
+    gap: 36px;
+    align-items: start;
+  }
+
+  #btn-enviar{
+    margin-top: 20px;
   }
 }

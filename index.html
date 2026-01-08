@@ -201,16 +201,6 @@
                                 <textarea name="message" placeholder="Tu pedido personalizado (Detalles)" rows="6"></textarea>
                                 <small class="error-msg"></small>
 
-                            <input type="hidden" name="_confirmation" value="true">
-
-                            <!-- Honeypot anti-spam -->
-                            <input type="text" name="_gotcha" style="display:none">
-
-                            <!-- Mensaje de bloqueo -->
-                            <p id="formStatus" style="display:none;"></p>
-
-                            <button type="submit" id="btn-enviar">Enviar</button>
-
                             </div>
 
                             <!-- FORMULARIO LADO DERECHO-->
@@ -275,6 +265,16 @@
                                 
 
                             </div>
+
+                            <input type="hidden" name="_confirmation" value="true">
+
+                            <!-- Honeypot anti-spam -->
+                            <input type="text" name="_gotcha" style="display:none">
+
+                            <!-- Mensaje de bloqueo -->
+                            <p id="formStatus" style="display:none;"></p>
+
+                            <button type="submit" id="btn-enviar">Enviar</button>
 
                         </div>
 
