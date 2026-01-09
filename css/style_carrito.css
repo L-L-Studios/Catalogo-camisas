@@ -425,3 +425,12 @@
     padding-bottom: 180px !important;
   }
 }
+
+/* FORZAR OCULTAMIENTO COMPLETO CUANDO EL CARRITO ESTÉ CERRADO */
+.carrito-sidebar:not(.active) {
+  display: none !important;
+}
+
+.carrito-sidebar.active {
+  display: flex !important;
+}
