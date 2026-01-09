@@ -373,6 +373,7 @@
     height: 100dvh; /* Usar dvh para mejor compatibilidad móvil */
     display: flex;
     flex-direction: column;
+    transition: right 0.35s ease;
   }
 
   .carrito-body {
@@ -380,21 +381,21 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 1rem;
-    padding-bottom: 200px !important; /* ESPACIO EXTRA PARA EL FOOTER */
+    padding-bottom: 180px; /* ESPACIO PARA EL FOOTER */
     min-height: 0;
   }
 
   .carrito-footer {
-    position: fixed; /* FIJO EN LA PARTE INFERIOR */
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: relative; /* NO fixed */
+    bottom: auto;
+    left: auto;
+    right: auto;
     background: #0f0f0f;
     border-top: 1px solid #222;
     padding: 12px 15px;
-    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
-    z-index: 10000; /* MÁS ALTO QUE EL BODY */
+    /* Eliminar box-shadow y z-index excesivos */
     margin-top: 0;
+    flex-shrink: 0;
   }
   
   .carrito-item {
