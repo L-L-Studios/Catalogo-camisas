@@ -32,6 +32,7 @@
 }
 
 .logo {
+  margin-left: 10px;
   width: 90px;
   height: auto;
   fill: #f6fffe;
@@ -185,6 +186,7 @@
   display: flex;
 }
 
+
 .popup-link {
   color: #fff;
   text-decoration: none;
@@ -213,12 +215,31 @@
   box-shadow: 0 5px 15px rgba(203, 45, 45, 0.4);
 }
 
+/*nabvar donde esta el carrito en catalogo-movil*/
+.nav-popup-carrito{
+  position: absolute;
+  right: 90px;
+  display: none;
+}
+
+.nav-popup-carrito .contador{
+  position: absolute;
+  background: #CB2D2D;
+  top: -10px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/*popup del carrito en catalogo */
 .popup-carrito{
   margin: 0 auto;
   font-size: 16px !important;
   color: white;
-  background: linear-gradient(135deg, #f83b16, #CB2D2D);
-  padding: 10px 15px;
+  background: transparent;
   border-radius: 20px;
   border: none;
 }
@@ -247,7 +268,7 @@
   padding: 4px 18px;
   border-radius: 999px;
   border: none;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(75, 75, 75, 0.71);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
@@ -257,7 +278,7 @@
 }
 
 .btn-cat:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(110, 83, 83, 0.71);
 }
 
 .btn-cat.active {
@@ -317,6 +338,10 @@
   .logo {
       font-size: 22px;
   }
+
+  .nav-popup-carrito{
+    display: flex;
+  }
   
   /* Ocultar enlaces desktop en móvil */
   .nav-links-desktop {
@@ -346,6 +371,11 @@
       white-space: nowrap;
       flex-shrink: 0;
   }
+
+  #navbar.scrolled .ph.ph-shopping-cart:before{
+    color: #ac1717 !important;
+    fill: #ac1717 !important;
+  }
 }
 
 /* =========================================
@@ -357,7 +387,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 30px;
+      padding: 10px 8px;
   }
   
   /* Logo a la izquierda */
@@ -374,11 +404,16 @@
   .menu {
       display: none;
   }
+
+  #contact a{ 
+    margin-right: -20px !important;
+
+  }
   
   /* Buscador en el centro */
   .nav-buscar {
       flex: 1;
-      max-width: 500px;
+      max-width: 600px;
       margin: 0 20px;
       order: 2;
   }
@@ -389,8 +424,13 @@
       order: 3;
       position: static;
       transform: none;
+      gap: 10px;
   }
   
+  .input__container{
+    min-width: 250px !important;
+  }
+
   /* Ocultar popup en desktop */
   .nav-popup {
       display: none !important;

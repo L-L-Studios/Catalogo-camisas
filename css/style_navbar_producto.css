@@ -31,6 +31,19 @@ body {
   transition: all 0.35s ease;
 }
 
+
+.navbar-producto.scrolled{
+  background: rgba(255, 255, 255, 0.53) !important;
+}
+
+.navbar-producto.scrolled .btn-volver,
+.navbar-producto.scrolled .logo,
+.navbar-producto.scrolled .ph.ph-shopping-cart:before {
+  color: #9d0b0b !important;
+  fill: #9d0b0b !important;
+  
+}
+
 .btn-volver {
   border: none;
   background: none;

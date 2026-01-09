@@ -1,6 +1,17 @@
 // producto.js — ACTUALIZADO CON LÍMITE DE 6
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
+const navbar_producto = document.querySelector('.navbar-producto');
+
+
+  window.addEventListener('scroll', () => {
+      if (window.scrollY > window.innerHeight * 0.08) {
+          navbar_producto.classList.add('scrolled');
+      } else {
+          navbar_producto.classList.remove('scrolled');
+      }
+  });
+
 
 if (!id) {
   document.getElementById("producto-container").innerHTML = 

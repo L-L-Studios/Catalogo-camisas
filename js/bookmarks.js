@@ -1,4 +1,4 @@
-// bookmarks.js - ACTUALIZADO CON LÍMITE DE 6 Y SIN DUPLICADOS
+// bookmarks.js - 
 console.log('🔖 bookmarks.js cargado');
 
 (function () {
@@ -117,5 +117,28 @@ console.log('🔖 bookmarks.js cargado');
       }
     }
   }, 2000);
+
+  // sincronizar carrito y bookmarks
+  window.addEventListener("camisas:update", () => {
+    const carrito = JSON.parse(localStorage.getItem(KEY)) || [];
+
+    document.querySelectorAll('.card-camisa.card-index[data-id]').forEach(card => {
+      const id = card.dataset.id;
+      const bookmarkInput = card.querySelector('.ui-bookmark input');
+
+      if (!bookmarkInput) return;
+
+      const existe = carrito.some(item => String(item.id) === String(id));
+
+      bookmarkInput.checked = existe;
+
+      if (existe) {
+        card.classList.add("card-selected");
+      } else {
+        card.classList.remove("card-selected");
+      }
+    });
+  });
+
 
 })();
