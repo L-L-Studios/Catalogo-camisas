@@ -354,7 +354,19 @@
 @media (max-width: 480px) {
   .carrito-sidebar {
     width: 100%;
+    height: 100dvh;
     right: -100%;
+  }
+
+  .carrito-body {
+    padding-bottom: 160px; /* espacio para el footer */
+  }
+
+  .carrito-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    box-shadow: 0 -6px 20px rgba(0,0,0,0.45);
   }
   
   .carrito-item {
