@@ -1,10 +1,16 @@
-// catalogo.js - VERSIÓN CORREGIDA CON CATEGORÍAS DINÁMICAS
+// catalogo.js - VERSIÓN COMPLETA CON PAGINACIÓN
 console.log("📦 catalogo.js cargado");
 
 const contenedor = document.getElementById("section-catalogo-completo");
+const paginacionContainer = document.getElementById("paginacion");
 const navCategorias = document.querySelector('.nav-categorias');
+
+// Variables globales
 let CATALOGO = [];
 let CATEGORIAS_DINAMICAS = new Set();
+let PRODUCTOS_FILTRADOS = [];
+let PAGINA_ACTUAL = 1;
+let PRODUCTOS_POR_PAGINA = 9; // cantidad de tarjetas por página
 
 /* ===========================
    CARGAR Y RENDERIZAR CATEGORÍAS DESDE SUPABASE
@@ -12,7 +18,7 @@ let CATEGORIAS_DINAMICAS = new Set();
 async function cargarYRenderizarCategorias() {
   try {
     // Obtener categorías únicas de la base de datos
-    const { data, error } = await supabase
+    const { data, error } = await window.supabase
       .from("catalogo_camisas")
       .select("categoria");
 
@@ -59,124 +65,45 @@ async function cargarYRenderizarCategorias() {
 }
 
 /* ===========================
-   INICIALIZAR EVENTOS DE CATEGORÍAS (VERSIÓN SIMPLIFICADA Y CORREGIDA)
+   INICIALIZAR EVENTOS DE CATEGORÍAS
 =========================== */
 function inicializarEventosCategorias() {
   const categoryButtons = navCategorias.querySelectorAll('.btn-cat');
   
-  // SOLUCIÓN: No clonar, solo agregar listeners nuevos
   categoryButtons.forEach(button => {
-    // Remover cualquier event listener previo (opcional, pero seguro)
     const newButton = button.cloneNode(true);
     button.parentNode.replaceChild(newButton, button);
     
-    // Agregar nuevo listener al nuevo botón
     newButton.addEventListener('click', function() {
-      // Remover active de TODOS los botones
       navCategorias.querySelectorAll('.btn-cat').forEach(btn => {
         btn.classList.remove('active');
       });
       
-      // Agregar active SOLO al botón clickeado
       this.classList.add('active');
       
       console.log(`🎯 Categoría activa: ${this.dataset.cat}`);
       
-      // Aplicar filtro
-      filtrarCatalogo();
+      // Scroll suave hacia el inicio del catálogo
+      const catalogoSection = document.querySelector('.catalogo');
+      if (catalogoSection) {
+        window.scrollTo({
+          top: catalogoSection.offsetTop - 100,
+          behavior: 'smooth'
+        });
+      }
+      
+      // Aplicar filtro (con pequeño delay para que se vea el scroll)
+      setTimeout(() => {
+        filtrarCatalogo();
+      }, 300);
     });
   });
   
-  // Asegurar que "Todas" esté activa por defecto
   const todasBtn = navCategorias.querySelector('.btn-cat[data-cat="todas"]');
   if (todasBtn && !todasBtn.classList.contains('active')) {
     navCategorias.querySelectorAll('.btn-cat').forEach(btn => btn.classList.remove('active'));
     todasBtn.classList.add('active');
   }
-}
-
-/* ===========================
-   PINTAR TARJETAS CON EL DISEÑO CORRECTO
-=========================== */
-function renderCatalogo(data) {
-  if (!contenedor) return;
-  
-  console.log(`🎨 Renderizando ${data.length} productos`);
-  
-  CATALOGO = data || [];
-  contenedor.innerHTML = "";
-
-  if (!CATALOGO.length) {
-    contenedor.innerHTML = '<p class="text-center text-white">No hay productos disponibles</p>';
-    return;
-  }
-
-  // Crear grid principal
-  const grid = document.createElement("div");
-  grid.className = "grid-catalogo";
-  grid.style.display = "grid";
-  grid.style.gridTemplateColumns = "repeat(auto-fill, minmax(22rem, 1fr))";
-  grid.style.gap = "2rem";
-  grid.style.justifyContent = "center";
-
-  CATALOGO.forEach(camisa => {
-    // IMPORTANTE: Usar el mismo formato 'cat-nombre' para mantener compatibilidad
-    const categoriaSlug = camisa.categoria 
-      ? 'cat-' + camisa.categoria.toLowerCase().replace(/\s+/g, '-')
-      : 'cat-general';
-
-    // Crear ENLACE que envuelve la tarjeta
-    const link = document.createElement("a");
-    link.href = `producto.html?id=${camisa.id}`;
-    link.className = "link-card";
-    link.style.textDecoration = "none";
-    link.style.display = "block";
-
-    // Crear tarjeta CON EL DISEÑO CORRECTO
-    const card = document.createElement("div");
-    card.className = "card-camisa card-index";
-    card.dataset.id = camisa.id;
-    card.dataset.categoria = categoriaSlug;
-
-    // Usar la primera imagen si existe
-    const imagen = camisa.imagenes && camisa.imagenes.length > 0 
-      ? camisa.imagenes[0] 
-      : 'images/color.png';
-
-    // HTML EXACTO QUE RESPETA TU CSS
-    card.innerHTML = `
-      <span class="categoria-camisa">${camisa.categoria || 'General'}</span>
-      
-      <img src="${imagen}" 
-           alt="${camisa.titulo || camisa.nombre}" 
-           class="img-card"
-           loading="lazy"
-           onerror="this.src='images/color.png'">
-      
-      <section class="section-camisa">
-        <h2 class="lbl-nombre-camisa">${camisa.titulo || camisa.nombre}</h2>
-        <h2 class="price-camisa">$${Number(camisa.precio || 0).toFixed(2)}</h2>
-      </section>
-    `;
-
-    // Agregar tarjeta al enlace
-    link.appendChild(card);
-    // Agregar enlace al grid
-    grid.appendChild(link);
-  });
-
-  contenedor.appendChild(grid);
-  
-  // Inicializar bookmarks DESPUÉS de renderizar
-  setTimeout(() => {
-    if (window.BookmarkInit && typeof window.BookmarkInit === 'function') {
-      console.log('📌 Inicializando bookmarks...');
-      window.BookmarkInit();
-    }
-    
-    document.dispatchEvent(new CustomEvent("catalogo:renderizado"));
-    console.log("✅ Catálogo renderizado");
-  }, 300);
 }
 
 /* ===========================
@@ -188,16 +115,13 @@ function busquedaFlexible(textoBusqueda, textoProducto) {
   const busqueda = textoBusqueda.toLowerCase().trim();
   const producto = textoProducto.toLowerCase().trim();
   
-  // Si la búsqueda exacta coincide
   if (producto.includes(busqueda)) {
     return true;
   }
   
-  // Dividir la búsqueda en palabras individuales
   const palabrasBusqueda = busqueda.split(/\s+/).filter(palabra => palabra.length > 0);
   const palabrasProducto = producto.split(/\s+/).filter(palabra => palabra.length > 0);
   
-  // Si hay una sola palabra, buscar coincidencias parciales
   if (palabrasBusqueda.length === 1) {
     const palabra = palabrasBusqueda[0];
     return palabrasProducto.some(palabraProd => 
@@ -205,7 +129,6 @@ function busquedaFlexible(textoBusqueda, textoProducto) {
     );
   }
   
-  // Para múltiples palabras, verificar que al menos una coincida
   if (palabrasBusqueda.length > 1) {
     return palabrasBusqueda.some(palabra => 
       palabrasProducto.some(palabraProd => 
@@ -218,273 +141,448 @@ function busquedaFlexible(textoBusqueda, textoProducto) {
 }
 
 /* ===========================
-   FILTRAR Y BUSCAR PRODUCTOS (VERSIÓN MEJORADA)
+   FUNCIONES DE PAGINACIÓN
+=========================== */
+function actualizarProductosFiltrados() {
+    const searchInput = document.querySelector('.input__search');
+    const searchText = searchInput ? searchInput.value.trim() : '';
+    const activeButton = document.querySelector('.btn-cat.active');
+    const activeCategory = activeButton ? activeButton.dataset.cat : 'todas';
+    
+    PRODUCTOS_FILTRADOS = CATALOGO.filter(producto => {
+        const categoriaSlug = producto.categoria 
+            ? 'cat-' + producto.categoria.toLowerCase().replace(/\s+/g, '-')
+            : 'cat-general';
+        
+        const categoriaMatch = activeCategory === 'todas' || 
+                              categoriaSlug === activeCategory;
+        
+        let busquedaMatch = true;
+        if (searchText) {
+            const titulo = producto.titulo || producto.nombre || '';
+            const categoriaTexto = producto.categoria || '';
+            busquedaMatch = busquedaFlexible(searchText, titulo) || 
+                           busquedaFlexible(searchText, categoriaTexto);
+        }
+        
+        return categoriaMatch && busquedaMatch;
+    });
+    
+    return PRODUCTOS_FILTRADOS;
+}
+
+function renderizarPaginacion() {
+    if (!paginacionContainer) return;
+    
+    const totalProductos = PRODUCTOS_FILTRADOS.length;
+    const totalPaginas = Math.ceil(totalProductos / PRODUCTOS_POR_PAGINA);
+    
+    paginacionContainer.innerHTML = '';
+    
+    if (totalPaginas <= 1) {
+        paginacionContainer.style.display = 'none';
+        return;
+    }
+    
+    paginacionContainer.style.display = 'flex';
+    
+    // Botón Anterior
+    const liPrev = document.createElement('li');
+    liPrev.className = `page-item ${PAGINA_ACTUAL === 1 ? 'disabled' : ''}`;
+    liPrev.innerHTML = `
+        <a class="page-link" href="#" aria-label="Anterior">
+            <span aria-hidden="true">&laquo;</span>
+        </a>
+    `;
+    if (PAGINA_ACTUAL > 1) {
+        liPrev.addEventListener('click', (e) => {
+            e.preventDefault();
+            cambiarPagina(PAGINA_ACTUAL - 1);
+        });
+    }
+    paginacionContainer.appendChild(liPrev);
+    
+    // Botones de páginas
+    const maxBotones = window.innerWidth < 768 ? 3 : 5;
+    let inicio = Math.max(1, PAGINA_ACTUAL - Math.floor(maxBotones / 2));
+    let fin = Math.min(totalPaginas, inicio + maxBotones - 1);
+    
+    if (fin - inicio + 1 < maxBotones) {
+        inicio = Math.max(1, fin - maxBotones + 1);
+    }
+    
+    for (let i = inicio; i <= fin; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === PAGINA_ACTUAL ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+        
+        li.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (i !== PAGINA_ACTUAL) {
+                cambiarPagina(i);
+            }
+        });
+        
+        paginacionContainer.appendChild(li);
+    }
+    
+    // Botón Siguiente
+    const liNext = document.createElement('li');
+    liNext.className = `page-item ${PAGINA_ACTUAL === totalPaginas ? 'disabled' : ''}`;
+    liNext.innerHTML = `
+        <a class="page-link" href="#" aria-label="Siguiente">
+            <span aria-hidden="true">&raquo;</span>
+        </a>
+    `;
+    if (PAGINA_ACTUAL < totalPaginas) {
+        liNext.addEventListener('click', (e) => {
+            e.preventDefault();
+            cambiarPagina(PAGINA_ACTUAL + 1);
+        });
+    }
+    paginacionContainer.appendChild(liNext);
+}
+
+function cambiarPagina(nuevaPagina) {
+    PAGINA_ACTUAL = nuevaPagina;
+    renderizarProductosPagina();
+    renderizarPaginacion();
+    
+    const catalogoSection = document.querySelector('.catalogo');
+    if (catalogoSection) {
+        window.scrollTo({
+            top: catalogoSection.offsetTop - 100,
+            behavior: 'smooth'
+        });
+    }
+}
+
+function renderizarProductosPagina() {
+    if (!contenedor || PRODUCTOS_FILTRADOS.length === 0) {
+        contenedor.innerHTML = '<p class="text-center text-white">No hay productos disponibles</p>';
+        return;
+    }
+    
+    const inicio = (PAGINA_ACTUAL - 1) * PRODUCTOS_POR_PAGINA;
+    const fin = inicio + PRODUCTOS_POR_PAGINA;
+    const productosPagina = PRODUCTOS_FILTRADOS.slice(inicio, fin);
+    
+    contenedor.innerHTML = "";
+    
+    const grid = document.createElement("div");
+    grid.className = "grid-catalogo";
+    
+    const updateGridLayout = () => {
+        if (window.innerWidth >= 1024) {
+            grid.style.gridTemplateColumns = "repeat(3, 1fr)";
+        } else if (window.innerWidth >= 768) {
+            grid.style.gridTemplateColumns = "repeat(2, 1fr)";
+        } else {
+            grid.style.gridTemplateColumns = "1fr";
+        }
+    };
+    
+    grid.style.display = "grid";
+    grid.style.gap = "2rem";
+    grid.style.justifyContent = "center";
+    updateGridLayout();
+    
+    window.addEventListener('resize', updateGridLayout);
+    
+    productosPagina.forEach(camisa => {
+        const categoriaSlug = camisa.categoria 
+            ? 'cat-' + camisa.categoria.toLowerCase().replace(/\s+/g, '-')
+            : 'cat-general';
+
+        const link = document.createElement("a");
+        link.href = `producto.html?id=${camisa.id}`;
+        link.className = "link-card";
+        link.style.textDecoration = "none";
+        link.style.display = "block";
+
+        const card = document.createElement("div");
+        card.className = "card-camisa card-index";
+        card.dataset.id = camisa.id;
+        card.dataset.categoria = categoriaSlug;
+
+        const imagen = camisa.imagenes && camisa.imagenes.length > 0 
+            ? camisa.imagenes[0] 
+            : 'images/color.png';
+
+        card.innerHTML = `
+            <span class="categoria-camisa">${camisa.categoria || 'General'}</span>
+            
+            <img src="${imagen}" 
+                 alt="${camisa.titulo || camisa.nombre}" 
+                 class="img-card"
+                 loading="lazy"
+                 onerror="this.src='images/color.png'">
+            
+            <section class="section-camisa">
+                <h2 class="lbl-nombre-camisa">${camisa.titulo || camisa.nombre}</h2>
+                <h2 class="price-camisa">$${Number(camisa.precio || 0).toFixed(2)}</h2>
+            </section>
+        `;
+
+        link.appendChild(card);
+        grid.appendChild(link);
+    });
+
+    contenedor.appendChild(grid);
+    
+    setTimeout(() => {
+        if (window.BookmarkInit && typeof window.BookmarkInit === 'function') {
+            window.BookmarkInit();
+        }
+        
+        mostrarInfoPaginacion(PRODUCTOS_FILTRADOS.length);
+        
+        document.dispatchEvent(new CustomEvent("catalogo:renderizado"));
+        console.log(`✅ Página ${PAGINA_ACTUAL} renderizada (${productosPagina.length} productos)`);
+    }, 300);
+}
+
+function mostrarInfoPaginacion(totalProductos) {
+    const infoContainer = document.querySelector('.row-info-catalogo');
+    if (!infoContainer) return;
+    
+    const oldInfo = document.querySelector('.paginacion-info');
+    if (oldInfo) oldInfo.remove();
+    
+    const inicio = (PAGINA_ACTUAL - 1) * PRODUCTOS_POR_PAGINA + 1;
+    const fin = Math.min(PAGINA_ACTUAL * PRODUCTOS_POR_PAGINA, totalProductos);
+    const totalPaginas = Math.ceil(totalProductos / PRODUCTOS_POR_PAGINA);
+    
+    const infoDiv = document.createElement('div');
+    infoDiv.className = 'paginacion-info mt-2 text-center text-white opacity-75';
+    infoDiv.style.fontSize = '0.9rem';
+    infoDiv.innerHTML = `
+        Mostrando ${inicio}-${fin} de ${totalProductos} camisas
+        (Página ${PAGINA_ACTUAL} de ${totalPaginas})
+    `;
+    
+    const pagContainer = document.querySelector('.pagination-container');
+    if (pagContainer) {
+        pagContainer.insertAdjacentElement('beforebegin', infoDiv);
+    }
+}
+
+/* ===========================
+   FILTRAR CATÁLOGO
 =========================== */
 function filtrarCatalogo() {
-  if (!contenedor || CATALOGO.length === 0) return;
-  
-  const searchInput = document.querySelector('.input__search');
-  const searchText = searchInput ? searchInput.value.trim() : '';
-  const activeButton = document.querySelector('.btn-cat.active');
-  const activeCategory = activeButton ? activeButton.dataset.cat : 'todas';
-  
-  console.log(`🔍 Buscando: "${searchText}" en categoría: ${activeCategory}`);
-  
-  // Remover tarjeta "not found" anterior si existe
-  const oldCard = document.querySelector('.tarjeta-wrapper-3d');
-  if (oldCard) oldCard.remove();
-  
-  // Obtener todas las tarjetas
-  const cards = contenedor.querySelectorAll('.card-camisa');
-  let foundAny = false;
-  
-  cards.forEach(card => {
-    const titulo = card.querySelector('.lbl-nombre-camisa').textContent;
-    const categoria = card.dataset.categoria;
-    const categoriaTexto = card.querySelector('.categoria-camisa').textContent;
+    console.log('🔍 Aplicando filtros...');
     
-    // Verificar categoría
-    const categoriaMatch = activeCategory === 'todas' || 
-                          categoria === activeCategory;
+    PAGINA_ACTUAL = 1;
+    actualizarProductosFiltrados();
+    renderizarProductosPagina();
+    renderizarPaginacion();
     
-    // Verificar búsqueda
-    let busquedaMatch = false;
-    if (searchText) {
-      busquedaMatch = busquedaFlexible(searchText, titulo) || 
-                     busquedaFlexible(searchText, categoriaTexto);
-    } else {
-      busquedaMatch = true;
+    if (PRODUCTOS_FILTRADOS.length === 0) {
+        const searchInput = document.querySelector('.input__search');
+        const searchText = searchInput ? searchInput.value.trim() : '';
+        const activeButton = document.querySelector('.btn-cat.active');
+        const activeCategory = activeButton ? activeButton.dataset.cat : 'todas';
+        
+        mostrarMensajeNoEncontrado(searchText || activeCategory);
     }
-    
-    // Mostrar/ocultar tarjeta
-    const shouldShow = categoriaMatch && busquedaMatch;
-    card.parentElement.style.display = shouldShow ? 'block' : 'none';
-    
-    if (shouldShow) {
-      foundAny = true;
-    }
-  });
-  
-  // Mostrar tarjeta "not found" si no hay resultados
-  if (!foundAny && (searchText || activeCategory !== 'todas')) {
-    mostrarMensajeNoEncontrado(searchText || activeCategory);
-  }
 }
 
 /* ===========================
    MOSTRAR TARJETA "NOT FOUND"
 =========================== */
 function mostrarMensajeNoEncontrado(searchTerm) {
-  const msg = document.createElement('div');
-  msg.className = 'tarjeta-wrapper-3d';
-  msg.innerHTML = `
-    <!-- Tarjeta decorativa trasera -->
-    <div class="tarjeta-back"></div>
-
-    <!-- Tarjeta principal -->
-    <div class="tarjeta-recip">
-      <div class="imagen-superior">
-        <img src="images/camisa-not-found2.png" alt="Camisa no encontrada">
-        <div class="icono-error">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/>
-            <line x1="12" y1="7" x2="12" y2="13" stroke="#fff" stroke-width="2"/>
-            <circle cx="12" cy="17" r="1.5" fill="#fff"/>
-          </svg>
+    const grid = contenedor.querySelector('.grid-catalogo');
+    if (grid) grid.style.display = 'none';
+    
+    const msg = document.createElement('div');
+    msg.className = 'tarjeta-wrapper-3d';
+    msg.innerHTML = `
+        <div class="tarjeta-back"></div>
+        <div class="tarjeta-recip">
+            <div class="imagen-superior">
+                <img src="images/camisa-not-found2.png" alt="Camisa no encontrada">
+                <div class="icono-error">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"/>
+                        <line x1="12" y1="7" x2="12" y2="13" stroke="#fff" stroke-width="2"/>
+                        <circle cx="12" cy="17" r="1.5" fill="#fff"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="contenido-recip">
+                <h2 class="titulo-recip">Camisa no encontrada</h2>
+                <p class="desc-recip">
+                    ${searchTerm ? `No pudimos encontrar "<strong>${searchTerm}</strong>"` : 'No hay productos en esta categoría'}<br><br>
+                    Intenta con otras palabras o revisa la ortografía.
+                </p>
+            </div>
         </div>
-      </div>
-
-      <div class="contenido-recip">
-        <h2 class="titulo-recip">Camisa no encontrada</h2>
-        <p class="desc-recip">
-          ${searchTerm ? `No pudimos encontrar "<strong>${searchTerm}</strong>"` : 'No hay productos en esta categoría'}<br><br>
-          Intenta con otras palabras o revisa la ortografía.
-        </p>
-      </div>
-    </div>
-  `;
-  
-  // Insertar después del grid de productos
-  const grid = contenedor.querySelector('.grid-catalogo');
-  if (grid) {
+    `;
+    
     contenedor.appendChild(msg);
-  } else {
-    contenedor.appendChild(msg);
-  }
-  
-  // Inicializar movimiento 3D para la tarjeta
-  inicializarMovimiento3D();
+    inicializarMovimiento3D();
+    
+    // Ocultar paginación cuando no hay resultados
+    if (paginacionContainer) {
+        paginacionContainer.style.display = 'none';
+    }
 }
 
 /* ===========================
    MOVIMIENTO 3D PARA TARJETA NOT FOUND
 =========================== */
 function inicializarMovimiento3D() {
-  const card = document.querySelector(".tarjeta-recip");
-  if (!card) return;
-  
-  const manejarMovimiento = function(e) {
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
+    const card = document.querySelector(".tarjeta-recip");
+    if (!card) return;
     
-    const rotateX = (-y / rect.height) * 6;
-    const rotateY = (x / rect.width) * 6;
+    const manejarMovimiento = function(e) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        const rotateX = (-y / rect.height) * 6;
+        const rotateY = (x / rect.width) * 6;
+        
+        card.style.transform = `
+        rotateX(${rotateX}deg)
+        rotateY(${rotateY}deg)
+        `;
+    };
     
-    card.style.transform = `
-      rotateX(${rotateX}deg)
-      rotateY(${rotateY}deg)
-    `;
-  };
-  
-  const resetMovimiento = function() {
-    if (card) card.style.transform = "rotateX(0) rotateY(0)";
-  };
-  
-  // Agregar event listeners
-  card.addEventListener('mousemove', manejarMovimiento);
-  card.addEventListener('mouseleave', resetMovimiento);
+    const resetMovimiento = function() {
+        if (card) card.style.transform = "rotateX(0) rotateY(0)";
+    };
+    
+    card.addEventListener('mousemove', manejarMovimiento);
+    card.addEventListener('mouseleave', resetMovimiento);
 }
 
 /* ===========================
    INICIALIZAR EVENTOS DE BÚSQUEDA
 =========================== */
 function inicializarBusqueda() {
-  // Evento para el input de búsqueda
-  const searchInput = document.querySelector('.input__search');
-  if (searchInput) {
-    // Búsqueda en tiempo real con debounce
-    let searchTimeout;
-    searchInput.addEventListener('input', function() {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        filtrarCatalogo();
-      }, 300);
-    });
-    
-    // También filtrar al presionar Enter
-    searchInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        clearTimeout(searchTimeout);
-        filtrarCatalogo();
-      }
-    });
-    
-    // Limpiar búsqueda al hacer clic en la "X" (si tiene)
-    searchInput.addEventListener('search', function() {
-      clearTimeout(searchTimeout);
-      setTimeout(() => {
-        filtrarCatalogo();
-      }, 100);
-    });
-  }
+    const searchInput = document.querySelector('.input__search');
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filtrarCatalogo();
+            }, 300);
+        });
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                filtrarCatalogo();
+            }
+        });
+        
+        searchInput.addEventListener('search', function() {
+            clearTimeout(searchTimeout);
+            setTimeout(() => {
+                filtrarCatalogo();
+            }, 100);
+        });
+    }
 }
 
 /* ===========================
    CARGAR CATÁLOGO COMPLETO DESDE SUPABASE
 =========================== */
 async function cargarCatalogoCompleto() {
-  console.log('🔄 Cargando catálogo...');
-  
-  if (!window.supabase) {
-    console.error('❌ Supabase no disponible');
-    return;
-  }
-
-  try {
-    const { data, error } = await window.supabase
-      .from("catalogo_camisas")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-
-    // Filtrar duplicados por ID
-    const idsVistos = new Set();
-    const productosUnicos = data.filter(item => {
-      if (idsVistos.has(item.id)) {
-        console.warn(`⚠️ Duplicado omitido: ${item.id}`);
-        return false;
-      }
-      idsVistos.add(item.id);
-      return true;
-    });
-
-    console.log(`✅ ${productosUnicos.length} productos únicos`);
-    renderCatalogo(productosUnicos);
+    console.log('🔄 Cargando catálogo...');
     
-    // Cargar categorías dinámicas
-    await cargarYRenderizarCategorias();
-    
-    // Inicializar búsqueda después de renderizar
-    setTimeout(() => {
-      inicializarBusqueda();
-      // Aplicar filtro inicial
-      filtrarCatalogo();
-    }, 100);
-
-  } catch (error) {
-    console.error("❌ Error:", error);
-    if (contenedor) {
-      contenedor.innerHTML = '<p class="text-center text-white">Error cargando catálogo</p>';
+    if (!window.supabase) {
+        console.error('❌ Supabase no disponible');
+        return;
     }
-  }
+
+    try {
+        const { data, error } = await window.supabase
+            .from("catalogo_camisas")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        const idsVistos = new Set();
+        CATALOGO = data.filter(item => {
+            if (idsVistos.has(item.id)) {
+                console.warn(`⚠️ Duplicado omitido: ${item.id}`);
+                return false;
+            }
+            idsVistos.add(item.id);
+            return true;
+        });
+
+        console.log(`✅ ${CATALOGO.length} catálogo de camisas únicas cargadas`);
+        
+        PRODUCTOS_FILTRADOS = [...CATALOGO];
+        renderizarProductosPagina();
+        await cargarYRenderizarCategorias();
+        renderizarPaginacion();
+        
+        setTimeout(() => {
+            inicializarBusqueda();
+        }, 100);
+
+    } catch (error) {
+        console.error("❌ Error:", error);
+        if (contenedor) {
+            contenedor.innerHTML = '<p class="text-center text-white">Error cargando catálogo</p>';
+        }
+    }
 }
 
 /* ===========================
    FUNCIÓN PARA LIMPIAR Y RESETEAR
 =========================== */
 function limpiarFiltros() {
-  // Limpiar búsqueda
-  const searchInput = document.querySelector('.input__search');
-  if (searchInput) {
-    searchInput.value = '';
-  }
-  
-  // Activar solo "Todas"
-  const todasBtn = navCategorias.querySelector('.btn-cat[data-cat="todas"]');
-  if (todasBtn) {
-    navCategorias.querySelectorAll('.btn-cat').forEach(btn => {
-      btn.classList.remove('active');
-    });
-    todasBtn.classList.add('active');
-  }
-  
-  // Aplicar filtro (mostrar todo)
-  filtrarCatalogo();
+    const searchInput = document.querySelector('.input__search');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    
+    const todasBtn = navCategorias.querySelector('.btn-cat[data-cat="todas"]');
+    if (todasBtn) {
+        navCategorias.querySelectorAll('.btn-cat').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        todasBtn.classList.add('active');
+    }
+    
+    PAGINA_ACTUAL = 1;
+    filtrarCatalogo();
 }
 
 /* ===========================
-   INICIAR CUANDO SUPABASE ESTÉ LISTO
+   INICIALIZACIÓN
 =========================== */
 function iniciarCatalogo() {
-  console.log('🏁 Iniciando catálogo...');
-  
-  if (window.supabase) {
-    // Si ya está cargado
-    cargarCatalogoCompleto();
-  } else {
-    // Esperar a que cargue
-    document.addEventListener('supabase:ready', function() {
-      cargarCatalogoCompleto();
-    }, { once: true });
-  }
+    console.log('🏁 Iniciando catálogo con paginación...');
+    
+    if (window.supabase) {
+        cargarCatalogoCompleto();
+    } else {
+        document.addEventListener('supabase:ready', function() {
+            cargarCatalogoCompleto();
+        }, { once: true });
+    }
 }
 
 // Iniciar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('🏁 DOM cargado, iniciando catálogo...');
-  
-  // Pequeño delay para asegurar que todos los elementos estén disponibles
-  setTimeout(() => {
-    iniciarCatalogo();
-  }, 100);
+    setTimeout(() => {
+        iniciarCatalogo();
+    }, 100);
 });
 
 // Timeout de seguridad
 setTimeout(() => {
-  if (contenedor && contenedor.innerHTML === '') {
-    console.log('⏰ Timeout - cargando catálogo...');
-    iniciarCatalogo();
-  }
+    if (contenedor && contenedor.innerHTML === '') {
+        console.log('⏰ Timeout - cargando catálogo...');
+        iniciarCatalogo();
+    }
 }, 3000);

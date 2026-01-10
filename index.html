@@ -130,7 +130,7 @@
 
                         <p class="lbl-desc-cat">
                         Selecciona las camisas de tu preferencia <strong>desde dentro de cada tarjeta</strong>, 
-                        eligiendo talla, color y cantidad. <br>
+                        eligiendo talla, color y cantidad <span style="font-size: 14.5px; text-decoration: #ffe100b1 underline 1.5px;">(10 camisas máximo).</span> <br>
                         Puedes quitarlas en cualquier momento presionando nuevamente el ícono de la camisa.
                         <span class="icono-desc-cat">
                             <svg viewBox="0 0 512 512" width="20" height="20">
@@ -185,6 +185,15 @@
                 
                     <!-- GRID CATÁLOGO - AHORA SOLO UN SCRIPT -->
                     <div id="section-catalogo-completo"></div>
+                
+                    <!-- PAGINACIÓN (NUEVA SECCIÓN) -->
+                    <div class="pagination-container mt-4">
+                        <nav aria-label="Paginación de catálogo">
+                            <ul class="pagination justify-content-center" id="paginacion">
+                                <!-- Los botones se generarán dinámicamente -->
+                            </ul>
+                        </nav>
+                    </div>
                     
                 </div>
 

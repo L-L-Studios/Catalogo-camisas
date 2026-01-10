@@ -111,3 +111,66 @@
 @property --c-3 { syntax: '<color>'; inherits: false; initial-value: hsla(352.7,98%,41%,1) }
 @property --x-3 { syntax: '<percentage>'; inherits: false; initial-value: 24% }
 
+/*PAGINACIÓN*/
+.pagination-container {
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.pagination {
+  gap: 5px;
+}
+
+.page-item .page-link {
+  background-color: transparent;
+  color: #cb2d2d !important;
+  border: 1px solid #cb2d2d4d;
+  color: var(--light);
+  margin: 0 3px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.page-item .page-link:hover {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.page-item.active .page-link {
+  background-color:#cb2d2d !important;
+  border-color: var(--primary) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(203, 45, 45, 0.3);
+}
+
+.page-item.disabled .page-link {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page-item .page-link {
+    padding: 0.4rem 0.8rem;
+    min-width: 40px;
+    font-size: 0.9rem;
+  }
+    
+  .pagination-container {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-item .page-link {
+    padding: 0.3rem 0.6rem;
+    min-width: 35px;
+    font-size: 0.85rem;
+    margin: 0 1px;
+  }
+}
